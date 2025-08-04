@@ -28,10 +28,13 @@
     <script src="{{ asset('admin/assets/js/typeahead-search/typeahead-custom.js') }}"></script>
     <script src="{{ asset('admin/assets/js/height-equal.js') }}"></script>
     <!-- Plugins JS Ends-->
-
+<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
     <script src="{{ asset('admin/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/datatable/datatables/datatable.custom.js') }}"></script>
-    
+    <script>
+  ClassicEditor.create(document.querySelector('#editor'))
+    .catch(error => { console.error(error); });
+</script>
     <!-- Theme js-->
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
 
