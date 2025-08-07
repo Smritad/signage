@@ -46,7 +46,9 @@
                   </a>
                   <ul class="sidebar-submenu">
                     <li><a href="{{ route('banner-details.index') }}" class="{{ request()->routeIs('banner-details.index') ? 'active' : '' }}">Banner Details</a></li>
-                    
+                    <li><a href="{{ route('contact-adverstiment-details.index') }}" class="{{ request()->routeIs('contact-adverstiment-details.index') ? 'active' : '' }}">Contact Adverstiment Details</a></li>
+                    <li><a href="{{ route('signage-wellness-details.index') }}" class="{{ request()->routeIs('signage-wellness-details.index') ? 'active' : '' }}">Signage Wellness Details</a></li>
+
 
 
                   </ul>

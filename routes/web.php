@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\home\BannerDetailsController;
 use App\Http\Controllers\Backend\home\HomeContactAdverstimentDetailsController;
+use App\Http\Controllers\Backend\home\SignageWellnessDetailsController;
 
 // Frontend routes
 Route::get('/', function () {
@@ -25,6 +26,7 @@ Route::get('/admin-register', [LoginController::class, 'register'])->name('admin
 Route::post('/register', [LoginController::class, 'authenticate_register'])->name('admin.register.authenticate');
 Route::resource('banner-details', BannerDetailsController::class);
 Route::resource('contact-adverstiment-details', HomeContactAdverstimentDetailsController::class);
+Route::resource('signage-wellness-details', SignageWellnessDetailsController::class);
 
 
 
