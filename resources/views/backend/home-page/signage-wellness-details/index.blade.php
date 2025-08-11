@@ -43,11 +43,11 @@
 										<li class="breadcrumb-item">
 											<a href="{{ route('signage-wellness-details.index') }}">Home</a>
 										</li>
-										<li class="breadcrumb-item active" aria-current="page">Banner Details</li>
+										<li class="breadcrumb-item active" aria-current="page">Signage Wellness Details</li>
 									</ol>
 								</nav>
 
-								<a href="{{ route('signage-wellness-details.create') }}" class="btn btn-primary px-5 radius-30">+ Add Banner Details</a>
+								<a href="{{ route('signage-wellness-details.create') }}" class="btn btn-primary px-5 radius-30">+ Add Signage Wellness Details</a>
 							</div>
 
 
@@ -63,9 +63,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($records as $row)
+                    @foreach($records as $key => $row)
                         <tr>
-                            <td>{{ $row->id }}</td>
+                            <td>{{ $key + 1 }}</td>
                             <td>{{ $row->heading }}</td>
                             <td>{{ $row->created_at->format('d M Y') }}</td>
                             <td>

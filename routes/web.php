@@ -7,6 +7,15 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\home\BannerDetailsController;
 use App\Http\Controllers\Backend\home\HomeContactAdverstimentDetailsController;
 use App\Http\Controllers\Backend\home\SignageWellnessDetailsController;
+use App\Http\Controllers\Backend\home\CustomerReviewDetailsController;
+use App\Http\Controllers\Backend\home\FooterDetailsController;
+use App\Http\Controllers\Backend\products\CategoryDetailsController;
+
+
+
+
+// frontend conroller path
+use App\Http\Controllers\Frontend\HomeController;
 
 // Frontend routes
 Route::get('/', function () {
@@ -27,6 +36,11 @@ Route::post('/register', [LoginController::class, 'authenticate_register'])->nam
 Route::resource('banner-details', BannerDetailsController::class);
 Route::resource('contact-adverstiment-details', HomeContactAdverstimentDetailsController::class);
 Route::resource('signage-wellness-details', SignageWellnessDetailsController::class);
+Route::resource('customer-review-details', CustomerReviewDetailsController::class);
+Route::resource('footer-details', FooterDetailsController::class);
+Route::resource('category-details', CategoryDetailsController::class);
+
+
 
 
 
@@ -37,3 +51,7 @@ Route::group(['middleware' => ['auth:web', \App\Http\Middleware\PreventBackHisto
             return view('backend.dashboard'); 
         })->name('admin.dashboard');
 });
+
+
+// Frontend
+Route::get('/', [HomeController::class, 'home'])->name('frontend.index');

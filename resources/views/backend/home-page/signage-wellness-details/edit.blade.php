@@ -60,7 +60,7 @@
                                                     <div class="mb-2 text-end">
                                                         <button type="button" class="btn btn-success btn-sm" onclick="addRow()">+ Add More</button>
                                                     </div>
-                                                    
+
                                                     <table class="table table-bordered" id="signageTable">
                                                         <thead>
                                                             <tr>
@@ -82,10 +82,10 @@
                                                                         <textarea class="form-control" name="items[{{ $i }}][description]" required>{{ $item['description'] }}</textarea>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="file" class="form-control signage-image" name="items[{{ $i }}][image]" accept=".jpg, .jpeg, .png, .webp" onchange="previewImage(event, {{ $i }})">
+                                                                        <input type="file" class="form-control signage-image" name="items[${rowIndex}][image]" accept=".jpg, .jpeg, .png, .webp, .svg" onchange="previewImage(event, ${rowIndex})">
                                                                     </td>
                                                                     <td>
-                                                                        <img id="preview_{{ $i }}" src="{{ asset('storage/' . $item['image']) }}" class="img-thumbnail" style="max-height: 80px;">
+                                                                        <img id="preview_{{ $i }}" src="{{ asset($item['image']) }}" class="img-thumbnail" style="max-height: 80px;">
                                                                     </td>
                                                                     <td>
                                                                         <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button>
@@ -145,7 +145,11 @@ function previewImage(event, index) {
     const input = event.target;
     const file = input.files[0];
     const preview = document.getElementById(`preview_${index}`);
-    if (file && ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
+
+    if (validTypes.includes(file.type)) {
         const reader = new FileReader();
         reader.onload = function (e) {
             preview.src = e.target.result;
@@ -153,9 +157,10 @@ function previewImage(event, index) {
         reader.readAsDataURL(file);
     } else {
         preview.src = '';
-        alert('Please upload a valid image file (jpg, jpeg, png, webp).');
+        alert('Please upload a valid image file (jpg, jpeg, png, webp, svg).');
     }
 }
+
 </script>
 
 </body>

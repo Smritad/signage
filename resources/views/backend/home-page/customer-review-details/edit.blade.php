@@ -12,14 +12,14 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Add Signage Wellness Details Form</h4>
+                    <h4>Add Customer Review  Details Form</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('signage-wellness-details.index') }}">Home</a>
+                            <a href="{{ route('customer-review-details.index') }}">Home</a>
                         </li>
-                        <li class="breadcrumb-item active">Add Signage Wellness Details</li>
+                        <li class="breadcrumb-item active">Add Customer Review  Details</li>
                     </ol>
                 </div>
             </div>
@@ -32,7 +32,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Signage Wellness Details Form</h4>
+                        <h4>Customer Review  Details Form</h4>
                         <p class="f-m-light mt-1">Fill in the correct details and submit the form.</p>
                     </div>
                     <div class="card-body">
@@ -41,22 +41,21 @@
                                 <div class="col-12">
                                     <div class="tab-content" id="wizard-tabContent">
                                         <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                            <form class="row g-3 needs-validation custom-input" novalidate action="{{ route('signage-wellness-details.store') }}" method="POST" enctype="multipart/form-data">
+                                            <form class="row g-3 needs-validation custom-input" novalidate action="{{ route('customer-review-details.update', $record->id) }}" method="POST">
                                                 @csrf
+                                                @method('PUT')
 
-                                               <!-- Heading -->
+                                                <!-- Heading -->
                                                 <div class="col-12">
                                                     <label class="form-label" for="heading">Heading <span class="txt-danger">*</span></label>
-                                                    <input class="form-control" id="heading" type="text" name="heading" placeholder="Enter Heading" required>
+                                                    <input class="form-control" id="heading" type="text" name="heading" value="{{ $record->heading }}" required>
                                                     <div class="invalid-feedback">Please enter a Heading.</div>
                                                 </div>
 
-                                               
-                                                <!-- Dynamic Table -->
+                                                <!-- Table -->
                                                 <div class="col-12">
-                                                    <label class="form-label">Signage Wellness Details <span class="txt-danger">*</span></label>
+                                                    <label class="form-label">Customer Review Details <span class="txt-danger">*</span></label>
 
-                                                    <!-- Add More Button aligned right -->
                                                     <div class="mb-2 text-end">
                                                         <button type="button" class="btn btn-success btn-sm" onclick="addRow()">+ Add More</button>
                                                     </div>
@@ -66,33 +65,32 @@
                                                             <tr>
                                                                 <th>Title</th>
                                                                 <th>Description</th>
-                                                                <th>Image</th>
-                                                                <th>Preview</th>
+                                                                <th>Name</th>
+                                                                <th>Rating</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="signageBody">
+                                                            @foreach(json_decode($record->items, true) as $index => $item)
                                                             <tr>
-                                                                <td><input type="text" class="form-control" name="items[0][title]" required></td>
-                                                                <td><textarea class="form-control" name="items[0][description]" required></textarea></td>
-                                                                <td>
-                                                                    <input type="file" class="form-control signage-image" name="items[0][image]" accept=".jpg,.jpeg,.png,.webp,.svg" onchange="previewImage(event, 0)" required>
-                                                                </td>
-                                                                <td><img id="preview_0" src="" class="img-thumbnail" style="max-height: 80px;"></td>
+                                                                <td><input type="text" class="form-control" name="items[{{ $index }}][title]" value="{{ $item['title'] }}" required></td>
+                                                                <td><textarea class="form-control" name="items[{{ $index }}][description]" required>{{ $item['description'] }}</textarea></td>
+                                                                <td><input type="text" class="form-control" name="items[{{ $index }}][name]" value="{{ $item['name'] }}" required></td>
+                                                                <td><input type="number" class="form-control" name="items[{{ $index }}][rating]" value="{{ $item['rating'] }}" min="1" max="5" required></td>
                                                                 <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
                                                             </tr>
+                                                            @endforeach
                                                         </tbody>
                                                     </table>
                                                 </div>
 
-
-
                                                 <!-- Submit -->
                                                 <div class="col-12 text-end">
-                                                    <a href="{{ route('signage-wellness-details.index') }}" class="btn btn-danger px-4">Cancel</a>
-                                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                                    <a href="{{ route('customer-review-details.index') }}" class="btn btn-danger px-4">Cancel</a>
+                                                    <button class="btn btn-primary" type="submit">Update</button>
                                                 </div>
                                             </form>
+
                                         </div>
                                     </div>
                                 </div>
@@ -119,20 +117,18 @@ function addRow() {
     newRow.innerHTML = `
         <td><input type="text" class="form-control" name="items[${rowIndex}][title]" required></td>
         <td><textarea class="form-control" name="items[${rowIndex}][description]" required></textarea></td>
-        <td>
-            <input type="file" class="form-control signage-image" name="items[${rowIndex}][image]" accept=".jpg,.jpeg,.png,.webp,.svg" onchange="previewImage(event, ${rowIndex})" required>
-        </td>
-        <td><img id="preview_${rowIndex}" src="" class="img-thumbnail" style="max-height: 80px;"></td>
+        <td><input type="text" class="form-control" name="items[${rowIndex}][name]" required placeholder="Customer Name"></td>
+        <td><input type="number" class="form-control" name="items[${rowIndex}][rating]" required placeholder="Rating (1-5)" min="1" max="5"></td>
         <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button></td>
     `;
     tableBody.appendChild(newRow);
     rowIndex++;
 }
-
 function removeRow(button) {
     const row = button.closest('tr');
     row.remove();
 }
+
 
 function previewImage(event, index) {
     const input = event.target;

@@ -28,17 +28,19 @@ class SignageWellnessDetailsController extends Controller
             'heading' => 'required|string',
             'items.*.title' => 'required|string',
             'items.*.description' => 'required|string',
-            'items.*.image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'items.*.image' => 'required|file|mimes:jpg,jpeg,png,webp,svg,svg+xml|max:2048',
         ]);
 
         $items = [];
 
         foreach ($request->items as $index => $item) {
             $path = null;
+
             if ($request->hasFile("items.$index.image")) {
                 $file = $request->file("items.$index.image");
-                $filename = time() . "_$index." . $file->getClientOriginalExtension();
-                $path = $file->storeAs('signage_images', $filename, 'public');
+                $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('/home/signagewellness'), $filename);
+                $path = 'home/signagewellness/' . $filename;
             }
 
             $items[] = [
@@ -69,7 +71,7 @@ class SignageWellnessDetailsController extends Controller
             'heading' => 'required|string',
             'items.*.title' => 'required|string',
             'items.*.description' => 'required|string',
-            'items.*.image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'items.*.image' => 'nullable|file|mimes:jpg,jpeg,png,webp,svg,svg+xml|max:2048',
         ]);
 
         $record = SignageWellnessDetails::findOrFail($id);
@@ -81,8 +83,9 @@ class SignageWellnessDetailsController extends Controller
 
             if ($request->hasFile("items.$index.image")) {
                 $file = $request->file("items.$index.image");
-                $filename = time() . "_$index." . $file->getClientOriginalExtension();
-                $path = $file->storeAs('signage_images', $filename, 'public');
+                $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('/home/signagewellness'), $filename);
+                $path = 'home/signagewellness/' . $filename;
             }
 
             $items[] = [

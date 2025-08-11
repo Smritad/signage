@@ -48,13 +48,32 @@
                     <li><a href="{{ route('banner-details.index') }}" class="{{ request()->routeIs('banner-details.index') ? 'active' : '' }}">Banner Details</a></li>
                     <li><a href="{{ route('contact-adverstiment-details.index') }}" class="{{ request()->routeIs('contact-adverstiment-details.index') ? 'active' : '' }}">Contact Adverstiment Details</a></li>
                     <li><a href="{{ route('signage-wellness-details.index') }}" class="{{ request()->routeIs('signage-wellness-details.index') ? 'active' : '' }}">Signage Wellness Details</a></li>
+                    <li><a href="{{ route('customer-review-details.index') }}" class="{{ request()->routeIs('customer-review-details.index') ? 'active' : '' }}">Customer Review Details</a></li>
+                    <li><a href="{{ route('footer-details.index') }}" class="{{ request()->routeIs('footer-details.index') ? 'active' : '' }}">Footer Details</a></li>
 
 
 
                   </ul>
                 </li>
 
+              <li class="sidebar-list">
+                  <i class="fa fa-thumb-tack"> </i>
+                  <a class="sidebar-link sidebar-title" href="#">
+                    <svg class="stroke-icon"> 
+                      <use href="{{ asset('admin/assets/svg/icon-sprite.svg#cart') }}"></use>
+                    </svg>
+                    <svg class="fill-icon">
+                      <use href="{{ asset('admin/assets/svg/icon-sprite.svg#cart') }}"></use>
+                    </svg>
+                    <span>Store Management</span>
+                  </a>
+                  <ul class="sidebar-submenu">
+                    <li><a href="{{ route('category-details.index') }}" class="{{ request()->routeIs('category-details.index') ? 'active' : '' }}">Category</a></li>
+                    <li><a href="" class="">Sab Category</a></li>
+           
 
+                  </ul>
+              </li>
               </ul>
               <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
             </div>
