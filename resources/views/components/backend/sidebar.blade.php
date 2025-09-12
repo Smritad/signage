@@ -69,8 +69,11 @@
                   </a>
                   <ul class="sidebar-submenu">
                     <li><a href="{{ route('category-details.index') }}" class="{{ request()->routeIs('category-details.index') ? 'active' : '' }}">Category</a></li>
-                    <li><a href="" class="">Sab Category</a></li>
-           
+                    <li><a href="{{ route('sab-category-details.index') }}" class="{{ request()->routeIs('sab-category-details.index') ? 'active' : '' }}">Sab Category</a></li>
+                    <li><a href="{{ route('perfume-notes-details.index') }}" class="{{ request()->routeIs('perfume-notes-details.index') ? 'active' : '' }}">Perfume Notes</a></li>
+                    <li><a href="{{ route('fragrance-type-details.index') }}" class="{{ request()->routeIs('fragrance-type-details.index') ? 'active' : '' }}">Fragrance Type</a></li>
+                    <li><a href="{{ route('products-details.index') }}" class="{{ request()->routeIs('products-details.index') ? 'active' : '' }}">Products Details</a></li>
+
 
                   </ul>
               </li>

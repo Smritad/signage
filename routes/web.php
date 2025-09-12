@@ -10,6 +10,10 @@ use App\Http\Controllers\Backend\home\SignageWellnessDetailsController;
 use App\Http\Controllers\Backend\home\CustomerReviewDetailsController;
 use App\Http\Controllers\Backend\home\FooterDetailsController;
 use App\Http\Controllers\Backend\products\CategoryDetailsController;
+use App\Http\Controllers\Backend\products\SabCategoryDetailsController;
+use App\Http\Controllers\Backend\products\PerfumeNotesDetailsController;
+use App\Http\Controllers\Backend\products\FragranceTypeDetailsController;
+use App\Http\Controllers\Backend\products\ProductsDetailsController;
 
 
 
@@ -39,6 +43,10 @@ Route::resource('signage-wellness-details', SignageWellnessDetailsController::cl
 Route::resource('customer-review-details', CustomerReviewDetailsController::class);
 Route::resource('footer-details', FooterDetailsController::class);
 Route::resource('category-details', CategoryDetailsController::class);
+Route::resource('sab-category-details', SabCategoryDetailsController::class);
+Route::resource('perfume-notes-details', PerfumeNotesDetailsController::class);
+Route::resource('fragrance-type-details', FragranceTypeDetailsController::class);
+Route::resource('products-details', ProductsDetailsController::class);
 
 
 

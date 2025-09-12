@@ -41,52 +41,44 @@
 								<nav aria-label="breadcrumb" role="navigation">
 									<ol class="breadcrumb mb-0">
 										<li class="breadcrumb-item">
-											<a href="{{ route('category-details.index') }}">Home</a>
+											<a href="{{ route('sab-category-details.index') }}">Home</a>
 										</li>
-										<li class="breadcrumb-item active" aria-current="page">Category Details</li>
+										<li class="breadcrumb-item active" aria-current="page">Sab Category Details</li>
 									</ol>
 								</nav>
 
-								<a href="{{ route('category-details.create') }}" class="btn btn-primary px-5 radius-30">+ Add Category Details</a>
+								<a href="{{ route('sab-category-details.create') }}" class="btn btn-primary px-5 radius-30">+ Add Sab Category Details</a>
 							</div>
 
 
                     <div class="table-responsive custom-scrollbar">
                     <table class="display" id="basic-1">
+                       
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Category Name</th>
-                                <!-- <th>Slug</th>
-                                <th>Created By</th>
-                                <th>Updated By</th>
-                                <th>Created At</th>
-                                <th>Updated At</th> -->
-                                <th>Actions</th>
+                                <th>Sub Category Name</th>
+                                <th>Category</th>
+                                <!-- <th>Slug</th> -->
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($categories as $key => $category)
+                            @foreach($subcategories as $key => $sub)
                                 <tr>
                                     <td>{{ $key+1 }}</td>
-                                    <td>{{ $category->category_name }}</td>
-                                    <!-- <td>{{ $category->slug }}</td>
-                                    <td>{{ $category->created_by }}</td>
-                                    <td>{{ $category->updated_by }}</td>
-                                    <td>{{ $category->created_at }}</td>
-                                    <td>{{ $category->updated_at }}</td> -->
+                                    <td>{{ $sub->sab_category_name }}</td>
+                                    <td>{{ $sub->category->category_name ?? 'N/A' }}</td>
+                                    <!-- <td>{{ $sub->slug }}</td> -->
                                     <td>
-                                        <a href="{{ route('category-details.edit', $category->id) }}" class="btn btn-primary">Edit</a>
-                                        <br><br>
-                                        <form action="{{ route('category-details.destroy', $category->id) }}" method="POST" style="display:inline-block;">
+                                        <a href="{{ route('sab-category-details.edit', $sub->id) }}" class="btn btn-primary">Edit</a>
+                                        <form action="{{ route('sab-category-details.destroy', $sub->id) }}" method="POST" style="display:inline-block;">
                                             @csrf @method('DELETE')
-                                            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this category?')">Delete</button>
+                                            <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr><td colspan="8">No categories found</td></tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
 
