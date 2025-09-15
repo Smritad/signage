@@ -31,7 +31,7 @@ Route::get('/', function () {
 
 // Backend Routes
 Route::get('/admin-login', [LoginController::class, 'login'])->name('admin.login');
-Route::post('/login', [LoginController::class, 'authenticate'])->name('admin.authenticate');
+Route::post('/admin-login', [LoginController::class, 'authenticate'])->name('admin.authenticate');
 Route::get('/admin-logout', [LoginController::class, 'logout'])->name('admin.logout');
 Route::get('/change-password', [LoginController::class, 'change_password'])->name('admin.changepassword');
 Route::post('/update-password', [LoginController::class, 'updatePassword'])->name('admin.updatepassword');
