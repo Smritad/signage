@@ -15959,7 +15959,7 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
     max-width: 90px;
   }
   .tf-cart_item .img-prd img {
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
   }
 }
 @media (max-width: 767px) {
@@ -16358,7 +16358,7 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
 }
 .list-order-product .img-prd img {
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
 }
 .list-order-product .order-item {
   display: flex;
@@ -19694,6 +19694,18 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   .grid-photo {
     gap: 12px;
   }
+  .contact-us-page .form-message{
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+  }
+  .contact-us-page .form-contact-information{
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+  }
+  .thank-text h2{
+    font-size: 45px !important;
+    line-height: 40px;
+  }
 }
 
 .wg-real-image {
@@ -20276,4 +20288,162 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
 .tf-product-info-wrap .tf-product-icon-box .item svg {
     width: 50px;
     height: 40px;
+}
+.fl-sidebar-cart {
+    background: #F5F5F5 !important;
+}
+/*contact us page*/
+.contact-us-page{
+  padding-top: 0px;
+}
+.contact-us-page .stelina-google-maps {
+  min-height: 480px;
+}
+.contact-us-page .form-contact {
+  margin-top: -200px;
+  background-color: #ffffff;
+  /*-webkit-box-shadow: 0 0 12px 0 rgba(2, 2, 2, 0.16);
+  -moz-box-shadow: 0 0 12px 0 rgba(2, 2, 2, 0.16);
+  box-shadow: 0 0 12px 0 rgba(2, 2, 2, 0.16);*/
+  border-radius: 0;
+  overflow: hidden;
+}
+.contact-us-page .form-contact::after, .contact-us-page .form-contact::before {
+  display: table;
+  content: '';
+}
+.contact-us-page .form-contact::after {
+  clear: both;
+}
+.contact-us-page .form-message {
+  padding-top: 55px;
+  padding-right: 70px;
+  margin-bottom: 10px;
+  padding-bottom: 55px;
+  padding-left: 70px;
+  background-color: #ffffff;
+  -webkit-box-shadow: 0 0 12px 0 rgb(2 2 2 / 16%);
+    -moz-box-shadow: 0 0 12px 0 rgba(2, 2, 2, 0.16);
+    box-shadow: 0 0 12px 0 rgb(2 2 2 / 16%);
+}
+.contact-us-page .form-message .title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0a0a0a;
+  text-align: left;
+  font-style: normal;
+  margin-bottom: 27px;
+  text-transform: uppercase;
+}
+.contact-us-page .stelina-contact-fom p:last-child {
+  margin-bottom: 0;
+}
+.contact-us-page .stelina-contact-fom .form-label {
+  font-size: 14px;
+  line-height: 30px;
+  color: #888;
+  display: block;
+  margin-bottom: 5px;
+}
+.contact-us-page .stelina-contact-fom .form-control {
+  position: relative;
+  overflow: hidden;
+}
+.stelina-contact-fom .form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.contact-us-page .stelina-contact-fom .your-textarea {
+  border: 1px solid #eeeeee;
+}
+.contact-us-page .stelina-contact-fom .button-submit {
+  min-width: 157px;
+  margin-top: 10px;
+}
+.contact-us-page .form-contact-information {
+  padding-top: 55px;
+  padding-right: 45px;
+  padding-bottom: 45px;
+  padding-left: 45px;
+  background-color: #ab924a;
+  -webkit-box-shadow: 0 0 12px 0 rgb(2 2 2 / 16%);
+    -moz-box-shadow: 0 0 12px 0 rgba(2, 2, 2, 0.16);
+    box-shadow: 0 0 12px 0 rgb(2 2 2 / 16%);
+}
+.contact-us-page .stelina-contact-info .title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+}
+.contact-us-page .stelina-contact-info .item {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.contact-us-page .stelina-contact-info .item .icon {
+  display: inline-block;
+  float: left;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  margin-right: 20px;
+  text-align: center;
+  line-height: 40px;
+}
+.contact-us-page .stelina-contact-info .item .icon::before {
+  font-size: 20px;
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+}
+.contact-us-page .stelina-contact-info .item .text {
+  display: block;
+  color: #fff;
+  text-transform: capitalize;
+  font-size: 18px;
+  overflow: hidden;
+}
+.contact-us-page .stelina-contact-info .socials {
+  padding-top: 120px;
+}
+.contact-us-page .stelina-contact-info .socials .social-item {
+  font-size: 20px;
+  color: #fff;
+  margin-right: 20px;
+}
+.contact-us-page .stelina-contact-info .socials .social-item:hover {
+  color: #ffffff;
+}
+.no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.thank-text{
+  text-align: center;
+  padding: 100px 0px;
+}
+.thank-text h2{
+  font-size: 60px;
+  padding-bottom: 30px;
+  padding-top: 15px;
+  color: #fff;
+}
+.thank-text h6{
+  font-size: 20px;
+  padding-bottom: 30px;
+  color: #fff;
+}
+.thank-message-icon{
+  color: #fff;
+  font-size: 100px;
+}
+.thank-you-page{
+  background: linear-gradient(167deg, rgba(0, 23, 45, 1) 0%, rgba(0, 82, 162, 1) 100%);
+}
+.about-page-img img{
+  box-shadow: 10px 10px #ab924a;
+  border: 1px solid #ab924a;
 }

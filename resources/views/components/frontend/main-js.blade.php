@@ -8,3 +8,8 @@
     <script src="{{ asset('frontend/assets/js/parallaxie.js')}}"></script>
     <script src="{{ asset('frontend/assets/js/count-down.js')}}"></script>
     <script src="{{ asset('frontend/assets/js/main.js')}}"></script>
+    <script src="{{ asset('frontend/assets/js/infinityslide.js')}}"></script>
+   <script src="{{ asset('frontend/assets/js/nouislider.min.js')}}"></script>
+    <script src="{{ asset('frontend/assets/js/shop.js')}}"></script>
+    <script src="{{ asset('frontend/assets/js/sibforms.js')}}" defer></script>
+      

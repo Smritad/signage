@@ -11,30 +11,60 @@
                             <img src="{{ asset('frontend/assets/images/logo/logo.webp')}}" alt="Logo">
                         </a>
                     </div>
-                    <div class="col-xl-6 d-none d-xl-block">
-                        <nav class="box-navigation">
-                            <ul class="box-nav-menu">
-                                <li class="menu-item position-relative">
-                                    <a href="javascript:void(0)" class="item-link">Perfumes <i
-                                            class="icon icon-caret-down"></i></a>
-                                    <div class="sub-menu">
-                                        <ul class="sub-menu_list">
-                                            <li><a href="#" class="sub-menu_link">Men</a></li>
-                                            <li><a href="#" class="sub-menu_link">Women</a></li>
-                                            <li><a href="#" class="sub-menu_link">Unisex</a></li>
-                                            <li><a href="#" class="sub-menu_link">Combos</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="javascript:void(0)" class="item-link">Reed Diffusers</a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="javascript:void(0)" class="item-link">Air Freshner Sachet</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                                            @php
+                        use App\Models\CategoryDetails;
+                        use App\Models\SabCategoryDetails;
+                        use App\Models\ProductsDetails;
+
+                        // Fetch all master categories
+                        $masterCategories = CategoryDetails::all();
+                        @endphp
+
+                        <div class="col-xl-6 d-none d-xl-block">
+                            <nav class="box-navigation">
+                                <ul class="box-nav-menu">
+                                    @foreach($masterCategories as $master)
+                                        @php
+                                            // Check if master category has products
+                                            $masterHasProducts = ProductsDetails::where('category_id', $master->id)->exists();
+
+                                            // Get subcategories for this master
+                                            $subCategories = SabCategoryDetails::where('category_id', $master->id)->get();
+                                        @endphp
+
+                                        <li class="menu-item position-relative">
+                                            <a href="{{ $masterHasProducts ? route('product.category', $master->slug) : route('coming.soon') }}" class="item-link">
+                                                {{ $master->category_name }}
+                                                @if($subCategories->count() > 0)
+                                                    <i class="icon icon-caret-down"></i>
+                                                @endif
+                                            </a>
+
+                                            @if($subCategories->count() > 0)
+                                                <div class="sub-menu">
+                                                    <ul class="sub-menu_list">
+                                                        @foreach($subCategories as $sub)
+                                                            @php
+                                                                // Check if subcategory has products
+                                                                $subHasProducts = ProductsDetails::where('sub_category_id', $sub->id)->exists();
+                                                            @endphp
+                                                            <li>
+                                                                <a href="{{ $subHasProducts ? route('product.details', $sub->slug) : route('coming.soon') }}" class="sub-menu_link">
+                                                                    {{ $sub->sab_category_name }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </li>
+                                    @endforeach
+
+                                   
+                                </ul>
+                            </nav>
+                        </div>
+
                     <div class="col-xl-3 col-md-4 col-3">
                         <ul class="nav-icon-list">
                             <li class="d-none d-lg-flex">

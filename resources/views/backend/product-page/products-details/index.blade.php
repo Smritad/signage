@@ -52,22 +52,33 @@
 
 
                     <div class="table-responsive custom-scrollbar">
-                    <table class="display" id="basic-1">
-                       
-                      <thead>
-                          <tr>
-                              <th>#</th>
-                              <th>Title</th>
-                            
-                              <th width="200">Action</th>
-                          </tr>
-                      </thead>
-                     </table>
+    <table class="table table-striped" id="basic-1">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Products Name</th>
+                <th width="200">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($products as $key => $product)
+                <tr>
+                    <td>{{ $key+1 }}</td>
+                    <td>{{ $product->product_name }}</td>
+                    <td>
+                        <a href="{{ route('products-details.edit', $product->id) }}" class="btn btn-primary">Edit</a>
+                        <form action="{{ route('products-details.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
-                     
-                  
-
-                    </div>
                   </div>
                 </div>
               </div>

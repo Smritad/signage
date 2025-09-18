@@ -56,8 +56,8 @@ public function store(Request $request)
         'perfume_notes_details.*.level_id' => 'nullable|exists:perfume_notes_level_details,id',
 
         'fragrance_type_id' => 'required|exists:fragrance_type_details,id',
-                'measurement_unit' => 'nullable|string|max:255',
-                'offer_price' => 'nullable|string|max:255',
+        'measurement_unit' => 'nullable|string|max:255',
+        'offer_price' => 'nullable|string|max:255',
 
         'faqs' => 'nullable|array',
         'faqs.*.question' => 'nullable|string|max:500',

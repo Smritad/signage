@@ -14,12 +14,14 @@ use App\Http\Controllers\Backend\products\SabCategoryDetailsController;
 use App\Http\Controllers\Backend\products\PerfumeNotesDetailsController;
 use App\Http\Controllers\Backend\products\FragranceTypeDetailsController;
 use App\Http\Controllers\Backend\products\ProductsDetailsController;
+use App\Http\Controllers\Backend\products\PerfumeNotesLevelDetailsController;
 
 
 
 
 // frontend conroller path
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\CategoryProductsListingDetailsController;
 
 // Frontend routes
 Route::get('/', function () {
@@ -45,6 +47,8 @@ Route::resource('footer-details', FooterDetailsController::class);
 Route::resource('category-details', CategoryDetailsController::class);
 Route::resource('sab-category-details', SabCategoryDetailsController::class);
 Route::resource('perfume-notes-details', PerfumeNotesDetailsController::class);
+Route::resource('perfume-notes-level-details', PerfumeNotesLevelDetailsController::class);
+
 Route::resource('fragrance-type-details', FragranceTypeDetailsController::class);
 Route::resource('products-details', ProductsDetailsController::class);
 
@@ -60,6 +64,17 @@ Route::group(['middleware' => ['auth:web', \App\Http\Middleware\PreventBackHisto
         })->name('admin.dashboard');
 });
 
-
 // Frontend
 Route::get('/', [HomeController::class, 'home'])->name('frontend.index');
+
+// Master category products
+Route::get('/category/{slug}', [CategoryProductsListingDetailsController::class, 'index'])->name('product.category');
+
+// Subcategory products
+Route::get('/products/{slug}', [ProductsListingDetailsController::class, 'index'])->name('product.details');
+
+// Coming soon page
+Route::get('/coming-soon', function () {
+    return view('coming-soon');
+})->name('coming.soon');
+
