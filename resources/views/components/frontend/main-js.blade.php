@@ -12,4 +12,8 @@
    <script src="{{ asset('frontend/assets/js/nouislider.min.js')}}"></script>
     <script src="{{ asset('frontend/assets/js/shop.js')}}"></script>
     <script src="{{ asset('frontend/assets/js/sibforms.js')}}" defer></script>
-      
+     
+    <script src="{{ asset('frontend/assets/js/photoswipe-lightbox.umd.min.js')}}"></script>
+    <script src="{{ asset('frontend/assets/js/photoswipe.umd.min.js')}}"></script>
+    <script src="{{ asset('frontend/assets/js/zoom.js')}}"></script>
+        <script src="{{ asset('frontend/assets/js/drift.min.js')}}"></script>

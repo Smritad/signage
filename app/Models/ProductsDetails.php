@@ -16,6 +16,7 @@ class ProductsDetails extends Model
         'category_id',
         'sub_category_id',
         'product_name',
+        'slug',
         'price',
         'product_sku',
         'discount',

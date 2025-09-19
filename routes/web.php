@@ -22,6 +22,10 @@ use App\Http\Controllers\Backend\products\PerfumeNotesLevelDetailsController;
 // frontend conroller path
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CategoryProductsListingDetailsController;
+use App\Http\Controllers\Frontend\ProductsListingDetailsController;
+use App\Http\Controllers\Frontend\AllProductsDetailsController;
+use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\WishlistController;
 
 // Frontend routes
 Route::get('/', function () {
@@ -71,10 +75,15 @@ Route::get('/', [HomeController::class, 'home'])->name('frontend.index');
 Route::get('/category/{slug}', [CategoryProductsListingDetailsController::class, 'index'])->name('product.category');
 
 // Subcategory products
-Route::get('/products/{slug}', [ProductsListingDetailsController::class, 'index'])->name('product.details');
+Route::get('/{category}/{sabcat}', [ProductsListingDetailsController::class, 'subcategory'])->name('product.subcategory');
+
+Route::get('/{cat}/{sabcat}/{slug}', [AllProductsDetailsController::class, 'productDetail'])->name('product.details');
 
 // Coming soon page
-Route::get('/coming-soon', function () {
-    return view('coming-soon');
-})->name('coming.soon');
+Route::get('/coming-soon', function () {return view('frontend.comingsoon');})->name('coming.soon');
 
+//Add to cart 
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+
+//Add to wishlist
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');

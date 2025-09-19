@@ -11,18 +11,55 @@ use App\Models\ProductsDetails;
 class CategoryProductsListingDetailsController extends Controller
 {
     public function index($slug)
-    {
-        // Fetch the master category by slug
-        $category = CategoryDetails::where('slug', $slug)->firstOrFail();
+{
+    // Current category
+    $category = CategoryDetails::where('slug', $slug)->firstOrFail();
+    // All categories for sidebar filter
+    $allCategories = CategoryDetails::all();
 
-        // Fetch subcategories under this category
-        $subCategories = SabCategoryDetails::where('category_id', $category->id)->get();
+    // Category-wise product counts
+    $categoryCounts = ProductsDetails::selectRaw('category_id, COUNT(*) as count')
+        ->groupBy('category_id')
+        ->pluck('count', 'category_id');
 
-        // Optionally, fetch products under this category
-        $products = ProductsDetails::where('category_id', $category->id)->get();
+    // Products of current category
+    $products = ProductsDetails::where('category_id', $category->id)->get();
 
-        return view('frontend.all-category', compact('category', 'subCategories', 'products'));
-    }
+    // Availability counts
+    $inStockCount = ProductsDetails::where('category_id', $category->id)
+        ->where('quantity', '>', 0)
+        ->count();
+
+    $outStockCount = ProductsDetails::where('category_id', $category->id)
+        ->where('quantity', '<=', 0)
+        ->count();
+
+    // Perfume Notes
+    $fragranceTypes = \App\Models\FragranceTypeDetails::all();
+
+    // Perfume Notes product counts
+    $fragranceCounts = ProductsDetails::selectRaw('fragrance_type_id, COUNT(*) as count')
+        ->groupBy('fragrance_type_id')
+        ->pluck('count', 'fragrance_type_id');
+
+    // Price range
+    $minPrice = ProductsDetails::where('category_id', $category->id)->min('price');
+    $maxPrice = ProductsDetails::where('category_id', $category->id)->max('price');
+
+
+    return view('frontend.all-category', compact(
+        'category',
+        'allCategories',
+        'categoryCounts',
+        'products',
+        'inStockCount',
+        'outStockCount',
+        'fragranceTypes',
+        'fragranceCounts',
+        'minPrice',
+        'maxPrice'
+    ));
+}
 }
 
 

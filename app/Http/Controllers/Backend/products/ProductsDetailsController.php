@@ -56,8 +56,8 @@ public function store(Request $request)
         'perfume_notes_details.*.level_id' => 'nullable|exists:perfume_notes_level_details,id',
 
         'fragrance_type_id' => 'required|exists:fragrance_type_details,id',
-                'measurement_unit' => 'nullable|string|max:255',
-                'offer_price' => 'nullable|string|max:255',
+        'measurement_unit' => 'nullable|string|max:255',
+        'offer_price' => 'nullable|string|max:255',
 
         'faqs' => 'nullable|array',
         'faqs.*.question' => 'nullable|string|max:500',
@@ -69,7 +69,7 @@ public function store(Request $request)
 
     // Auto-generate SKU if not provided
     $productSku = $request->product_sku ?? strtoupper(Str::random(10));
-
+$slug = Str::slug($request->product_name, '-');
     // Handle multiple product images
     $images = [];
     if ($request->hasFile('images')) {
@@ -119,6 +119,8 @@ public function store(Request $request)
         'category_id' => $request->category_id,
         'sub_category_id' => $request->sub_category_id,
         'product_name' => $request->product_name,
+                'slug'  => $slug,
+
         'price' => $request->price,
         'product_sku' => $productSku,
         'discount' => $request->discount,
@@ -202,6 +204,8 @@ public function update(Request $request, $id)
         'perfume_details.*.icon'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
     ]);
 
+
+    $slug = Str::slug($request->product_name, '-');
     /* -----------------------------------------------------------------
      |  Images Handling
      -----------------------------------------------------------------*/
@@ -299,6 +303,7 @@ public function update(Request $request, $id)
         'fragrance_type_id'  => $request->fragrance_type_id,
         'measurement_unit'  => $request->measurement_unit,
         'offer_price'  => $request->offer_price,
+        'slug'  => $slug,
 
         'description'        => $request->description,
         'key_benefits'       => $request->key_benefits,

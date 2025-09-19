@@ -1,8 +1,9 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
-    @include('components.frontend.head')
+        @include('components.frontend.head')
 </head>
 
 <body>
@@ -16,26 +17,24 @@
         </div>
     </div>
     <div id="wrapper">
-                @include('components.frontend.header')
+       @include('components.frontend.header')
         <!-- /Header -->
         <!-- Page Title -->
-        <section class="s-page-title">
-            <div class="container">
-                <div class="content">
-                    <h1 class="title-page">{{ $category->category_name }}</h1>
-
-                    <ul class="breadcrumbs-page">
-                        <li><a href="{{ route('frontend.index') }}" class="h6 link">Home</a></li>
-                        <li class="d-flex"><i class="icon icon-caret-right"></i></li>
-                        <li>
-                            <h6 class="current-page fw-normal">{{ $category->category_name }}</h6>
-                        </li>
-                    </ul>
+       {{-- Page Title & Breadcrumb --}}
+            <section class="s-page-title">
+                <div class="container">
+                    <div class="content">
+                        <h1 class="title-page">{{ $sabcategory->sab_category_name }}</h1>
+                        <ul class="breadcrumbs-page">
+                            <li><a href="{{ url('/') }}" class="h6 link">Home</a></li>
+                            <li class="d-flex"><i class="icon icon-caret-right"></i></li>
+                            <li>
+                                <h6 class="current-page fw-normal">{{ $sabcategory->sab_category_name }}</h6>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-
+            </section>
 
         <!-- /Page Title -->
         <!-- Section Product -->
@@ -44,7 +43,7 @@
                 <div class="row">
                     <div class="col-xl-3">
                         <div class="canvas-sidebar sidebar-filter canvas-filter left">
-                    <div class="canvas-wrapper">
+                           <div class="canvas-wrapper">
                         <div class="canvas-header d-xl-none">
                             <span class="title h3 fw-medium">Filter</span>
                             <span class="icon-close link icon-close-popup fs-24 close-filter"></span>
@@ -52,111 +51,112 @@
 
                         <div class="canvas-body">
 
-                        {{-- Category Filter --}}
+                            {{-- Category Filter --}}
                             <div class="widget-facet">
                                 <div class="facet-title" data-bs-target="#category" role="button"
                                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="category">
-                                    <span class="h4 fw-semibold">Category</span>
+                                    <span class="h4 fw-semibold">Sab Category</span>
                                     <span class="icon icon-caret-down fs-20"></span>
                                 </div>
                                 <div id="category" class="collapse show">
                                     <ul class="collapse-body filter-group-check group-category">
-                                        @foreach($allCategories as $cat)
+                                       @foreach($allsabCategories as $cat)
                                             <li class="list-item">
-                                                <a href="{{ route('product.category', $cat->slug) }}" class="link h6">
-                                                    {{ $cat->category_name }}
+                                                <a href="{{ route('product.subcategory', ['category' => $category->slug, 'sabcat' => $cat->slug]) }}" class="link h6">
+                                                    {{ $cat->sab_category_name }}
                                                     <span class="count">{{ $categoryCounts[$cat->id] ?? 0 }}</span>
                                                 </a>
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {{-- Availability --}}
+                            <div class="widget-facet">
+                                <div class="facet-title" data-bs-target="#availability" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="true" aria-controls="availability">
+                                    <span class="h4 fw-semibold">Availability</span>
+                                    <span class="icon icon-caret-down fs-20"></span>
+                                </div>
+                                <div id="availability" class="collapse show">
+                                    <ul class="collapse-body filter-group-check current-scrollbar">
+                                        <li class="list-item">
+                                            <input type="radio" name="availability" class="tf-check" id="inStock">
+                                            <label for="inStock" class="label">
+                                                <span>In Stock</span>
+                                                <span class="count">{{ $inStockCount }}</span>
+                                            </label>
+                                        </li>
+                                        <li class="list-item {{ $outStockCount == 0 ? 'disabled' : '' }}">
+                                            <input type="radio" name="availability" class="tf-check" id="outStock">
+                                            <label for="outStock" class="label">
+                                                <span>Out of Stock</span>
+                                                <span class="count">{{ $outStockCount }}</span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {{-- Perfume Notes --}}
+                            <div class="widget-facet">
+                                <div class="facet-title" data-bs-target="#fragrance" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="true" aria-controls="fragrance">
+                                    <span class="h4 fw-semibold">Perfume Notes</span>
+                                    <span class="icon icon-caret-down fs-20"></span>
+                                </div>
+                                <div id="fragrance" class="collapse show">
+                                    <ul class="collapse-body filter-group-check current-scrollbar">
+                                        @foreach($fragranceTypes as $ft)
+                                            <li class="list-item {{ ($fragranceCounts[$ft->id] ?? 0) == 0 ? 'disabled' : '' }}">
+                                                <input type="radio" class="tf-check" id="fragrance_{{ $ft->id }}">
+                                                <label for="fragrance_{{ $ft->id }}" class="label">
+                                                    <span>{{ $ft->title }}</span>
+                                                    <span class="count">{{ $fragranceCounts[$ft->id] ?? 0 }}</span>
+                                                </label>
                                             </li>
                                         @endforeach
                                     </ul>
                                 </div>
                             </div>
 
-
-            {{-- Availability --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#availability" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="availability">
-                    <span class="h4 fw-semibold">Availability</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="availability" class="collapse show">
-                    <ul class="collapse-body filter-group-check current-scrollbar">
-                        <li class="list-item">
-                            <input type="radio" name="availability" class="tf-check" id="inStock">
-                            <label for="inStock" class="label">
-                                <span>In Stock</span>
-                                <span class="count">{{ $inStockCount }}</span>
-                            </label>
-                        </li>
-                        <li class="list-item">
-                            <input type="radio" name="availability" class="tf-check" id="outStock">
-                            <label for="outStock" class="label">
-                                <span>Out of Stock</span>
-                                <span class="count">{{ $outStockCount }}</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            {{-- Perfume Notes (Fragrance Types) --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#fragrance" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="fragrance">
-                    <span class="h4 fw-semibold">Perfume Notes</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="fragrance" class="collapse show">
-                    <ul class="collapse-body filter-group-check current-scrollbar">
-                        @foreach($fragranceTypes as $ft)
-                            <li class="list-item">
-                                <input type="radio" class="tf-check" id="fragrance_{{ $ft->id }}">
-                                <label for="fragrance_{{ $ft->id }}" class="label">
-                                    <span>{{ $ft->title }}</span>
-                                    <span class="count">{{ $fragranceCounts[$ft->id] ?? 0 }}</span>
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-
-            {{-- Price Range --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#price" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
-                    <span class="h4 fw-semibold">Price</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="price" class="collapse show">
-                    <div class="collapse-body widget-price filter-price">
-                        <div class="price-val-range"
-                             id="price-value-range"
-                             data-min="{{ $minPrice ?? 0 }}"
-                             data-max="{{ $maxPrice ?? 0 }}">
-                        </div>
-                        <div class="box-value-price">
-                            <span class="h6 text-main">Price:</span>
-                            <div class="price-box">
-                                <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice ?? 0 }}</div>
-                                <span>-</span>
-                                <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice ?? 0 }}</div>
+                        {{-- Price Range --}}
+                        <div class="widget-facet">
+                            <div class="facet-title" data-bs-target="#price" role="button"
+                                data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
+                                <span class="h4 fw-semibold">Price</span>
+                                <span class="icon icon-caret-down fs-20"></span>
+                            </div>
+                            <div id="price" class="collapse show">
+                                <div class="collapse-body widget-price filter-price">
+                                    <div class="price-val-range"
+                                        id="price-value-range"
+                                        data-min="{{ $minPrice ?? 0 }}"
+                                        data-max="{{ $maxPrice ?? 0 }}">
+                                    </div>
+                                    <div class="box-value-price">
+                                        <span class="h6 text-main">Price:</span>
+                                        <div class="price-box">
+                                            <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice ?? 0 }}</div>
+                                            <span>-</span>
+                                            <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice ?? 0 }}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-        </div>
 
-        <div class="canvas-bottom d-xl-none">
-            <button id="reset-filter" class="tf-btn btn-reset">Reset Filters</button>
-        </div>
-    </div>
-</div>
+                            </div>
 
+                            <div class="canvas-bottom d-xl-none">
+                                <button id="reset-filter" class="tf-btn btn-reset">Reset Filters</button>
+                            </div>
+                        </div>
+
+                        </div>
                     </div>
                     <div class="col-xl-9">
                         <div class="tf-shop-control">
@@ -322,21 +322,17 @@
                                 </div>
                             </div>
                             <div class="wrapper-shop tf-grid-layout tf-col-3" id="gridLayout">
-                                <!-- Product 1 -->
-                               @foreach($products as $product)
+                               {{-- Subcategory Products Loop --}}
+@foreach($products as $product)
     @php
-        // Decode images JSON and get the first image
         $images = json_decode($product->images, true);
         $firstImage = !empty($images) ? $images[0] : 'default.png';
 
-        // Fetch subcategory for this product
-        $sabcategory = \App\Models\SabCategoryDetails::find($product->sub_category_id);
-
-        // Create product detail URL (with category + subcategory + product slug)
+        // Generate URL with category + subcategory slug
         $productUrl = route('product.details', [
-            'cat' => $category->slug,          // category slug from controller
-            'sabcat' => $sabcategory->slug,    // subcategory slug
-            'slug' => $product->slug           // product slug
+            'cat' => $category->slug,
+            'sabcat' => $sabcategory->slug,
+            'slug' => $product->slug
         ]);
     @endphp
 
@@ -351,18 +347,17 @@
                     alt="{{ $product->product_name }}">
             </a>
             <ul class="product-action_list">
-                <li>
-                    <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit" class="hover-tooltip tooltip-left box-icon">
-                            <span class="icon icon-shopping-cart-simple"></span>
-                            <span class="tooltip">Add to cart</span>
-                        </button>
-                    </form>
+                 <li>
+                <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <button type="submit" class="hover-tooltip tooltip-left box-icon">
+                        <span class="icon icon-shopping-cart-simple"></span>
+                        <span class="tooltip">Add to cart</span>
+                    </button>
+                </form>
                 </li>
-
-                 <li class="wishlist">
+                <li class="wishlist">
     @php
         $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id() ?? 0)
                                              ->where('product_id', $product->id)
@@ -379,8 +374,6 @@
         </button>
     </form>
 </li>
-
-
                 <li>
                     <a href="#quickView" data-bs-toggle="modal"
                         class="hover-tooltip tooltip-left box-icon">
@@ -389,11 +382,16 @@
                     </a>
                 </li>
             </ul>
-        </div>
-        <div class="card-product_info">
-            <a href="{{ $productUrl }}"
-                class="name-product h4 link">{{ $product->product_name }}</a>
 
+            @if($product->is_new ?? false)
+                <ul class="product-badge_list">
+                    <li class="product-badge_item h6 new">New arrival</li>
+                </ul>
+            @endif
+        </div>
+
+        <div class="card-product_info">
+            <a href="{{ $productUrl }}" class="name-product h4 link">{{ $product->product_name }}</a>
             <div class="price-wrap">
                 @if($product->offer_price)
                     <span class="price-old h6 fw-normal">Rs.{{ number_format($product->price, 2) }}</span>
@@ -407,7 +405,7 @@
 @endforeach
 
 
-                                
+
                                 <!-- Pagination -->
                                 <div class="wd-full wg-pagination m-0 justify-content-center">
                                     <a href="#" class="pagination-item h6 direct"><i
@@ -428,7 +426,150 @@
         </div>
         <!-- /Section Product -->
         <!-- Footer -->
-       @include('components.frontend.footer')    
+        <footer class="tf-footer style-color-white style-4 bg-black">
+            <div class="footer-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-3 col-sm-6 mb_30 mb-xl-0">
+                            <div class="footer-col-block">
+                                <p class="footer-heading footer-heading-mobile">Contact us</p>
+                                <div class="tf-collapse-content">
+                                    <ul class="footer-contact">
+                                        <li>
+                                            <i class="icon icon-map-pin"></i>
+                                            <span class="br-line"></span>
+                                            <a href="https://www.google.com/maps?q=8500+Lorem+Street+Chicago,+IL+55030+Dolor+sit+amet"
+                                                target="_blank" class="h6 link">
+                                                8500 Lorem Street Chicago, IL 55030 <br class="d-none d-lg-block"> Dolor
+                                                sit amet
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon icon-phone"></i>
+                                            <span class="br-line"></span>
+                                            <a href="tel:+88001234567" class="h6 link">+8(800) 123 4567</a>
+                                        </li>
+                                        <li>
+                                            <i class="icon icon-envelope-simple"></i>
+                                            <span class="br-line"></span>
+                                            <a href="mailto:info@domainname.com"
+                                                class="h6 link">info@domainname.com</a>
+                                        </li>
+                                    </ul>
+                                    <div class="social-wrap">
+                                        <ul class="tf-social-icon style-2">
+                                            <li>
+                                                <a href="https://www.facebook.com/" target="_blank"
+                                                    class="social-facebook">
+                                                    <span class="icon"><i class="icon-fb"></i></span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.instagram.com/" target="_blank"
+                                                    class="social-instagram">
+                                                    <span class="icon"><i class="icon-instagram-logo"></i></span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="https://x.com/" target="_blank" class="social-x">
+                                                    <span class="icon"><i class="icon-x"></i></span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-sm-6 mb_30 mb-xl-0">
+                            <div class="footer-col-block footer-wrap-1 ms-xl-auto">
+                                <p class="footer-heading footer-heading-mobile">Shopping</p>
+                                <div class="tf-collapse-content">
+                                    <ul class="footer-menu-list">
+                                        <li><a href="#" class="link h6">Shipping</a></li>
+                                        <li><a href="#" class="link h6">Shop by Brand</a></li>
+                                        <li><a href="#" class="link h6">Track order</a></li>
+                                        <li><a href="#" class="link h6">Terms & Conditions</a></li>
+                                        <li><a href="#" class="link h6">My Wishlist</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-sm-6 mb_30 mb-sm-0">
+                            <div class="footer-col-block footer-wrap-2 mx-xl-auto">
+                                <p class="footer-heading footer-heading-mobile">Information</p>
+                                <div class="tf-collapse-content">
+                                    <ul class="footer-menu-list">
+                                        <li><a href="#" class="link h6">About Us</a></li>
+                                        <li><a href="#" class="link h6">Term & Policy</a></li>
+                                        <li><a href="#" class="link h6">Help Center</a></li>
+                                        <li><a href="#" class="link h6">Refunds</a></li>
+                                        <li><a href="#" class="link h6">Careers</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-sm-6">
+                            <div class="footer-col-block">
+                                <p class="footer-heading footer-heading-mobile">Let’s keep in touch</p>
+                                <div class="tf-collapse-content">
+                                    <div class="footer-newsletter">
+                                        <p class="h6 caption text-main-5">
+                                            Enter your email below to be the first to know about new collections and
+                                            product launches.
+                                        </p>
+                                        <form class="form_sub has_check" id="subscribe-form">
+                                            <div class="f-content" id="subscribe-content">
+                                                <fieldset class="col">
+                                                    <input class="style-stroke-2" id="subscribe-email" type="email"
+                                                        name="email-form" placeholder="Enter your email" required>
+                                                </fieldset>
+                                                <button id="subscribe-button" type="button"
+                                                    class="tf-btn btn-white animate-btn animate-dark type-small-2">
+                                                    Subscribe
+                                                    <i class="icon icon-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                            <div class="checkbox-wrap">
+                                                <input id="remember" type="checkbox"
+                                                    class="tf-check style-3 style-white">
+                                                <label for="remember" class="h6 text-main-5">
+                                                    By clicking subcribe, you agree to the  
+                                                    <a href="#" class="text-decoration-underline link text-main-5">Terms
+                                                        of Service</a> and <a href="#"
+                                                        class="text-decoration-underline link text-main-5">
+                                                        Privacy Policy</a>.
+                                                </label>
+                                            </div>
+                                            <div id="subscribe-msg"></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="inner-bottom">
+
+                        <p class="h6">Copyright © 2025 Signage Wellness. All rights reserved. Designed By <a
+                                class="link" href="https://www.matrixbricks.com/" target="_blank">Matrix Bricks</a></p>
+
+                        <div class="list-hor flex-wrap">
+                            <span class="h6">Payment:</span>
+                            <ul class="payment-method-list">
+                                <li><img src="images/payment/visa-2.svg" alt="Payment"></li>
+                                <li><img src="images/payment/master-card-2.svg" alt="Payment"></li>
+                                <li><img src="images/payment/amex-2.svg" alt="Payment"></li>
+                                <li><img src="images/payment/discover-2.svg" alt="Payment"></li>
+                                <li><img src="images/payment/paypal-2.svg" alt="Payment"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <!-- /Footer -->
     </div>
 
@@ -486,7 +627,7 @@
     <!-- /Mobile Menu -->
 
     <!-- Javascript -->
-    @include('components.frontend.main-js')
+       @include('components.frontend.main-js')
 <script>
     $('.add-to-cart-form').on('submit', function(e){
     e.preventDefault();
@@ -540,7 +681,6 @@ document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
     });
 });
 </script>
-
 
 </body>
 
