@@ -160,10 +160,10 @@
                     </div>
                     <div class="col-xl-9">
                         <div class="tf-shop-control">
-                            <div class="shop-sale-text d-none d-xl-flex">
+                            <!-- <div class="shop-sale-text d-none d-xl-flex">
                                 <input type="checkbox" name="sale" class="tf-check" id="sale">
                                 <label for="sale" class="label">Show only products on sale</label>
-                            </div>
+                            </div> -->
                             <div class="tf-control-filter d-xl-none">
                                 <button type="button" id="filterShop" class="tf-btn-filter">
                                     <span class="icon icon-filter"></span><span class="text">Filter</span>
@@ -323,59 +323,60 @@
                             </div>
                             <div class="wrapper-shop tf-grid-layout tf-col-3" id="gridLayout">
                                {{-- Subcategory Products Loop --}}
-@foreach($products as $product)
-    @php
-        $images = json_decode($product->images, true);
-        $firstImage = !empty($images) ? $images[0] : 'default.png';
+                    @foreach($products as $product)
+                        @php
+                            $images = json_decode($product->images, true);
+                            $firstImage = !empty($images) ? $images[0] : 'default.png';
 
-        // Generate URL with category + subcategory slug
-        $productUrl = route('product.details', [
-            'cat' => $category->slug,
-            'sabcat' => $sabcategory->slug,
-            'slug' => $product->slug
-        ]);
-    @endphp
+                            // Generate URL with category + subcategory slug
+                            $productUrl = route('product.details', [
+                                'cat' => $category->slug,
+                                'sabcat' => $sabcategory->slug,
+                                'slug' => $product->slug
+                            ]);
+                        @endphp
 
-    <div class="card-product grid">
-        <div class="card-product_wrapper">
-            <a href="{{ $productUrl }}" class="product-img">
-                <img class="lazyload img-product"
-                    src="{{ asset('signage/home/productimage/' . $firstImage) }}"
-                    alt="{{ $product->product_name }}">
-                <img class="lazyload img-hover"
-                    src="{{ asset('signage/home/productimage/' . $firstImage) }}"
-                    alt="{{ $product->product_name }}">
-            </a>
-            <ul class="product-action_list">
-                 <li>
-                <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" class="hover-tooltip tooltip-left box-icon">
-                        <span class="icon icon-shopping-cart-simple"></span>
-                        <span class="tooltip">Add to cart</span>
-                    </button>
-                </form>
+                        <div class="card-product grid">
+                            <div class="card-product_wrapper">
+                                <a href="{{ $productUrl }}" class="product-img">
+                                    <img class="lazyload img-product"
+                                        src="{{ asset('signage/home/productimage/' . $firstImage) }}"
+                                        alt="{{ $product->product_name }}">
+                                    <img class="lazyload img-hover"
+                                        src="{{ asset('signage/home/productimage/' . $firstImage) }}"
+                                        alt="{{ $product->product_name }}">
+                                </a>
+                                <ul class="product-action_list">
+                                    <li>
+                        <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <button type="submit" class="hover-tooltip tooltip-left box-icon">
+                                <span class="icon icon-shopping-cart-simple"></span>
+                                <span class="tooltip">Add to cart</span>
+                            </button>
+                        </form>
+                        
+                    </li>
+                 <li class="wishlist">
+                    @php
+                        $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id() ?? 0)
+                                                            ->where('product_id', $product->id)
+                                                            ->exists();
+                    @endphp
+
+                    <form class="add-to-wishlist-form" data-product="{{ $product->id }}">
+                        @csrf
+                        <button type="button" class="hover-tooltip tooltip-left box-icon wishlist-btn">
+                            <span class="icon wishlist-icon {{ $isInWishlist ? 'icon-trash' : 'icon-heart' }}"></span>
+                            <span class="tooltip">
+                                {{ $isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+                            </span>
+                        </button>
+                    </form>
                 </li>
-                <li class="wishlist">
-    @php
-        $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id() ?? 0)
-                                             ->where('product_id', $product->id)
-                                             ->exists();
-    @endphp
-
-    <form class="add-to-wishlist-form" data-product="{{ $product->id }}">
-        @csrf
-        <button type="button" class="hover-tooltip tooltip-left box-icon wishlist-btn">
-            <span class="icon {{ $isInWishlist ? 'icon-heart-filled' : 'icon-heart' }}"></span>
-            <span class="tooltip">
-                {{ $isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}
-            </span>
-        </button>
-    </form>
-</li>
                 <li>
-                    <a href="#quickView" data-bs-toggle="modal"
+                    <a href="{{ $productUrl }}" data-bs-toggle="modal"
                         class="hover-tooltip tooltip-left box-icon">
                         <span class="icon icon-view"></span>
                         <span class="tooltip">Quick view</span>
@@ -426,150 +427,8 @@
         </div>
         <!-- /Section Product -->
         <!-- Footer -->
-        <footer class="tf-footer style-color-white style-4 bg-black">
-            <div class="footer-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-3 col-sm-6 mb_30 mb-xl-0">
-                            <div class="footer-col-block">
-                                <p class="footer-heading footer-heading-mobile">Contact us</p>
-                                <div class="tf-collapse-content">
-                                    <ul class="footer-contact">
-                                        <li>
-                                            <i class="icon icon-map-pin"></i>
-                                            <span class="br-line"></span>
-                                            <a href="https://www.google.com/maps?q=8500+Lorem+Street+Chicago,+IL+55030+Dolor+sit+amet"
-                                                target="_blank" class="h6 link">
-                                                8500 Lorem Street Chicago, IL 55030 <br class="d-none d-lg-block"> Dolor
-                                                sit amet
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <i class="icon icon-phone"></i>
-                                            <span class="br-line"></span>
-                                            <a href="tel:+88001234567" class="h6 link">+8(800) 123 4567</a>
-                                        </li>
-                                        <li>
-                                            <i class="icon icon-envelope-simple"></i>
-                                            <span class="br-line"></span>
-                                            <a href="mailto:info@domainname.com"
-                                                class="h6 link">info@domainname.com</a>
-                                        </li>
-                                    </ul>
-                                    <div class="social-wrap">
-                                        <ul class="tf-social-icon style-2">
-                                            <li>
-                                                <a href="https://www.facebook.com/" target="_blank"
-                                                    class="social-facebook">
-                                                    <span class="icon"><i class="icon-fb"></i></span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="https://www.instagram.com/" target="_blank"
-                                                    class="social-instagram">
-                                                    <span class="icon"><i class="icon-instagram-logo"></i></span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="https://x.com/" target="_blank" class="social-x">
-                                                    <span class="icon"><i class="icon-x"></i></span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-sm-6 mb_30 mb-xl-0">
-                            <div class="footer-col-block footer-wrap-1 ms-xl-auto">
-                                <p class="footer-heading footer-heading-mobile">Shopping</p>
-                                <div class="tf-collapse-content">
-                                    <ul class="footer-menu-list">
-                                        <li><a href="#" class="link h6">Shipping</a></li>
-                                        <li><a href="#" class="link h6">Shop by Brand</a></li>
-                                        <li><a href="#" class="link h6">Track order</a></li>
-                                        <li><a href="#" class="link h6">Terms & Conditions</a></li>
-                                        <li><a href="#" class="link h6">My Wishlist</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-sm-6 mb_30 mb-sm-0">
-                            <div class="footer-col-block footer-wrap-2 mx-xl-auto">
-                                <p class="footer-heading footer-heading-mobile">Information</p>
-                                <div class="tf-collapse-content">
-                                    <ul class="footer-menu-list">
-                                        <li><a href="#" class="link h6">About Us</a></li>
-                                        <li><a href="#" class="link h6">Term & Policy</a></li>
-                                        <li><a href="#" class="link h6">Help Center</a></li>
-                                        <li><a href="#" class="link h6">Refunds</a></li>
-                                        <li><a href="#" class="link h6">Careers</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-sm-6">
-                            <div class="footer-col-block">
-                                <p class="footer-heading footer-heading-mobile">Let’s keep in touch</p>
-                                <div class="tf-collapse-content">
-                                    <div class="footer-newsletter">
-                                        <p class="h6 caption text-main-5">
-                                            Enter your email below to be the first to know about new collections and
-                                            product launches.
-                                        </p>
-                                        <form class="form_sub has_check" id="subscribe-form">
-                                            <div class="f-content" id="subscribe-content">
-                                                <fieldset class="col">
-                                                    <input class="style-stroke-2" id="subscribe-email" type="email"
-                                                        name="email-form" placeholder="Enter your email" required>
-                                                </fieldset>
-                                                <button id="subscribe-button" type="button"
-                                                    class="tf-btn btn-white animate-btn animate-dark type-small-2">
-                                                    Subscribe
-                                                    <i class="icon icon-arrow-right"></i>
-                                                </button>
-                                            </div>
-                                            <div class="checkbox-wrap">
-                                                <input id="remember" type="checkbox"
-                                                    class="tf-check style-3 style-white">
-                                                <label for="remember" class="h6 text-main-5">
-                                                    By clicking subcribe, you agree to the  
-                                                    <a href="#" class="text-decoration-underline link text-main-5">Terms
-                                                        of Service</a> and <a href="#"
-                                                        class="text-decoration-underline link text-main-5">
-                                                        Privacy Policy</a>.
-                                                </label>
-                                            </div>
-                                            <div id="subscribe-msg"></div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="inner-bottom">
+               @include('components.frontend.footer')    
 
-                        <p class="h6">Copyright © 2025 Signage Wellness. All rights reserved. Designed By <a
-                                class="link" href="https://www.matrixbricks.com/" target="_blank">Matrix Bricks</a></p>
-
-                        <div class="list-hor flex-wrap">
-                            <span class="h6">Payment:</span>
-                            <ul class="payment-method-list">
-                                <li><img src="images/payment/visa-2.svg" alt="Payment"></li>
-                                <li><img src="images/payment/master-card-2.svg" alt="Payment"></li>
-                                <li><img src="images/payment/amex-2.svg" alt="Payment"></li>
-                                <li><img src="images/payment/discover-2.svg" alt="Payment"></li>
-                                <li><img src="images/payment/paypal-2.svg" alt="Payment"></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
         <!-- /Footer -->
     </div>
 
@@ -629,58 +488,82 @@
     <!-- Javascript -->
        @include('components.frontend.main-js')
 <script>
+$(document).ready(function(){
     $('.add-to-cart-form').on('submit', function(e){
-    e.preventDefault();
-    let form = $(this);
-    $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        data: form.serialize(),
-        success: function(res){
-            if(res.success){
-                alert(res.message);
-                // update cart counter if needed
+        e.preventDefault();
+        let form = $(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            success: function(res){
+                if(res.success){
+                    // Show Notyf success notification
+                    notyf.open({
+                        type: 'success',
+                        message: res.message
+                    });
+
+                    // Reload page immediately
+                    location.reload();
+                } else {
+                    notyf.error(res.message || 'Something went wrong!');
+                }
+            },
+            error: function(xhr){
+                notyf.error('AJAX request failed.');
             }
+        });
+    });
+});
+</script>
+<script>
+$(document).on('click', '.wishlist-btn', function(e) {
+    e.preventDefault();
+    let form = $(this).closest('form');
+    let productId = form.data('product');
+    let token = form.find('input[name="_token"]').val();
+    let icon = form.find('.wishlist-icon');
+    let tooltip = form.find('.tooltip');
+
+    $.ajax({
+        url: "{{ route('wishlist.add') }}",
+        method: "POST",
+        data: {
+            _token: token,
+            product_id: productId
+        },
+        success: function(response) {
+            // ✅ Use Notyf instead of alert
+            if (response.status === 'added') {
+                notyf.open({
+                    type: 'success',
+                    message: response.message || "Added to wishlist"
+                });
+                icon.removeClass('icon-heart').addClass('icon-trash');
+                tooltip.text('Remove from Wishlist');
+            } else if (response.status === 'removed') {
+                notyf.error(response.message || "Removed from wishlist");
+                icon.removeClass('icon-trash').addClass('icon-heart');
+                tooltip.text('Add to Wishlist');
+            } else {
+                notyf.error(response.message || "Something went wrong");
+            }
+
+            // Update the header count dynamically
+            if (response.count !== undefined) {
+                $(".wishlist-count").text(response.count);
+            }
+        },
+        error: function() {
+            notyf.error("Something went wrong, please try again.");
         }
     });
 });
-
 </script>
-<script>
-document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
-    form.querySelector('.wishlist-btn').addEventListener('click', function() {
-        const productId = form.dataset.product;
-        const token = form.querySelector('input[name="_token"]').value;
-        const icon = this.querySelector('span.icon');
-        const tooltip = this.querySelector('span.tooltip');
 
-        fetch("{{ route('wishlist.add') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ product_id: productId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
 
-            if(data.status === 'added'){
-                icon.classList.remove('icon-heart');
-                icon.classList.add('icon-heart-filled');
-                tooltip.textContent = 'Remove from Wishlist';
-            } else {
-                icon.classList.remove('icon-heart-filled');
-                icon.classList.add('icon-heart');
-                tooltip.textContent = 'Add to Wishlist';
-            }
-        })
-        .catch(err => alert('Error processing wishlist!'));
-    });
-});
-</script>
 
 </body>
 

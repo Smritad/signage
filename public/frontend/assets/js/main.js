@@ -132,20 +132,20 @@
             updateTotalPrice();
         });
 
-        $(".list-file-delete,.each-prd").on("click", ".minus-quantity, .plus-quantity", function () {
-            var $quantityInput = $(this).siblings(".quantity-product");
-            var currentQuantity = parseInt($quantityInput.val(), 10);
+        // $(".list-file-delete,.each-prd").on("click", ".minus-quantity, .plus-quantity", function () {
+        //     var $quantityInput = $(this).siblings(".quantity-product");
+        //     var currentQuantity = parseInt($quantityInput.val(), 10);
 
-            if ($(this).hasClass("plus-quantity")) {
-                $quantityInput.val(currentQuantity + 1);
-            } else if ($(this).hasClass("minus-quantity") && currentQuantity > 1) {
-                $quantityInput.val(currentQuantity - 1);
-            }
+        //     if ($(this).hasClass("plus-quantity")) {
+        //         $quantityInput.val(currentQuantity + 1);
+        //     } else if ($(this).hasClass("minus-quantity") && currentQuantity > 1) {
+        //         $quantityInput.val(currentQuantity - 1);
+        //     }
 
-            updateTotalPrice();
-            updatePriceEach();
-            updateTotalPriceEach();
-        });
+        //     updateTotalPrice();
+        //     updatePriceEach();
+        //     updateTotalPriceEach();
+        // });
 
         $(".remove").on("click", function (e) {
             e.preventDefault();
@@ -400,19 +400,19 @@
                 quantityInput.val(1);
             });
 
-            productItem.find(".btn-increase").on("click", function () {
-                var currentQuantity = parseInt(quantityInput.val(), 10);
-                quantityInput.val(currentQuantity + 1);
-                updateTotalPrice(null, productItem);
-            });
+            // productItem.find(".btn-increase").on("click", function () {
+            //     var currentQuantity = parseInt(quantityInput.val(), 10);
+            //     quantityInput.val(currentQuantity + 1);
+            //     updateTotalPrice(null, productItem);
+            // });
 
-            productItem.find(".btn-decrease").on("click", function () {
-                var currentQuantity = parseInt(quantityInput.val(), 10);
-                if (currentQuantity > 1) {
-                    quantityInput.val(currentQuantity - 1);
-                    updateTotalPrice(null, productItem);
-                }
-            });
+            // productItem.find(".btn-decrease").on("click", function () {
+            //     var currentQuantity = parseInt(quantityInput.val(), 10);
+            //     if (currentQuantity > 1) {
+            //         quantityInput.val(currentQuantity - 1);
+            //         updateTotalPrice(null, productItem);
+            //     }
+            // });
 
             function updateTotalPrice(price, scope) {
                 var currentPrice = price || parseFloat(scope.find(".price-on-sale").text().replace("$", "").replace(/,/g, ""));

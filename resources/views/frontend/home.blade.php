@@ -167,71 +167,51 @@
                 <div class="sect-title text-center wow fadeInUp">
                     <h1 class="s-title mb-8">Product Category</h1>
                 </div>
-                <div dir="ltr" class="swiper tf-swiper" data-preview="3" data-tablet="2" data-mobile-sm="1"
-                    data-mobile="1" data-space-lg="48" data-space-md="32" data-space="12" data-pagination="1"
-                    data-pagination-sm="1" data-pagination-md="2" data-pagination-lg="3">
-                    <div class="swiper-wrapper">
-                        <!-- item 1 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft">
-                                <a href="#" class="box-image_image img-style">
-                                    <img src="{{ asset('frontend/assets/images/home-category/perfume.webp')}}"
-                                        data-src="{{ asset('frontend/assets/images/home-category/perfume.webp')}}" alt="" class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <h4 class="title">
-                                        <a href="#" class="link">
-                                            Perfumes
-                                        </a>
-                                    </h4>
-                                    <a href="#" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- item 2 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft" data-wow-delay="0.1s">
-                                <a href="#" class="box-image_image img-style">
-                                    <img src="{{ asset('frontend/assets/images/home-category/Reed-Diffusers.webp')}}"
-                                        data-src="{{ asset('frontend/assets/images/home-category/Reed-Diffusers.webp')}}" alt="" class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <h4 class="title">
-                                        <a href="#" class="link">
-                                            Reed Diffusers
-                                        </a>
-                                    </h4>
-                                    <a href="#" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- item 3 -->
-                        <div class="swiper-slide">
-                            <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft" data-wow-delay="0.2s">
-                                <a href="#" class="box-image_image img-style">
-                                    <img src="{{ asset('frontend/assets/images/home-category/Air-Freshner-Sachet.webp')}}"
-                                        data-src="{{ asset('frontend/assets/images/home-category/Air-Freshner-Sachet.webp')}}" alt=""
-                                        class="lazyload">
-                                </a>
-                                <div class="box-image_content">
-                                    <h4 class="title">
-                                        <a href="#" class="link">
-                                            Air Freshner Sachet
-                                        </a>
-                                    </h4>
-                                    <a href="#" class="tf-btn-line fw-bold letter-space-0">
-                                        Shop now
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+              @php
+use App\Models\CategoryDetails;
+
+// Fetch all categories from database
+$categories = CategoryDetails::all();
+@endphp
+
+<div dir="ltr" class="swiper tf-swiper" data-preview="3" data-tablet="2" data-mobile-sm="1"
+    data-mobile="1" data-space-lg="48" data-space-md="32" data-space="12" data-pagination="1"
+    data-pagination-sm="1" data-pagination-md="2" data-pagination-lg="3">
+    <div class="swiper-wrapper">
+        @foreach($categories as $category)
+            @php
+                // Use a default image for now
+                $imagePath = 'frontend/assets/images/home-category/Air-Freshner-Sachet.webp';
+
+                // Generate category URL dynamically
+                $categoryUrl = route('product.category', $category->slug);
+            @endphp
+
+            <div class="swiper-slide">
+                <div class="box-image_V05 type-space-2 hover-img wow fadeInLeft">
+                    <a href="{{ $categoryUrl }}" class="box-image_image img-style">
+                        <img src="{{ asset($imagePath) }}"
+                             data-src="{{ asset($imagePath) }}"
+                             alt="{{ $category->category_name }}"
+                             class="lazyload">
+                    </a>
+                    <div class="box-image_content">
+                        <h4 class="title">
+                            <a href="{{ $categoryUrl }}" class="link">
+                                {{ $category->category_name }}
+                            </a>
+                        </h4>
+                        <a href="{{ $categoryUrl }}" class="tf-btn-line fw-bold letter-space-0">
+                            Shop now
+                        </a>
                     </div>
-                    <div class="sw-dot-default tf-sw-pagination"></div>
                 </div>
+            </div>
+        @endforeach
+    </div>
+    <div class="sw-dot-default tf-sw-pagination"></div>
+</div>
+
             </div>
         </div>
         <!-- /Box Image -->
@@ -239,7 +219,7 @@
         <section class="themesFlat">
             <div class="container">
                 <div class="sect-title text-center wow fadeInUp">
-                    <h1 class="title mb-8">Shop by Notes</h1>
+                    <h1 class="title mb-8">Shop by Fragrance</h1>
                 </div>
                 <div dir="ltr" class="swiper tf-swiper wow fadeInUp" data-preview="7" data-tablet="4" data-mobile-sm="3"
                     data-mobile="2" data-space-lg="48" data-space-md="32" data-space="12" data-pagination="2"

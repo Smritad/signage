@@ -2145,6 +2145,28 @@ ul.box-nav-menu {}
   align-items: center;
   justify-content: center;
 }
+
+.nav-icon-item {
+    position: relative; /* Needed for absolute positioning of count */
+}
+
+.nav-icon-item .wishlist-count {
+  width: 24px;
+  height: 24px;
+  display: flex;           /* flex to center number */
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ab924a;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: #fff;
+  position: absolute;
+  top: -8px;  /* adjust as needed */
+  right: -8px; /* adjust as needed */
+}
+
 @media (min-width: 768px) {
   .nav-icon-list .shop-cart {
     margin-right: 12px;
@@ -2164,7 +2186,55 @@ ul.box-nav-menu {}
     font-weight: normal;
   }
 }
-
+.nav-item.dropdown {
+  position: relative;
+}
+ 
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+ 
+.dropdown-menu li {
+  list-style: none;
+}
+ 
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+ 
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+ 
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+ 
+.nav-icon-list .dropdown-toggle::after{
+  display: none;
+}
+/* .nav-icon-item .icon-caret-down{
+   font-size: 14px;
+} */
+ 
+.login-sec li{
+  font-size: 16px;
+}
+.login-sec li a {
+    font-size: 19px;
+}
 .nav-icon-item {
   display: flex;
 }

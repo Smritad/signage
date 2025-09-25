@@ -74,88 +74,88 @@
                             </div>
 
 
-            {{-- Availability --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#availability" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="availability">
-                    <span class="h4 fw-semibold">Availability</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="availability" class="collapse show">
-                    <ul class="collapse-body filter-group-check current-scrollbar">
-                        <li class="list-item">
-                            <input type="radio" name="availability" class="tf-check" id="inStock">
-                            <label for="inStock" class="label">
-                                <span>In Stock</span>
-                                <span class="count">{{ $inStockCount }}</span>
-                            </label>
-                        </li>
-                        <li class="list-item">
-                            <input type="radio" name="availability" class="tf-check" id="outStock">
-                            <label for="outStock" class="label">
-                                <span>Out of Stock</span>
-                                <span class="count">{{ $outStockCount }}</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                            {{-- Availability --}}
+                            <div class="widget-facet">
+                                <div class="facet-title" data-bs-target="#availability" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="true" aria-controls="availability">
+                                    <span class="h4 fw-semibold">Availability</span>
+                                    <span class="icon icon-caret-down fs-20"></span>
+                                </div>
+                                <div id="availability" class="collapse show">
+                                    <ul class="collapse-body filter-group-check current-scrollbar">
+                                        <li class="list-item">
+                                            <input type="radio" name="availability" class="tf-check" id="inStock">
+                                            <label for="inStock" class="label">
+                                                <span>In Stock</span>
+                                                <span class="count">{{ $inStockCount }}</span>
+                                            </label>
+                                        </li>
+                                        <li class="list-item">
+                                            <input type="radio" name="availability" class="tf-check" id="outStock">
+                                            <label for="outStock" class="label">
+                                                <span>Out of Stock</span>
+                                                <span class="count">{{ $outStockCount }}</span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
 
-            {{-- Perfume Notes (Fragrance Types) --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#fragrance" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="fragrance">
-                    <span class="h4 fw-semibold">Perfume Notes</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="fragrance" class="collapse show">
-                    <ul class="collapse-body filter-group-check current-scrollbar">
-                        @foreach($fragranceTypes as $ft)
-                            <li class="list-item">
-                                <input type="radio" class="tf-check" id="fragrance_{{ $ft->id }}">
-                                <label for="fragrance_{{ $ft->id }}" class="label">
-                                    <span>{{ $ft->title }}</span>
-                                    <span class="count">{{ $fragranceCounts[$ft->id] ?? 0 }}</span>
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
+                            {{-- Perfume Notes (Fragrance Types) --}}
+                            <div class="widget-facet">
+                                <div class="facet-title" data-bs-target="#fragrance" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="true" aria-controls="fragrance">
+                                    <span class="h4 fw-semibold">Perfume Notes</span>
+                                    <span class="icon icon-caret-down fs-20"></span>
+                                </div>
+                                <div id="fragrance" class="collapse show">
+                                    <ul class="collapse-body filter-group-check current-scrollbar">
+                                        @foreach($fragranceTypes as $ft)
+                                            <li class="list-item">
+                                                <input type="radio" class="tf-check" id="fragrance_{{ $ft->id }}">
+                                                <label for="fragrance_{{ $ft->id }}" class="label">
+                                                    <span>{{ $ft->title }}</span>
+                                                    <span class="count">{{ $fragranceCounts[$ft->id] ?? 0 }}</span>
+                                                </label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
 
-            {{-- Price Range --}}
-            <div class="widget-facet">
-                <div class="facet-title" data-bs-target="#price" role="button"
-                     data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
-                    <span class="h4 fw-semibold">Price</span>
-                    <span class="icon icon-caret-down fs-20"></span>
-                </div>
-                <div id="price" class="collapse show">
-                    <div class="collapse-body widget-price filter-price">
-                        <div class="price-val-range"
-                             id="price-value-range"
-                             data-min="{{ $minPrice ?? 0 }}"
-                             data-max="{{ $maxPrice ?? 0 }}">
-                        </div>
-                        <div class="box-value-price">
-                            <span class="h6 text-main">Price:</span>
-                            <div class="price-box">
-                                <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice ?? 0 }}</div>
-                                <span>-</span>
-                                <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice ?? 0 }}</div>
+                            {{-- Price Range --}}
+                            <div class="widget-facet">
+                                <div class="facet-title" data-bs-target="#price" role="button"
+                                    data-bs-toggle="collapse" aria-expanded="true" aria-controls="price">
+                                    <span class="h4 fw-semibold">Price</span>
+                                    <span class="icon icon-caret-down fs-20"></span>
+                                </div>
+                                <div id="price" class="collapse show">
+                                    <div class="collapse-body widget-price filter-price">
+                                        <div class="price-val-range"
+                                            id="price-value-range"
+                                            data-min="{{ $minPrice ?? 0 }}"
+                                            data-max="{{ $maxPrice ?? 0 }}">
+                                        </div>
+                                        <div class="box-value-price">
+                                            <span class="h6 text-main">Price:</span>
+                                            <div class="price-box">
+                                                <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice ?? 0 }}</div>
+                                                <span>-</span>
+                                                <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice ?? 0 }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            </div>
+
+                            <div class="canvas-bottom d-xl-none">
+                                <button id="reset-filter" class="tf-btn btn-reset">Reset Filters</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="canvas-bottom d-xl-none">
-            <button id="reset-filter" class="tf-btn btn-reset">Reset Filters</button>
-        </div>
-    </div>
-</div>
 
                     </div>
                     <div class="col-xl-9">
@@ -235,7 +235,7 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#quickView" data-bs-toggle="modal"
+                                                <a href="" data-bs-toggle="modal"
                                                     class="hover-tooltip tooltip-left box-icon">
                                                     <span class="icon icon-view"></span>
                                                     <span class="tooltip">Quick view</span>
@@ -351,28 +351,34 @@
                     alt="{{ $product->product_name }}">
             </a>
             <ul class="product-action_list">
-                <li>
-                    <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit" class="hover-tooltip tooltip-left box-icon">
-                            <span class="icon icon-shopping-cart-simple"></span>
-                            <span class="tooltip">Add to cart</span>
-                        </button>
-                    </form>
-                </li>
+               <li>
+    <form class="add-to-cart-form d-inline" method="POST" action="{{ route('cart.add') }}">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <button type="submit" class="hover-tooltip tooltip-left box-icon">
+            <span class="icon icon-shopping-cart-simple"></span>
+            <span class="tooltip">Add to cart</span>
+        </button>
+    </form>
+</li>
+
+<!-- Optional cart count badge somewhere in header -->
+<!-- <span id="cart-count"></span> -->
+
+
+
 
                  <li class="wishlist">
     @php
         $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id() ?? 0)
-                                             ->where('product_id', $product->id)
-                                             ->exists();
+                                            ->where('product_id', $product->id)
+                                            ->exists();
     @endphp
 
     <form class="add-to-wishlist-form" data-product="{{ $product->id }}">
         @csrf
         <button type="button" class="hover-tooltip tooltip-left box-icon wishlist-btn">
-            <span class="icon {{ $isInWishlist ? 'icon-heart-filled' : 'icon-heart' }}"></span>
+            <span class="icon wishlist-icon {{ $isInWishlist ? 'icon-trash' : 'icon-heart' }}"></span>
             <span class="tooltip">
                 {{ $isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}
             </span>
@@ -381,8 +387,10 @@
 </li>
 
 
+
+
                 <li>
-                    <a href="#quickView" data-bs-toggle="modal"
+                    <a href="{{ $productUrl }}"
                         class="hover-tooltip tooltip-left box-icon">
                         <span class="icon icon-view"></span>
                         <span class="tooltip">Quick view</span>
@@ -488,58 +496,84 @@
     <!-- Javascript -->
     @include('components.frontend.main-js')
 <script>
+$(document).ready(function(){
     $('.add-to-cart-form').on('submit', function(e){
-    e.preventDefault();
-    let form = $(this);
-    $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        data: form.serialize(),
-        success: function(res){
-            if(res.success){
-                alert(res.message);
-                // update cart counter if needed
+        e.preventDefault();
+        let form = $(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            success: function(res){
+                if(res.success){
+                    // Show Notyf success notification
+                    notyf.open({
+                        type: 'success',
+                        message: res.message
+                    });
+
+                    // Reload page immediately
+                    location.reload();
+                } else {
+                    notyf.error(res.message || 'Something went wrong!');
+                }
+            },
+            error: function(xhr){
+                notyf.error('AJAX request failed.');
             }
+        });
+    });
+});
+</script>
+
+
+<script>
+$(document).on('click', '.wishlist-btn', function(e) {
+    e.preventDefault();
+    let form = $(this).closest('form');
+    let productId = form.data('product');
+    let token = form.find('input[name="_token"]').val();
+    let icon = form.find('.wishlist-icon');
+    let tooltip = form.find('.tooltip');
+
+    $.ajax({
+        url: "{{ route('wishlist.add') }}",
+        method: "POST",
+        data: {
+            _token: token,
+            product_id: productId
+        },
+        success: function(response) {
+            // ✅ Use Notyf instead of alert
+            if (response.status === 'added') {
+                notyf.open({
+                    type: 'success',
+                    message: response.message || "Added to wishlist"
+                });
+                icon.removeClass('icon-heart').addClass('icon-trash');
+                tooltip.text('Remove from Wishlist');
+            } else if (response.status === 'removed') {
+                notyf.error(response.message || "Removed from wishlist");
+                icon.removeClass('icon-trash').addClass('icon-heart');
+                tooltip.text('Add to Wishlist');
+            } else {
+                notyf.error(response.message || "Something went wrong");
+            }
+
+            // Update the header count dynamically
+            if (response.count !== undefined) {
+                $(".wishlist-count").text(response.count);
+            }
+        },
+        error: function() {
+            notyf.error("Something went wrong, please try again.");
         }
     });
 });
-
 </script>
-<script>
-document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
-    form.querySelector('.wishlist-btn').addEventListener('click', function() {
-        const productId = form.dataset.product;
-        const token = form.querySelector('input[name="_token"]').value;
-        const icon = this.querySelector('span.icon');
-        const tooltip = this.querySelector('span.tooltip');
 
-        fetch("{{ route('wishlist.add') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ product_id: productId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
 
-            if(data.status === 'added'){
-                icon.classList.remove('icon-heart');
-                icon.classList.add('icon-heart-filled');
-                tooltip.textContent = 'Remove from Wishlist';
-            } else {
-                icon.classList.remove('icon-heart-filled');
-                icon.classList.add('icon-heart');
-                tooltip.textContent = 'Add to Wishlist';
-            }
-        })
-        .catch(err => alert('Error processing wishlist!'));
-    });
-});
-</script>
 
 
 </body>

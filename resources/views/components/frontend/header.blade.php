@@ -1,3 +1,4 @@
+ 
  <header class="tf-header header-fix header-abs-1">
             <div class="container">
                 <div class="row align-items-center">
@@ -11,78 +12,133 @@
                             <img src="{{ asset('frontend/assets/images/logo/logo.webp')}}" alt="Logo">
                         </a>
                     </div>
-                         @php
-use App\Models\CategoryDetails;
-use App\Models\SabCategoryDetails;
-use App\Models\ProductsDetails;
+                                            @php
+                    use App\Models\CategoryDetails;
+                    use App\Models\SabCategoryDetails;
+                    use App\Models\ProductsDetails;
 
-// Fetch all master categories
-$masterCategories = CategoryDetails::all();
-@endphp
+                    // Fetch all master categories
+                    $masterCategories = CategoryDetails::all();
+                    @endphp
 
-<div class="col-xl-6 d-none d-xl-block">
-    <nav class="box-navigation">
-        <ul class="box-nav-menu">
-            @foreach($masterCategories as $master)
-                @php
-                    // Check if master category has products
-                    $masterHasProducts = ProductsDetails::where('category_id', $master->id)->exists();
-
-                    // Get subcategories for this master
-                    $subCategories = SabCategoryDetails::where('category_id', $master->id)->get();
-                @endphp
-
-                <li class="menu-item position-relative">
-                    <a href="{{ $masterHasProducts ? route('product.category', $master->slug) : route('coming.soon') }}" class="item-link">
-                        {{ $master->category_name }}
-                        @if($subCategories->count() > 0)
-                            <i class="icon icon-caret-down"></i>
-                        @endif
-                    </a>
-
-                    @if($subCategories->count() > 0)
-                        <div class="sub-menu">
-                            <ul class="sub-menu_list">
-                                @foreach($subCategories as $sub)
+                    <div class="col-xl-6 d-none d-xl-block">
+                        <nav class="box-navigation">
+                            <ul class="box-nav-menu">
+                                @foreach($masterCategories as $master)
                                     @php
-                                        // Check if subcategory has products
-                                        $subHasProducts = ProductsDetails::where('sub_category_id', $sub->id)->exists();
+                                        // Check if master category has products
+                                        $masterHasProducts = ProductsDetails::where('category_id', $master->id)->exists();
+
+                                        // Get subcategories for this master
+                                        $subCategories = SabCategoryDetails::where('category_id', $master->id)->get();
                                     @endphp
-                                    <li>
-                                        <a href="{{ $subHasProducts ? route('product.subcategory', ['category' => $master->slug, 'sabcat' => $sub->slug]) : route('coming.soon') }}" class="sub-menu_link">
-                                            {{ $sub->sab_category_name }}
+
+                                    <li class="menu-item position-relative">
+                                        <a href="{{ $masterHasProducts ? route('product.category', $master->slug) : route('coming.soon') }}" class="item-link">
+                                            {{ $master->category_name }}
+                                            @if($subCategories->count() > 0)
+                                                <i class="icon icon-caret-down"></i>
+                                            @endif
                                         </a>
+
+                                        @if($subCategories->count() > 0)
+                                            <div class="sub-menu">
+                                                <ul class="sub-menu_list">
+                                                    @foreach($subCategories as $sub)
+                                                        @php
+                                                            // Check if subcategory has products
+                                                            $subHasProducts = ProductsDetails::where('sub_category_id', $sub->id)->exists();
+                                                        @endphp
+                                                        <li>
+                                                            <a href="{{ $subHasProducts ? route('product.subcategory', ['category' => $master->slug, 'sabcat' => $sub->slug]) : route('coming.soon') }}" class="sub-menu_link">
+                                                                {{ $sub->sab_category_name }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
-                        </div>
-                    @endif
-                </li>
-            @endforeach
-        </ul>
-    </nav>
-</div>
+                        </nav>
+                    </div>
 
 
                     <div class="col-xl-3 col-md-4 col-3">
                         <ul class="nav-icon-list">
-                            <li class="d-none d-lg-flex">
-                                <a class="nav-icon-item link" href="#"><i class="icon icon-user"></i></a>
-                            </li>
+                            <li class="nav-item dropdown d-none d-lg-flex">
+                                <!-- Trigger -->
+                                <a class="nav-icon-item icon link dropdown-toggle" href="#" id="userDropdown">
+                                    <i class="icon icon-user"></i> <i class="icon icon-caret-down"></i>
+                                </a>
+                                
+                                <!-- Dropdown Content -->
+                               <!-- Dropdown Content -->
+                               <ul class="dropdown-menu login-sec" aria-labelledby="userDropdown" id="header-login-sec">
+    @auth('custom')
+        <li>
+            <span class="dropdown-item">
+                Welcome, {{ explode('@', Auth::guard('custom')->user()->email)[0] }}
+            </span>
+        </li>
+        <li><a class="dropdown-item" href="">My Account</a></li>
+        <li>
+            <a class="dropdown-item" href="{{ route('user.logout') }}"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+               Logout
+            </a>
+        </li>
+        <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+    @else
+        <li><a class="dropdown-item" href="{{ route('user.login') }}">Login</a></li>
+        <li><a class="dropdown-item" href="{{ route('user.registration') }}">Register</a></li>
+    @endauth
+</ul>
+
+                                </li>
                             <li class="d-none d-md-flex">
                                 <a class="nav-icon-item link" href="#" data-bs-toggle="modal">
                                     <i class="icon icon-magnifying-glass"></i>
                                 </a>
                             </li>
-                            <li class="d-none d-sm-flex">
-                                <a class="nav-icon-item link" href="#"><i class="icon icon-heart"></i></a>
-                            </li>
-                            <li class="shop-cart" data-bs-toggle="offcanvas" data-bs-target="#shoppingCart">
-                                <a class="nav-icon-item link" href="#" data-bs-toggle="offcanvas">
-                                    <i class="icon icon-shopping-cart-simple"></i>
-                                </a>
-                                <span class="count">24</span>
-                            </li>
+                           <!-- Wishlist -->
+                        <li class="d-none d-sm-flex position-relative">
+                            <a class="nav-icon-item link" href="{{ route('wishlist.index') }}">
+                                <i class="icon icon-heart"></i>
+                                <span class="wishlist-count">
+                                    @if(Auth::guard('custom')->check())
+                                        {{ \App\Models\Wishlist::where('user_id', Auth::guard('custom')->id())->count() }}
+                                    @else
+                                        {{ \App\Models\Wishlist::where('session_id', session()->getId())->count() }}
+                                    @endif
+                                </span>
+                            </a>
+                        </li>
+
+                       @php
+                                if(Auth::guard('custom')->check()) {
+                                    $userId = Auth::guard('custom')->id();
+                                    $cartCount = \App\Models\Cart::where('user_id', $userId)->count();
+                                } else {
+                                    $sessionId = session()->getId();
+                                    $cartCount = \App\Models\Cart::where('session_id', $sessionId)->count();
+                                }
+                                @endphp
+
+                                <li class="shop-cart">
+                                    <a class="nav-icon-item link" href="{{ route('cart.index') }}">
+                                        <i class="icon icon-shopping-cart-simple"></i>
+                                        <span class="count cart-count">{{ $cartCount }}</span>
+                                    </a>
+                                </li>
+
+
+
+
+
                         </ul>
                     </div>
                 </div>

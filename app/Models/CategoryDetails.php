@@ -14,6 +14,7 @@ class CategoryDetails extends Model
 
     protected $fillable = [
         'category_name',
+        'category_image',
         'slug',
         'created_by',
         'updated_by',
@@ -25,4 +26,11 @@ class CategoryDetails extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    // In CategoryDetails.php
+public function products()
+{
+    return $this->hasMany(\App\Models\ProductsDetails::class, 'category_id', 'id');
+}
+
 }

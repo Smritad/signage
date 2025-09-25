@@ -180,23 +180,42 @@
                                     <div class="tf-product-total-quantity">
                                         <div class="group-btn">
                                             <div class="wg-quantity">
-                                                <button class="btn-quantity btn-decrease">
+                                                <button class="btn-quantity btn-decrease" type="button">
                                                     <i class="icon icon-minus"></i>
                                                 </button>
                                                 <input class="quantity-product" type="text" name="number" value="1">
-                                                <button class="btn-quantity btn-increase">
+                                                <button class="btn-quantity btn-increase" type="button">
                                                     <i class="icon icon-plus"></i>
                                                 </button>
                                             </div>
-                                            <a href="#shoppingCart" data-bs-toggle="offcanvas"
-                                                class="tf-btn animate-btn btn-add-to-cart">
-                                                ADD TO CART
-                                                <i class="icon icon-shopping-cart-simple"></i>
+
+                                            <a href="javascript:void(0);" 
+                                            class="tf-btn animate-btn btn-add-to-cart"
+                                            data-product-id="{{ $product->id }}">
+                                            ADD TO CART
+                                            <i class="icon icon-shopping-cart-simple"></i>
                                             </a>
-                                            <button type="button" class="hover-tooltip box-icon btn-add-wishlist">
-                                                <span class="icon icon-heart"></span>
-                                                <span class="tooltip">Add to Wishlist</span>
-                                            </button>
+                                        @php
+                                            if(Auth::guard('custom')->check()) {
+                                                $userId = Auth::guard('custom')->id();
+                                                $isInWishlist = \App\Models\Wishlist::where('user_id', $userId)
+                                                                                    ->where('product_id', $product->id)
+                                                                                    ->exists();
+                                            } else {
+                                                $sessionId = session()->getId();
+                                                $isInWishlist = \App\Models\Wishlist::where('session_id', $sessionId)
+                                                                                    ->where('product_id', $product->id)
+                                                                                    ->exists();
+                                            }
+                                        @endphp
+
+                                        <button type="button" class="hover-tooltip box-icon btn-add-wishlist" 
+                                                data-product="{{ $product->id }}">
+                                            <span class="icon {{ $isInWishlist ? 'icon-heart-filled text-danger' : 'icon-heart' }}"></span>
+                                            <span class="tooltip">{{ $isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}</span>
+                                        </button>
+
+                                         
                                         </div>
                                     </div>
                                     <div class="tf-product-delivery-return">
@@ -418,8 +437,7 @@
         </div>
     </div>
 </section>
-
-        <!-- /Product Description -->
+       <!-- /Product Description -->
         <!-- Related -->
         <section class="flat-spacing-3 pt-0">
     <div class="container">
@@ -435,16 +453,16 @@
                             <div class="card-product_wrapper">
                                 <a href="{{ route('product.details', [$category->slug, $subcategory->slug, $related->slug]) }}" class="product-img">
                                   @php
-    $productImages = json_decode($related->images, true);
-@endphp
+                                    $productImages = json_decode($related->images, true);
+                                @endphp
 
-<img class="lazyload img-product" 
-     src="{{ asset('signage/home/productimage/' . ($productImages[0] ?? 'default.png')) }}" 
-     alt="{{ $related->name }}">
+                                <img class="lazyload img-product" 
+                                    src="{{ asset('signage/home/productimage/' . ($productImages[0] ?? 'default.png')) }}" 
+                                    alt="{{ $related->name }}">
 
-<img class="lazyload img-hover" 
-     src="{{ asset('signage/home/productimage/' . ($productImages[1] ?? $productImages[0] ?? 'default.png')) }}" 
-     alt="{{ $related->name }}">
+                                <img class="lazyload img-hover" 
+                                    src="{{ asset('signage/home/productimage/' . ($productImages[1] ?? $productImages[0] ?? 'default.png')) }}" 
+                                    alt="{{ $related->name }}">
 
 
                                 </a>
@@ -461,12 +479,27 @@
                                             <span class="tooltip">Add to Wishlist</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="#quickView" data-bs-toggle="modal" class="hover-tooltip tooltip-left box-icon">
-                                            <span class="icon icon-view"></span>
-                                            <span class="tooltip">Quick view</span>
-                                        </a>
-                                    </li>
+                                    @foreach($relatedProducts as $product)
+    @php
+        // Decode images JSON
+        $images = json_decode($product->images, true);
+        $firstImage = !empty($images) ? $images[0] : 'default.png';
+
+        // Generate product URL using category + subcategory + product slug
+        $productUrl = route('product.details', [
+            'cat' => $category->slug ?? 'category',
+            'sabcat' => $subcategory->slug ?? 'subcategory', // <-- use 'sabcat' to match route
+            'slug' => $product->slug
+        ]);
+    @endphp
+    <li>
+        <a href="{{ $productUrl }}" class="hover-tooltip tooltip-left box-icon">
+            <span class="icon icon-view"></span>
+            <span class="tooltip">Quick view</span>
+        </a>
+    </li>
+@endforeach
+
                                 </ul>
                                 @if($related->is_hot ?? false)
                                     <ul class="product-badge_list">
@@ -601,7 +634,109 @@
     <!-- /Toolbar -->
     <!-- Javascript -->
             @include('components.frontend.main-js')
+<script>
+$(document).ready(function(){
 
+    // Initialize Notyf instance
+    const notyf = new Notyf({
+        duration: 3000,
+        position: { x: 'right', y: 'top' },
+        dismissible: true
+    });
+
+    $(document).on('click', '.btn-add-wishlist', function(e){
+        e.preventDefault();
+
+        let btn = $(this);
+        let productId = btn.data('product');
+        let icon = btn.find('.icon');
+        let tooltip = btn.find('.tooltip');
+
+        $.ajax({
+            url: "{{ route('wishlist.add') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                product_id: productId
+            },
+            success: function(response){
+                if(response.status === 'added'){
+                    icon.removeClass('icon-heart').addClass('icon-heart-filled text-danger'); // filled red
+                    tooltip.text('Remove from Wishlist');
+                    notyf.success(response.message || 'Added to wishlist');
+                } else if(response.status === 'removed'){
+                    icon.removeClass('icon-heart-filled text-danger').addClass('icon-heart'); // empty heart
+                    tooltip.text('Add to Wishlist');
+                    notyf.success(response.message || 'Removed from wishlist');
+                } else {
+                    notyf.error(response.message || 'Something went wrong');
+                }
+
+                // Update wishlist count in header
+                if(response.count !== undefined){
+                    $(".wishlist-count").text(response.count);
+                }
+            },
+            error: function(xhr){
+                console.error(xhr.responseText);
+                notyf.error('Something went wrong. Please try again.');
+            }
+        });
+    });
+});
+</script>
+
+<script>
+$(document).ready(function(){
+
+    // Increment quantity
+    $(document).on('click', '.btn-increase', function(){
+        let input = $(this).siblings('.quantity-product');
+        let val = parseInt(input.val()) || 1;
+        input.val(val + 1);
+    });
+
+    // Decrement quantity
+    $(document).on('click', '.btn-decrease', function(){
+        let input = $(this).siblings('.quantity-product');
+        let val = parseInt(input.val()) || 1;
+        input.val(Math.max(val - 1, 1));
+    });
+
+    // Add to Cart and redirect to cart page
+    $(document).on('click', '.btn-add-to-cart', function(){
+        let productId = $(this).data('product-id');
+        let quantity = parseInt($('.quantity-product').val()) || 1;
+
+        fetch("{{ route('cart.add') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({ product_id: productId, quantity: quantity })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                // Update header cart count (optional)
+                $('.cart-count').text(data.cart_count);
+
+                // Redirect to cart page
+                window.location.href = "{{ route('cart.index') }}";
+            } else {
+                notyf.error(data.message || 'Failed to add.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            notyf.error('Something went wrong.');
+        });
+    });
+
+});
+</script> 
     
 </body>
 </html>
