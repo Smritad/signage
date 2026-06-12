@@ -1,0 +1,29 @@
+
+
+        .product-discount-badge {
+            position: absolute; bottom: 15px; right: 15px;
+            background: #dc3545; color: #fff; font-size: 13px; font-weight: 700;
+            padding: 5px 10px; border-radius: 4px; z-index: 10;
+            letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .card-product_wrapper { position: relative; }
+
+
+        /* ═══ Rating display on cards ═══ */
+        .card-rating-row {
+            display: flex; align-items: center; gap: 6px;
+            margin: 6px 0 4px 0; font-size: 13px; color: #333;
+        }
+        .card-rating-row .star-icon { color: #f5a623; font-size: 14px; }
+        .card-rating-row .verified-check {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: #1e88e5; color: #fff; font-size: 9px; font-weight: 700;
+        }
+        .card-rating-row .review-count { color: #666; font-size: 12px; }
+        .card-rating-row .divider { color: #ccc; margin: 0 2px; }
+        .card-rating-row.no-reviews { color: #999; font-size: 12px; }
+
+
+        
+

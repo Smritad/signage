@@ -47,29 +47,41 @@
                             <div class="col-12">
                             <div class="tab-content" id="wizard-tabContent">
                                 <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                 <form action="{{ route('sab-category-details.update', $subcategory->id) }}" method="POST">
-                                      @csrf @method('PUT')
-                                      <div class="mb-3">
-                                          <label>Category</label>
-                                          <select name="category_id" class="form-control" required>
-                                              @foreach($categories as $cat)
-                                                  <option value="{{ $cat->id }}" {{ $subcategory->category_id == $cat->id ? 'selected' : '' }}>
-                                                      {{ $cat->category_name }}
-                                                  </option>
-                                              @endforeach
-                                          </select>
-                                          @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
-                                      </div>
-
-                                      <div class="mb-3">
-                                          <label>Sab Category Name</label>
-                                          <input type="text" name="sab_category_name" class="form-control" value="{{ $subcategory->sab_category_name }}" required>
-                                          @error('sab_category_name') <small class="text-danger">{{ $message }}</small> @enderror
-                                      </div>
-
-                                      <button type="submit" class="btn btn-primary">Update</button>
-                                      <a href="{{ route('sab-category-details.index') }}" class="btn btn-secondary">Cancel</a>
-                                  </form>
+                                     <form action="{{ route('sab-category-details.update', $subcategory->id) }}" method="POST">
+                                        @csrf 
+                                        @method('PUT')
+                                    
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label>Category</label>
+                                                <select name="category_id" class="form-control" required>
+                                                    @foreach($categories as $cat)
+                                                        <option value="{{ $cat->id }}" {{ $subcategory->category_id == $cat->id ? 'selected' : '' }}>
+                                                            {{ $cat->category_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                    
+                                                @error('category_id')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                    
+                                            <div class="col-md-6">
+                                                <label>Sab Category Name</label>
+                                                <input type="text" name="sab_category_name" class="form-control" value="{{ $subcategory->sab_category_name }}" required>
+                                    
+                                                @error('sab_category_name')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <a href="{{ route('sab-category-details.index') }}" class="btn btn-secondary">Cancel</a>
+                                        </div>
+                                    </form>
 
                                 </div>
                             </div>

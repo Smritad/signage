@@ -1,0 +1,34 @@
+
+.product-discount-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: #dc3545; color: #fff; font-size: 14px; font-weight: 700;
+            padding: 6px 12px; border-radius: 4px; z-index: 10;
+            letter-spacing: 0.5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .lightSlider-card, .card-product_wrapper { position: relative; }
+
+        /* ══════════ REVIEW SECTION STYLES ══════════ */
+        .review-section { background: #fff; border-radius: 8px; padding: 30px 0; }
+        .review-summary-box {
+            border: 1px solid #e5e5e5; border-radius: 8px;
+            padding: 25px; display: flex; align-items: center; gap: 30px; flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .rating-big-score {
+            flex: 0 0 auto; text-align: center; padding-right: 25px; border-right: 1px solid #e5e5e5;
+        }
+        .rating-big-score .stars { color: #f5a623; font-size: 18px; margin-bottom: 5px; }
+        .rating-big-score .score { font-size: 48px; font-weight: 700; line-height: 1; color: #222; }
+        .rating-big-score .count { color: #888; font-size: 13px; margin-top: 5px; }
+
+        .rating-distribution { flex: 1 1 300px; }
+        .dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; font-size: 13px; }
+        .dist-row .stars-mini { color: #f5a623; width: 60px; flex-shrink: 0; }
+        .dist-row .bar-wrap { flex: 1; background: #f0f0f0; height: 10px; border-radius: 5px; overflow: hidden; }
+        .dist-row .bar-fill { height: 100%; background: #f5a623; border-radius: 5px; transition: width 0.4s; }
+        .dist-row .dist-count { width: 35px; text-align: right; color: #666; }
+
+        .btn-cancel-review {
+            background: #000; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 4px; font-weight: 600; cursor: pointer;
+        }

@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
 <head>
    @include('components.frontend.head')
+  
 </head>
 
 <body>
@@ -18,16 +18,14 @@
         </div>
     </div>
     <div id="wrapper">
-                @include('components.frontend.header')
+        @include('components.frontend.header')
 
-        <!-- /Header -->
-        <!-- Page Title -->
         <section class="s-page-title">
             <div class="container">
                 <div class="content">
                     <h1 class="title-page">Register</h1>
                     <ul class="breadcrumbs-page">
-                        <li><a href="index.html" class="h6 link">Home</a></li>
+                        <li><a href="{{ route('frontend.index') }}" class="h6 link">Home</a></li>
                         <li class="d-flex"><i class="icon icon-caret-right"></i></li>
                         <li>
                             <h6 class="current-page fw-normal">Register</h6>
@@ -36,101 +34,63 @@
                 </div>
             </div>
         </section>
-        <!-- /Page Title -->
-        <!-- Login -->
+
         <section class="flat-spacing">
             <div class="container">
                 <div class="s-log">
                     <div class="col-left">
                         <h1 class="heading">Register</h1>
-                        @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
 
-@if($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                        @if($errors->any())
+                            @php
+                                $filteredErrors = array_filter($errors->all(), fn($e) => !str_contains($e, 'already registered'));
+                            @endphp
+                            @if(count($filteredErrors) > 0)
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach($filteredErrors as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        @endif
 
-                     <form class="form-login" action="{{ route('registration.store') }}" method="POST">
-                                @csrf
-                                <div class="list-ver">
-                                    <fieldset>
-                                        <input type="email" name="email" placeholder="Enter your email address *" required>
-                                    </fieldset>
-                                    <fieldset class="password-wrapper">
-                                        <input class="password-field" type="password" name="password" placeholder="Password *" required>
-                                        <span class="toggle-pass icon-show-password"></span>
-                                    </fieldset>
-                                    <fieldset class="password-wrapper">
-                                        <input class="password-field" type="password" name="password_confirmation" placeholder="Confirm password *" required>
-                                        <span class="toggle-pass icon-show-password"></span>
-                                    </fieldset>
-                                </div>
-                                <div class="orther-log list-ver">
-                                <div class="text-social">
-                                    <span class="br-line"></span>
-                                    <p class="h6 text-nowrap">Or continue with social account</p>
-                                    <span class="br-line"></span>
-                                </div>
-                                <div class="list-hor flex-wrap flex-lg-nowrap">
-                                    <a href="#" class="tf-btn style-line w-100">
-                                        <span class="icon">
-                                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <g clip-path="url(#clip0_278_6045)">
-                                                    <path
-                                                        d="M21.6696 9.08832L12.696 9.08789C12.2997 9.08789 11.9785 9.40904 11.9785 9.8053V12.672C11.9785 13.0681 12.2997 13.3894 12.6959 13.3894H17.7493C17.196 14.8254 16.1632 16.0281 14.8455 16.7922L17.0002 20.5223C20.4567 18.5233 22.5002 15.0158 22.5002 11.0894C22.5002 10.5303 22.459 10.1307 22.3766 9.68064C22.314 9.33874 22.0171 9.08832 21.6696 9.08832Z"
-                                                        fill="#167EE6" />
-                                                    <path
-                                                        d="M11.4999 17.6964C9.02689 17.6964 6.86797 16.3452 5.70846 14.3457L1.97852 16.4956C3.87666 19.7854 7.4325 22.0007 11.4999 22.0007C13.4953 22.0007 15.378 21.4635 16.9999 20.5272V20.5221L14.8452 16.792C13.8595 17.3637 12.719 17.6964 11.4999 17.6964Z"
-                                                        fill="#12B347" />
-                                                    <path
-                                                        d="M17 20.5262V20.5211L14.8452 16.791C13.8596 17.3626 12.7192 17.6954 11.5 17.6954V21.9997C13.4953 21.9997 15.3782 21.4625 17 20.5262Z"
-                                                        fill="#0F993E" />
-                                                    <path
-                                                        d="M4.80435 11.0007C4.80435 9.78177 5.13702 8.64133 5.70854 7.65576L1.9786 5.50586C1.0372 7.12264 0.5 9.00029 0.5 11.0007C0.5 13.0012 1.0372 14.8788 1.9786 16.4956L5.70854 14.3457C5.13702 13.3602 4.80435 12.2197 4.80435 11.0007Z"
-                                                        fill="#FFD500" />
-                                                    <path
-                                                        d="M11.4999 4.30435C13.1126 4.30435 14.5939 4.87738 15.7509 5.83056C16.0363 6.06568 16.4512 6.04871 16.7127 5.78725L18.7438 3.75611C19.0405 3.45946 19.0193 2.97387 18.7024 2.69895C16.7639 1.0172 14.2416 0 11.4999 0C7.4325 0 3.87666 2.21534 1.97852 5.50511L5.70846 7.65501C6.86797 5.65555 9.02689 4.30435 11.4999 4.30435Z"
-                                                        fill="#FF4B26" />
-                                                    <path
-                                                        d="M15.751 5.83056C16.0364 6.06568 16.4513 6.04871 16.7128 5.78725L18.7439 3.75611C19.0405 3.45946 19.0194 2.97387 18.7025 2.69895C16.764 1.01716 14.2417 0 11.5 0V4.30435C13.1126 4.30435 14.594 4.87738 15.751 5.83056Z"
-                                                        fill="#D93F21" />
-                                                </g>
-                                            </svg>
-                                        </span>
-                                        Sign in with Google
-                                    </a>
-                                    <a href="#" class="tf-btn style-line w-100">
-                                        <span class="icon">
-                                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <g clip-path="url(#clip0_278_6055)">
-                                                    <path
-                                                        d="M22.5 11C22.5 16.4905 18.4773 21.0414 13.2188 21.8664V14.1797H15.7818L16.2695 11H13.2188V8.93664C13.2188 8.06652 13.645 7.21875 15.0114 7.21875H16.3984V4.51172C16.3984 4.51172 15.1395 4.29688 13.9359 4.29688C11.4235 4.29688 9.78125 5.81969 9.78125 8.57656V11H6.98828V14.1797H9.78125V21.8664C4.52273 21.0414 0.5 16.4905 0.5 11C0.5 4.92508 5.42508 0 11.5 0C17.5749 0 22.5 4.92508 22.5 11Z"
-                                                        fill="#1877F2" />
-                                                    <path
-                                                        d="M15.7818 14.1797L16.2695 11H13.2188V8.9366C13.2188 8.0667 13.6449 7.21875 15.0114 7.21875H16.3984V4.51172C16.3984 4.51172 15.1396 4.29688 13.9361 4.29688C11.4235 4.29688 9.78125 5.81969 9.78125 8.57656V11H6.98828V14.1797H9.78125V21.8663C10.3413 21.9542 10.9153 22 11.5 22C12.0847 22 12.6587 21.9542 13.2188 21.8663V14.1797H15.7818Z"
-                                                        fill="white" />
-                                                </g>
-                                            </svg>
-                                        </span>
-                                        Sign in with Google
-                                    </a>
-                                </div>
+                        <form class="form-login" id="registerForm" action="{{ route('registration.store') }}" method="POST" novalidate>
+                            @csrf
+                            <div class="list-ver">
+
+                                {{-- Email --}}
+                                <fieldset>
+                                    <input type="email" id="email" name="email"
+                                        placeholder="Enter your email address *"
+                                        value="{{ old('email') }}"
+                                        required>
+                                </fieldset>
+                                <span class="js-error-msg" id="email-error"></span>
+
+                                {{-- Password --}}
+                                <fieldset class="password-wrapper">
+                                    <input class="password-field" type="password" id="password" name="password"
+                                        placeholder="Password *" required>
+                                    <span class="toggle-pass icon-show-password"></span>
+                                </fieldset>
+                                <span class="js-error-msg" id="password-error"></span>
+
+                                {{-- Confirm Password --}}
+                                <fieldset class="password-wrapper">
+                                    <input class="password-field" type="password" id="password_confirmation" name="password_confirmation"
+                                        placeholder="Confirm password *" required>
+                                    <span class="toggle-pass icon-show-password"></span>
+                                </fieldset>
+                                <span class="js-error-msg" id="confirm-error"></span>
+
                             </div>
+
                             <button type="submit" class="tf-btn animate-btn w-100">Register</button>
                         </form>
-
-
-                        
                     </div>
+
                     <div class="col-right">
                         <h1 class="heading">Have An Account</h1>
                         <p class="h6 text-sub">
@@ -143,14 +103,10 @@
                 </div>
             </div>
         </section>
-        <!-- /Login -->
-        <!-- Footer -->
-                      @include('components.frontend.footer')    
 
-        <!-- /Footer -->
+        @include('components.frontend.footer')
     </div>
 
-    <!-- Mobile Menu -->
     <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
         <span class="icon-close-popup" data-bs-dismiss="offcanvas">
             <i class="icon-close"></i>
@@ -201,11 +157,111 @@
             </div>
         </div>
     </div>
-    <!-- /Mobile Menu -->
 
-    <!-- Javascript -->
-             @include('components.frontend.main-js')
+    @include('components.frontend.main-js')
+
+    {{-- Toaster: already registered --}}
+    @if($errors->has('email') && str_contains($errors->first('email'), 'already registered'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notyf = new Notyf({
+                duration: 4000,
+                position: { x: 'right', y: 'top' },
+                types: [
+                    {
+                        type: 'custom',
+                        background: '#ab924a',
+                        icon: false,
+                    }
+                ]
+            });
+            notyf.open({ type: 'custom', message: 'This email is already registered.' });
+        });
+    </script>
+    @endif
+
+    <script>
+    (function () {
+        const form     = document.getElementById('registerForm');
+        const email    = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirm  = document.getElementById('password_confirmation');
+
+        // Global password format:
+        // Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, 1 special char (@#$%&*!)
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&*!])[A-Za-z\d@#$%&*!]{8,}$/;
+
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function clearError(id) {
+            const el = document.getElementById(id);
+            el.textContent = '';
+            el.style.display = 'none';
+        }
+
+        function validateEmail() {
+            const val = email.value.trim();
+            if (!val) {
+                showError('email-error', 'Email address is required.'); return false;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(val)) {
+                showError('email-error', 'Please enter a valid email address.'); return false;
+            }
+            clearError('email-error'); return true;
+        }
+
+        function validatePassword() {
+            const val = password.value;
+            if (!val) {
+                showError('password-error', 'Password is required.'); return false;
+            }
+            if (!passwordRegex.test(val)) {
+                showError('password-error', 'Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character (@ # $ % & * !).'); return false;
+            }
+            clearError('password-error'); return true;
+        }
+
+        function validateConfirm() {
+            const val = confirm.value;
+            if (!val) {
+                showError('confirm-error', 'Please confirm your password.'); return false;
+            }
+            if (val !== password.value) {
+                showError('confirm-error', 'Password confirmation does not match.'); return false;
+            }
+            clearError('confirm-error'); return true;
+        }
+
+        // Live validation on blur
+        email.addEventListener('blur', validateEmail);
+        password.addEventListener('blur', validatePassword);
+        confirm.addEventListener('blur', validateConfirm);
+
+        // Clear error as user types
+        email.addEventListener('input', function () { clearError('email-error'); });
+        password.addEventListener('input', function () { clearError('password-error'); });
+        confirm.addEventListener('input', function () { clearError('confirm-error'); });
+
+        // Block submit if JS validation fails + disable button after valid submit
+        form.addEventListener('submit', function (e) {
+            const e1 = validateEmail();
+            const e2 = validatePassword();
+            const e3 = validateConfirm();
+            if (!e1 || !e2 || !e3) {
+                e.preventDefault();
+            } else {
+                const btn = form.querySelector('button[type="submit"]');
+                btn.disabled = true;
+                btn.textContent = 'Please wait...';
+            }
+        });
+    })();
+    </script>
 
 </body>
-
 </html>

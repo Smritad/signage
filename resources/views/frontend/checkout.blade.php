@@ -2,10 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
-                   @include('components.frontend.head')    
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+@include('components.frontend.head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 <body>
@@ -14,15 +13,12 @@
         <span class="icon icon-caret-up"></span>
     </button>
     <div class="preload preload-container" id="preload">
-        <div class="preload-logo">
-            <div class="spinner"></div>
-        </div>
+        <div class="preload-logo"><div class="spinner"></div></div>
     </div>
-    <div id="wrapper">
-                     @include('components.frontend.header')    
 
-        <!-- /Header -->
-        <!-- Page Title -->
+    <div id="wrapper">
+        @include('components.frontend.header')
+
         <section class="s-page-title">
             <div class="container">
                 <div class="content">
@@ -30,653 +26,855 @@
                     <ul class="breadcrumbs-page">
                         <li><a href="{{ route('frontend.index') }}" class="h6 link">Home</a></li>
                         <li class="d-flex"><i class="icon icon-caret-right"></i></li>
-                        <li>
-                            <h6 class="current-page fw-normal">Checkout</h6>
-                        </li>
+                        <li><h6 class="current-page fw-normal">Checkout</h6></li>
                     </ul>
                 </div>
             </div>
         </section>
-        <!-- /Page Title -->
-        <!-- Check Out -->
- <section class="flat-spacing">
-    <div class="container">
-        <div class="row">
-
-            <!-- Left Column: Guest Checkout Form -->
-            <div class="col-lg-7">
-                <div class="tf-page-checkout mb-lg-0">
-                    <div class="checkout-card p-4 shadow-sm rounded">
-
-                        @php $user = Auth::guard('custom')->user(); @endphp
-
-                        @if(!$user)
-                        <h2 class="title type-semibold mb-3">Login / Register with Email</h2>
-
-                        <div class="checkout-login-wrap">
-                            <form id="otpForm">@csrf
-                                <div class="mb-3">
-                                    <input type="email" name="email" id="email" class="form-control"
-                                        placeholder="Enter Email Address" required>
-                                </div>
-
-                                <button type="button" id="sendOtpBtn" class="btn btn-primary w-100 mb-3">
-                                    <span id="btnText">Send OTP</span>
-                                </button>
-
-                                <!-- OTP + Password Section -->
-                                <div id="otpSection" style="display:none;">
-                                    <div class="mb-3">
-                                        <input type="text" name="otp" id="otp" class="form-control"
-                                            placeholder="Enter OTP" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="password" name="password" id="password" class="form-control"
-                                            placeholder="Create Password" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="password" name="confirm_password" id="confirm_password"
-                                            class="form-control" placeholder="Confirm Password" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-success w-100">Verify & Create Account</button>
-                                </div>
-                                <div id="otpMessage" class="mt-2"></div>
-                                <input type="hidden" id="email_hidden" name="email">
-                            </form>
-                        </div>
-                        <hr class="my-4">
-                        @endif
-
-                        <!-- Checkout Form -->
-                        <form id="checkoutForm" class="tf-checkout-cart-main">
-                            <div class="box-ip-checkout estimate-shipping">
-                                <h2 class="title type-semibold">Information</h2>
-                                <div class="form_content">
-
-                                    <!-- Name -->
-                                    <div class="cols tf-grid-layout sm-col-2">
-                                        <fieldset>
-                                            <input type="text" name="first_name" placeholder="First name" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <input type="text" name="last_name" placeholder="Last name" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                    </div>
-
-                                    <!-- Email & Phone -->
-                                    <div class="cols tf-grid-layout sm-col-2">
-                                        <fieldset>
-                                            <input type="email" name="email" placeholder="Email address" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <input type="number" name="phone" placeholder="Phone number" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                    </div>
-
-                                    <!-- Country / State / City -->
-                                    <div class="cols tf-grid-layout sm-col-3">
-                                        <fieldset>
-                                            <label>Country</label>
-                                            <select name="user_country" id="user_country" class="form-control" required>
-                                                <option value="">--Select--</option>
-                                                @foreach($fetch_all_countries as $country)
-                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <label>State</label>
-                                            <select name="user_state" id="user_state" class="form-control" required>
-                                                <option value="">--Select--</option>
-                                            </select>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <label>City</label>
-                                            <select name="user_city" id="user_city" class="form-control" required>
-                                                <option value="">--Select--</option>
-                                            </select>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                    </div>
-
-                                    <!-- Street & Postal -->
-                                    <div class="cols tf-grid-layout sm-col-2">
-                                        <fieldset>
-                                            <input type="text" name="street" placeholder="Street" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <input type="number" name="postal_code" placeholder="Postal code" required>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                    </div>
-
-                                    <!-- Billing & Shipping -->
-                                    <div class="cols tf-grid-layout sm-col-2">
-                                        <fieldset>
-                                            <textarea name="billing_address" placeholder="Billing Address"
-                                                style="height:100px;" required></textarea>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                        <fieldset>
-                                            <textarea name="shipping_address" placeholder="Shipping Address"
-                                                style="height:100px;" required></textarea>
-                                            <span class="text-danger error-msg" style="display:none;"></span>
-                                        </fieldset>
-                                    </div>
-
-                                    <!-- Checkbox: Same as Billing -->
-                                    <label class="billing-address-label-sec">
-                                        <input type="checkbox" name="same_as_billing"
-                                            class="billing-address-checkbox-cc">
-                                        Same as Billing Address
-                                    </label>
-
-                                    <!-- Order Note -->
-                                    <textarea name="order_note" placeholder="Note about your order"
-                                        style="height: 180px;"></textarea>
-
-                                </div>
-                            </div>
-
-                            <div class="button_submit">
-                                <button type="submit" class="tf-btn animate-btn w-100">Payment</button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Order Summary -->
-            <div class="col-lg-5">
-                <div class="fl-sidebar-cart sticky-top">
-                    <div class="box-your-order p-3 border rounded shadow-sm">
-                        <h2 class="title type-semibold mb-3">Your Order</h2>
-                        @php $subtotal=0; $discount=0; $shipping=0; @endphp
-                        <ul class="list-order-product mb-3">
-                            @forelse($cart as $item)
-                            @php $lineTotal=$item['price'] * $item['quantity']; $subtotal+=$lineTotal; @endphp
-                            <li class="order-item d-flex align-items-center mb-2">
-                                <a href="#" class="img-prd me-2">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['product_name'] }}" width="60">
-                                </a>
-                                <div class="infor-prd flex-grow-1">
-                                    <h6 class="prd_name mb-1">{{ $item['product_name'] }}</h6>
-                                    <p class="price-prd mb-0">Rs.{{ number_format($lineTotal,2) }}</p>
-                                    <p class="quantity-prd mb-0">Qty: {{ $item['quantity'] }}</p>
-                                </div>
-                            </li>
-                            @empty
-                            <li>Your cart is empty.</li>
-                            @endforelse
-                        </ul>
-                        @php $total=$subtotal - $discount + $shipping; @endphp
-                        <ul class="list-total mb-3">
-                            <li class="total-item d-flex justify-content-between">
-                                <span>Subtotal</span><span>Rs.{{ number_format($subtotal,2) }}</span>
-                            </li>
-                            <li class="total-item d-flex justify-content-between">
-                                <span>Discount</span><span>Rs.{{ number_format($discount,2) }}</span>
-                            </li>
-                            <li class="total-item d-flex justify-content-between">
-                                <span>Shipping</span><span>{{ $shipping==0 ? 'Free' : 'Rs.'.number_format($shipping,2) }}</span>
-                            </li>
-                        </ul>
-                        <div class="last-total d-flex justify-content-between fw-bold">
-                            <span>Total</span><span>Rs.{{ number_format($total,2) }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- Loader Overlay -->
-<div id="loading-overlay" style="
-    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; color:#fff;
-    font-size:20px; font-weight:bold;">
-    Processing Payment...
-</div>
-
+@if(session('error'))
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("checkoutForm");
-
-    // Loader functions
-    function showLoader() {
-        document.getElementById("loading-overlay").style.display = "flex";
-    }
-    function hideLoader() {
-        document.getElementById("loading-overlay").style.display = "none";
-    }
-    hideLoader();
-
-    // Validation function
-    function validateField(field) {
-        const value = field.value.trim();
-        const errorSpan = field.nextElementSibling;
-        let valid = true, message = "";
-
-        switch (field.name) {
-            case "first_name":
-            case "last_name":
-                if (!/^[A-Za-z\s]+$/.test(value)) { valid = false; message = "Only letters allowed."; }
-                break;
-            case "email":
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { valid = false; message = "Enter a valid email."; }
-                break;
-            case "phone":
-                if (!/^\d{10,12}$/.test(value)) { valid = false; message = "Phone must be 10–12 digits."; }
-                break;
-            case "postal_code":
-                if (!/^\d{6}$/.test(value)) { valid = false; message = "Postal Code must be 6 digits."; }
-                break;
-            default:
-                if (value === "") { valid = false; message = "This field is required."; }
-        }
-
-        if (!valid) {
-            errorSpan.textContent = message;
-            errorSpan.style.display = "block";
-            field.style.borderColor = "red";
-        } else {
-            errorSpan.textContent = "";
-            errorSpan.style.display = "none";
-            field.style.borderColor = "";
-        }
-        return valid;
-    }
-
-    // Validate on blur
-    form.querySelectorAll("input, textarea, select").forEach(f => {
-        f.addEventListener("blur", () => validateField(f));
-    });
-
-    // Checkbox autofill
-    document.querySelector(".billing-address-checkbox-cc")
-        .addEventListener("change", function () {
-            const billing = document.querySelector("textarea[name='billing_address']");
-            const shipping = document.querySelector("textarea[name='shipping_address']");
-            shipping.value = this.checked ? billing.value : '';
-        });
-
-    // Submit handler
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        let allValid = true;
-        form.querySelectorAll("input[required], select[required], textarea[required]")
-            .forEach(f => { if (!validateField(f)) allValid = false; });
-
-        if (!allValid) return; // stop if invalid
-
-        // ✅ Start payment
-        startPayment(showLoader, hideLoader);
-    });
-});
-
-// Razorpay flow
-async function startPayment(showLoader, hideLoader) {
-    @if (!Auth::guard('custom')->check())
-        alert("⚠️ Please login first using OTP before proceeding with payment!");
-        return;
-    @endif
-
-    showLoader();
-
-    let customerInfo = {
-        first_name: document.querySelector("input[name='first_name']").value,
-        last_name: document.querySelector("input[name='last_name']").value,
-        email: document.querySelector("input[name='email']").value,
-        phone: document.querySelector("input[name='phone']").value,
-        street: document.querySelector("input[name='street']").value,
-        city: document.querySelector("#user_city").value,
-        state: document.querySelector("#user_state").value,
-        postal_code: document.querySelector("input[name='postal_code']").value,
-        country: document.querySelector("#user_country").value,
-        billing_address: document.querySelector("textarea[name='billing_address']").value,
-        shipping_address: document.querySelector("textarea[name='shipping_address']").value,
-        description: document.querySelector("textarea[name='order_note']").value || ""
-    };
-
-    let cartItems = [];
-    @foreach($cart as $item)
-        cartItems.push({
-            product_id: "{{ $item['id'] }}",
-            product_name: "{{ $item['product_name'] }}",
-            quantity: {{ $item['quantity'] }},
-            price: {{ $item['price'] }},
-            subtotal: {{ $item['price'] * $item['quantity'] }},
-            image: "{{ $item['image'] }}"
-        });
-    @endforeach
-
-    let subtotal = parseFloat(@json($subtotal));
-    let discount = parseFloat(@json($discount));
-    let shipping = parseFloat(@json($shipping));
-    let totalAmount = subtotal - discount + shipping;
-
-    let orderData = {
-        customer_info: customerInfo,
-        cart_items: cartItems,
-        totals: { subtotal, discount, shipping, total: totalAmount }
-    };
-
-    try {
-        let response = await fetch("{{ route('payment.process') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content")
-            },
-            body: JSON.stringify({ amount: totalAmount, order_data: orderData })
-        });
-
-        let data = await response.json();
-        if (!data.order_id) { alert("Order creation failed!"); hideLoader(); return; }
-
-        let options = {
-            key: data.razorpay_key,
-            amount: totalAmount * 100,
-            currency: "INR",
-            order_id: data.order_id,
-            handler: async function (res) {
-                try {
-                    let verifyResponse = await fetch("{{ route('payment.verify') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").getAttribute("content")
-                        },
-                        body: JSON.stringify({
-                            razorpay_order_id: res.razorpay_order_id,
-                            razorpay_payment_id: res.razorpay_payment_id,
-                            razorpay_signature: res.razorpay_signature,
-                            order_id: data.order_id,
-                            order_data: orderData
-                        })
-                    });
-                    let verifyData = await verifyResponse.json();
-                    if (verifyData.status === 'success') {
-                        window.location.href = "{{ route('order.confirm') }}?order_id=" + data.order_id;
-                    } else {
-                        alert("Payment verification failed!");
-                    }
-                } catch (err) {
-                    alert("Verification error!");
-                } finally {
-                    hideLoader();
-                }
-            }
-        };
-
-        let rzp = new Razorpay(options);
-        rzp.open();
-        rzp.on("payment.failed", function () { hideLoader(); });
-    } catch (err) {
-        alert("Payment processing error.");
-        console.error(err);
-        hideLoader();
-    }
-}
+document.addEventListener('DOMContentLoaded', () => notyf.error(@json(session('error'))));
 </script>
-
-
-
-
-<script>
-$(document).ready(function() {
-    // When country changes
-    $('#user_country').on('change', function() {
-        var countryID = $(this).val();
-        if(countryID) {
-            $.ajax({
-                url: '/get-states/' + countryID,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#user_state').empty().append('<option value="0">--Select--</option>');
-                    $('#user_city').empty().append('<option value="0">--Select--</option>'); // Clear cities
-                    $.each(data, function(key, value) {
-                        $('#user_state').append('<option value="'+ value.id +'">'+ value.name +'</option>');
-                    });
-                }
-            });
-        } else {
-            $('#user_state').empty().append('<option value="0">--Select--</option>');
-            $('#user_city').empty().append('<option value="0">--Select--</option>');
-        }
-    });
+@endif
  
-    // When state changes
-    $('#user_state').on('change', function() {
-        var stateID = $(this).val();
-        if(stateID) {
-            $.ajax({
-                url: '/get-cities/' + stateID,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#user_city').empty().append('<option value="0">--Select--</option>');
-                    $.each(data, function(key, value) {
-                        $('#user_city').append('<option value="'+ value.id +'">'+ value.name +'</option>');
+        <section class="flat-spacing">
+            <div class="container">
+                <div class="row">
+
+                    {{-- LEFT: form --}}
+                    <div class="col-lg-7">
+                        <div class="tf-page-checkout mb-lg-0">
+                            <div class="checkout-card p-4 shadow-sm rounded">
+
+                                @php $user = Auth::guard('custom')->user(); @endphp
+
+                               {{--
+    Drop-in replacement for the @if(!$user) ... @endif block on your checkout page.
+    Includes Google + Facebook buttons above your existing OTP signup form.
+--}}
+
+@if(!$user)
+    {{-- Social login --}}
+    <div class="social-login-wrap mb-3">
+        <a href="{{ route('social.redirect', 'google') }}" class="social-btn social-google">
+            <i class="icon icon-google"></i> Continue with Google
+        </a>
+        <a href="{{ route('social.redirect', 'facebook') }}" class="social-btn social-facebook">
+            <i class="icon icon-facebook"></i> Continue with Facebook
+        </a>
+        <div class="social-divider"><span>or</span></div>
+    </div>
+
+    <h2 class="checkout-title type-semibold mb-3">
+        Already have an account?
+        <a href="#" id="checkoutLoginLink">Login here</a>
+    </h2>
+    <form id="redirectToLoginForm" action="{{ route('user.login') }}" method="GET" class="d-none">
+        <input type="hidden" name="from_checkout" value="1">
+    </form>
+    <script>
+    document.getElementById('checkoutLoginLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('redirectToLoginForm').submit();
+    });
+    </script>
+
+    <h2 class="checkout-login-heading">Register with Email</h2>
+
+    <div class="checkout-login-wrap">
+        <form id="otpForm">@csrf
+            <div class="mb-3">
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email Address" required>
+            </div>
+            <button type="button" id="sendOtpBtn" class="tf-btn animate-btn w-100">
+                <span id="btnText">Send OTP</span>
+            </button>
+            <div id="otpSection" class="d-none">
+                <div class="mb-3 mt-3">
+                    <input type="text" name="otp" id="otp" class="form-control" placeholder="Enter OTP" required>
+                </div>
+                <div class="pw-field-wrap">
+                    <input type="password" id="password" class="form-control" placeholder="Create Password" required>
+                    <button type="button" class="pw-toggle" onclick="togglePassword('password')">
+                        <i class="icon icon-view"></i>
+                    </button>
+                </div>
+                <div class="pw-field-wrap">
+                    <input type="password" id="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                    <button type="button" class="pw-toggle" onclick="togglePassword('confirm_password')">
+                        <i class="icon icon-view"></i>
+                    </button>
+                </div>
+                <button type="submit" class="tf-btn animate-btn w-100">Verify &amp; Create Account</button>
+            </div>
+            <div id="otpMessage" class="mt-2"></div>
+            <input type="hidden" id="email_hidden" name="email">
+        </form>
+    </div>
+
+    <hr class="my-4">
+@endif
+                               
+
+                                @php
+                                    $fullName  = $user->name ?? '';
+                                    $nameParts = explode(' ', $fullName, 2);
+                                    $firstName = $nameParts[0] ?? '';
+                                    $lastName  = $nameParts[1] ?? '';
+                                @endphp
+
+                              
+
+<form id="checkoutForm" class="tf-checkout-cart-main">
+
+    <div class="box-ip-checkout estimate-shipping">
+
+        <h2 class="title type-semibold">Information</h2>
+
+        <div class="form_content">
+
+            {{-- Name --}}
+            <div class="cols tf-grid-layout sm-col-2">
+
+                <fieldset>
+                    <input type="text"
+                           name="first_name"
+                           placeholder="First name*"
+                           value="{{ old('first_name', $firstName) }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+                </fieldset>
+
+                <fieldset>
+                    <input type="text"
+                           name="last_name"
+                           placeholder="Last name*"
+                           value="{{ old('last_name', $lastName) }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+                </fieldset>
+
+            </div>
+
+            {{-- Email / Phone --}}
+            <div class="cols tf-grid-layout sm-col-2">
+
+                <fieldset>
+                    <input type="email"
+                           name="email"
+                           placeholder="Email address*"
+                           value="{{ old('email', $user->email ?? '') }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+                </fieldset>
+
+                <fieldset>
+                    <input type="number"
+                           name="phone"
+                           placeholder="Phone number*"
+                           value="{{ old('phone', $user->mobile_no ?? '') }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+                </fieldset>
+
+            </div>
+
+            {{-- Country / State / City --}}
+            <div class="cols tf-grid-layout sm-col-3">
+
+                {{-- Country --}}
+                <fieldset>
+
+                    <label>Country*</label>
+
+                    <select name="user_country" id="user_country" required>
+
+                        <option value="">Select Country*</option>
+
+                        @foreach($fetch_all_countries as $c)
+
+                            <option value="{{ $c->id }}"
+                                {{ ((string) old('user_country', $user->country ?? '') === (string) $c->id) ? 'selected' : '' }}>
+
+                                {{ $c->name }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+                {{-- State --}}
+                <fieldset>
+
+                    <label>State*</label>
+
+                    <select name="user_state" id="user_state" required>
+
+                        <option value="">Select State*</option>
+
+                        @foreach($fetch_all_states as $s)
+
+                            <option value="{{ $s->id }}"
+                                {{ ((string) old('user_state', $user->state ?? '') === (string) $s->id) ? 'selected' : '' }}>
+
+                                {{ $s->name }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+                {{-- City --}}
+                <fieldset>
+
+                    <label>City*</label>
+
+                    <select name="user_city" id="user_city" required>
+
+                        <option value="">Select City*</option>
+
+                        @foreach($fetch_all_cities as $ct)
+
+                            <option value="{{ $ct->id }}"
+                                {{ ((string) old('user_city', $user->city ?? '') === (string) $ct->id) ? 'selected' : '' }}>
+
+                                {{ $ct->name }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+            </div>
+
+            {{-- Street / Postal --}}
+            <div class="cols tf-grid-layout sm-col-2">
+
+                <fieldset>
+
+                    <input type="text"
+                           name="street"
+                           placeholder="Street*"
+                           value="{{ old('street', $user->street ?? '') }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+                <fieldset>
+
+                    <input type="number"
+                           name="postal_code"
+                           placeholder="Postal code*"
+                           value="{{ old('postal_code', $user->postal_code ?? '') }}"
+                           required>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+            </div>
+
+            {{-- Billing / Shipping --}}
+            <div class="cols tf-grid-layout sm-col-2">
+
+                <fieldset>
+
+                    <label>Billing Address*</label>
+
+                    <textarea name="billing_address"
+                              class="textarea-md"
+                              placeholder="Room no, street, area, city, state"
+                              required>{{ old('billing_address', $user->billing_address ?? '') }}</textarea>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+                <fieldset>
+
+                    <label>Shipping Address*</label>
+
+                    <textarea name="shipping_address"
+                              class="textarea-md"
+                              placeholder="Room no, street, area, city, state"
+                              required>{{ old('shipping_address', $user->shipping_address ?? '') }}</textarea>
+
+                    <span class="text-danger error-msg d-none"></span>
+
+                </fieldset>
+
+            </div>
+
+            {{-- Same as billing --}}
+            <label class="billing-address-label-sec">
+
+                <input type="checkbox"
+                       name="same_as_billing"
+                       class="billing-address-checkbox-cc">
+
+                Same as Billing Address
+
+            </label>
+
+            {{-- Order Note --}}
+            <textarea name="order_note"
+                      class="textarea-lg"
+                      placeholder="Note about your order">{{ old('order_note') }}</textarea>
+
+            {{-- Payment --}}
+            <h3 class="payment-heading">Payment Method</h3>
+
+            <div class="payment-methods">
+
+                <label>
+
+                    <input type="radio"
+                           name="payment_mode"
+                           value="online"
+                           checked>
+
+                    <span class="pm-icon">
+                        <i class="icon icon-credit-card"></i>
+                    </span>
+
+                    <span class="pm-content">
+                        <p class="pm-title">Pay Online</p>
+                        <p class="pm-sub">Card, UPI, Netbanking, Wallet</p>
+                    </span>
+
+                </label>
+
+                <label>
+
+                    <input type="radio"
+                           name="payment_mode"
+                           value="cod">
+
+                    <span class="pm-icon">
+                        <i class="icon icon-wallet"></i>
+                    </span>
+
+                    <span class="pm-content">
+                        <p class="pm-title">Cash on Delivery</p>
+                        <p class="pm-sub">Pay when your order arrives</p>
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- Submit --}}
+    <div class="button_submit">
+
+        <button type="submit"
+                id="payNowButton"
+                class="tf-btn animate-btn w-100">
+
+            <span id="payBtnText">Proceed to Payment</span>
+
+        </button>
+
+    </div>
+
+</form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    document.addEventListener('change', function (e) {
+                        if (e.target.name === 'payment_mode') {
+                            document.getElementById('payBtnText').innerText =
+                                e.target.value === 'cod' ? 'Place Order (COD)' : 'Proceed to Payment';
+                        }
+                    });
+
+                    document.getElementById('payNowButton').addEventListener('click', function (e) {
+
+                        @if(!Auth::guard('custom')->check())
+                    
+                            e.preventDefault();
+                    
+                            notyf.open({
+                                type: 'custom-warning',
+                                message: 'Please login first using OTP before proceeding.'
+                            });
+                    
+                            return false;
+                    
+                        @endif
+                    
+                   
+                    });
+                    </script>
+
+                    {{-- RIGHT: Order summary --}}
+                    <div class="col-lg-5">
+                        <div class="fl-sidebar-cart sticky-top">
+                            <div class="box-your-order p-4 border rounded shadow-sm bg-white">
+                                <h2 class="title type-semibold mb-4 text-center">Your Order Summary</h2>
+
+                                @php
+                                    $shipping = 0;
+                                    $offers   = [];
+                                    $normals  = [];
+
+                                    if (!empty($cart)) {
+                                        foreach ($cart as $item) {
+                                            if (!empty($item['is_offer']) && $item['is_offer']) {
+                                                $offers[] = $item;
+                                            } else {
+                                                $normals[] = $item;
+                                            }
+                                        }
+                                    }
+
+                                    $offerMrpSubtotal = 0;
+                                    $offerSubtotal    = 0;
+                                    foreach ($offers as $o) {
+                                        $offerMrpSubtotal += ($o['mrp']   ?? $o['price']) * 1;
+                                        $offerSubtotal    += ($o['price'] ?? 0) * 1;
+                                    }
+                                    $offerSavings = max(0, $offerMrpSubtotal - $offerSubtotal);
+
+                                    // ── Normal products: MRP + savings (offer-aware) ──
+                                    $normalMrpSubtotal = 0;
+                                    $normalSubtotal    = 0;
+                                    foreach ($normals as $it) {
+                                        $qtyN               = $it['quantity'] ?? 1;
+                                        $normalSubtotal    += ($it['price'] ?? 0) * $qtyN;
+                                        $normalMrpSubtotal += ($it['mrp'] ?? $it['price'] ?? 0) * $qtyN;
+                                    }
+                                    $normalSavings = max(0, $normalMrpSubtotal - $normalSubtotal);
+
+                                    $finalSubtotal = $offerSubtotal + $normalSubtotal;
+                                    $totalSavings  = $offerSavings + $normalSavings;
+                                    $total         = $finalSubtotal + $shipping;
+
+                                    function resolveCheckoutImage(string $image, bool $isOffer): string
+                                    {
+                                        $image = trim($image);
+                                        if (empty($image)) return asset('images/no-image.png');
+                                        if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                                            return $image;
+                                        }
+                                        $image   = trim($image, '"\'');
+                                        $decoded = json_decode($image, true);
+                                        if (is_string($decoded)) {
+                                            $image = trim($decoded, '"\'');
+                                        } elseif (is_array($decoded) && !empty($decoded[0])) {
+                                            $image = trim($decoded[0], '"\'');
+                                        }
+                                        if (empty($image)) return asset('images/no-image.png');
+                                        return $isOffer
+                                            ? asset('offerimage/' . $image)
+                                            : asset('signage/home/productimage/' . $image);
+                                    }
+                                @endphp
+
+                                {{-- Offer bundles --}}
+                                @if(!empty($offers))
+                                    <div class="order-section-label">
+                                        <span>Offer Bundles</span>
+                                        <span class="badge bg-primary">{{ count($offers) }}</span>
+                                    </div>
+                                    <ul class="list-order-product mb-3">
+                                        @foreach($offers as $o)
+                                            @php $checkoutImg = resolveCheckoutImage((string)($o['image'] ?? ''), true); @endphp
+                                            <li class="order-item">
+                                                <img src="{{ $checkoutImg }}"
+                                                     alt="{{ $o['product_name'] ?? 'Offer' }}"
+                                                     onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                                <div class="order-item-info">
+                                                    <p class="item-name">{{ $o['product_name'] ?? 'Bundle' }}</p>
+                                                    <p class="item-meta">Qty: 1 &mdash; Bundle</p>
+                                                    <p class="item-price">Rs. {{ number_format($o['price'] ?? 0, 0) }}</p>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <div class="summary-block mb-4">
+                                        <div class="summary-block-row">
+                                            <span class="text-muted">Bundle MRP</span>
+                                            <span class="text-muted text-decoration-line-through">Rs. {{ number_format($offerMrpSubtotal, 0) }}</span>
+                                        </div>
+                                        <div class="summary-block-row text-danger">
+                                            <span>You Save</span>
+                                            <span>- Rs. {{ number_format($offerSavings, 0) }}</span>
+                                        </div>
+                                        <div class="summary-block-row">
+                                            <span>Bundle Subtotal</span>
+                                            <span class="text-success">Rs. {{ number_format($offerSubtotal, 0) }}</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Regular products --}}
+                                @if(!empty($normals))
+                                    <!--<div class="order-section-label">-->
+                                    <!--    <span>Products</span>-->
+                                    <!--    <span class="badge bg-secondary">{{ count($normals) }}</span>-->
+                                    <!--</div>-->
+                                    <ul class="list-order-product mb-3">
+                                        @foreach($normals as $item)
+                                            @php
+                                                $qtyN        = $item['quantity'] ?? 1;
+                                                $lineTotal   = ($item['price'] ?? 0) * $qtyN;
+                                                $lineMrp     = ($item['mrp'] ?? $item['price'] ?? 0) * $qtyN;
+                                                $itemHasOffer = $lineMrp > $lineTotal;
+                                                $checkoutImg = resolveCheckoutImage((string)($item['image'] ?? ''), false);
+                                            @endphp
+                                            <li class="order-item">
+                                                <img src="{{ $checkoutImg }}"
+                                                     alt="{{ $item['product_name'] ?? '' }}"
+                                                     onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                                <div class="order-item-info">
+                                                    <p class="item-name">{{ $item['product_name'] }}</p>
+                                                    <p class="item-meta">Qty: {{ $qtyN }}</p>
+                                                    <p class="item-price">
+                                                        @if($itemHasOffer)
+                                                            <span class="text-muted text-decoration-line-through">Rs. {{ number_format($lineMrp, 0) }}</span>
+                                                        @endif
+                                                        Rs. {{ number_format($lineTotal, 0) }}
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <div class="summary-block mb-4">
+                                        @if($normalSavings > 0)
+                                            <div class="summary-block-row">
+                                                <span class="text-muted">Total MRP</span>
+                                                <span class="text-muted text-decoration-line-through">Rs. {{ number_format($normalMrpSubtotal, 0) }}</span>
+                                            </div>
+                                            <div class="summary-block-row text-danger">
+                                                <span>You Save</span>
+                                                <span>- Rs. {{ number_format($normalSavings, 0) }}</span>
+                                            </div>
+                                        @endif
+                                        <div class="summary-block-row">
+                                            <span>Subtotal</span>
+                                            <span class="text-success">Rs. {{ number_format($normalSubtotal, 0) }}</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="summary-block mb-3">
+                                    <div class="summary-block-row">
+                                        <span>Shipping</span>
+                                        <span>{{ $shipping == 0 ? 'Free' : 'Rs. ' . number_format($shipping, 0) }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="grand-total-row">
+                                    <span>Grand Total</span>
+                                    <span class="text-success">Rs. {{ number_format($total, 0) }}</span>
+                                </div>
+
+                                <small class="text-muted d-block mt-2">All prices include applicable GST.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="loading-overlay" id="loading-overlay">Processing...</div>
+
+        <script>
+        $(document).ready(function () {
+            $('#user_country').on('change', function () {
+                var id = $(this).val();
+                if (id) {
+                    $.ajax({
+                        url: '/signage/get-states/' + id, type: 'GET', dataType: 'json',
+                        success: function (data) {
+                            $('#user_state').empty().append('<option value="0">--Select--</option>');
+                            $('#user_city').empty().append('<option value="0">--Select--</option>');
+                            $.each(data, function (k, v) { $('#user_state').append('<option value="' + v.id + '">' + v.name + '</option>'); });
+                        }
                     });
                 }
             });
-        } else {
-            $('#user_city').empty().append('<option value="0">--Select--</option>');
-        }
-    });
-});
-</script>
+            $('#user_state').on('change', function () {
+                var id = $(this).val();
+                if (id) {
+                    $.ajax({
+                        url: '/signage/get-cities/' + id, type: 'GET', dataType: 'json',
+                        success: function (data) {
+                            $('#user_city').empty().append('<option value="0">--Select--</option>');
+                            $.each(data, function (k, v) { $('#user_city').append('<option value="' + v.id + '">' + v.name + '</option>'); });
+                        }
+                    });
+                }
+            });
+        });
+        </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const sendOtpBtn = document.getElementById('sendOtpBtn');
-    const emailInput = document.getElementById('email');
-    const otpSection = document.getElementById('otpSection');
-    const otpForm = document.getElementById('otpForm');
-    const otpMessage = document.getElementById('otpMessage');
-    const btnText = document.getElementById('btnText');
-    const emailHidden = document.getElementById('email_hidden');
-    const passwordField = document.getElementById('password');
-    const confirmPasswordField = document.getElementById('confirm_password');
-
-    // Hide OTP section and password initially
-    otpSection.style.display = 'none';
-    passwordField.style.display = 'none';
-    confirmPasswordField.style.display = 'none';
-
-    // --- Send OTP ---
-    sendOtpBtn.addEventListener('click', function() {
-        const email = emailInput.value.trim();
-        if (!email || !/\S+@\S+\.\S+/.test(email)) {
-            otpMessage.innerHTML = `<p class="text-danger">Enter a valid email address</p>`;
-            return;
+        {{-- OTP logic --}}
+        <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        sendOtpBtn.disabled = true;
-        btnText.textContent = 'Sending...';
-        otpMessage.innerHTML = '';
+        document.addEventListener('DOMContentLoaded', function () {
+            const sendOtpBtn = document.getElementById('sendOtpBtn');
+            if (!sendOtpBtn) return;
 
-        fetch("{{ route('send.otp') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type':'application/json',
-                'X-CSRF-TOKEN':'{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ email })
-        })
-        .then(res => res.json())
-        .then(data => {
-            otpMessage.innerHTML = `<p style="color:${data.success ? 'green' : 'red'};">${data.message}</p>`;
-            if (data.success) {
-                otpSection.style.display = 'block';
-                emailInput.style.display = 'none';
-                sendOtpBtn.style.display = 'none';
-                passwordField.style.display = 'block';
-                confirmPasswordField.style.display = 'block';
-                emailHidden.value = email;
+            const emailInput  = document.getElementById('email');
+            const otpSection  = document.getElementById('otpSection');
+            const otpForm     = document.getElementById('otpForm');
+            const otpMessage  = document.getElementById('otpMessage');
+            const btnText     = document.getElementById('btnText');
+            const emailHidden = document.getElementById('email_hidden');
+
+            sendOtpBtn.addEventListener('click', function () {
+                const email = emailInput.value.trim();
+                if (!email || !/\S+@\S+\.\S+/.test(email)) {
+                    otpMessage.innerHTML = '<p class="text-danger">Enter a valid email address.</p>';
+                    return;
+                }
+                sendOtpBtn.disabled  = true;
+                btnText.textContent  = 'Sending...';
+
+                fetch('{{ route('send.otp') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: JSON.stringify({ email })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    otpMessage.innerHTML = `<p style="color:${data.success ? 'green' : 'red'};">${data.message}</p>`;
+                    if (data.success) {
+                        otpSection.classList.remove('d-none');
+                        emailInput.classList.add('d-none');
+                        sendOtpBtn.classList.add('d-none');
+                        emailHidden.value = email;
+                    }
+                    sendOtpBtn.disabled = false;
+                    btnText.textContent = 'Send OTP';
+                });
+            });
+
+            otpForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email            = emailHidden.value;
+                const otp              = document.getElementById('otp').value.trim();
+                const password         = document.getElementById('password').value.trim();
+                const confirm_password = document.getElementById('confirm_password').value.trim();
+
+                if (!otp || !password || !confirm_password) {
+                    notyf.error('All fields are required.');
+                    return;
+                }
+
+                fetch('{{ route('verify.otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type'    : 'application/json',
+                        'Accept'          : 'application/json',
+                        'X-CSRF-TOKEN'    : '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ email, otp, password, password_confirmation: confirm_password })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        notyf.open({ type: 'success', message: data.message || 'Successfully logged in!' });
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        notyf.error(data.message || 'Verification failed.');
+                    }
+                });
+            });
+        });
+        </script>
+
+        @include('components.frontend.footer')
+    </div>
+
+    @include('components.frontend.main-js')
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('checkoutForm');
+
+        function showLoader() { document.getElementById('loading-overlay').style.display = 'flex'; }
+        function hideLoader() { document.getElementById('loading-overlay').style.display = 'none'; }
+
+        function validateField(field) {
+            const value     = field.value.trim();
+            let errorSpan   = field.nextElementSibling;
+            if (!errorSpan || !errorSpan.classList.contains('error-msg')) {
+                errorSpan = field.parentElement.querySelector('.error-msg');
             }
-            sendOtpBtn.disabled = false;
-            btnText.textContent = 'Send OTP';
-        })
-        .catch(err => {
-            console.error("Send OTP fetch error:", err);
-            otpMessage.innerHTML = `<p class="text-danger">Something went wrong</p>`;
-            sendOtpBtn.disabled = false;
-            btnText.textContent = 'Send OTP';
+            let valid = true, message = '';
+
+            switch (field.name) {
+                case 'first_name': case 'last_name':
+                    if (!/^[A-Za-z\s]+$/.test(value)) { valid = false; message = 'Only letters allowed.'; }
+                    break;
+                case 'email':
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { valid = false; message = 'Enter a valid email.'; }
+                    break;
+                case 'phone':
+                    if (!/^\d{10,12}$/.test(value)) { valid = false; message = 'Phone must be 10–12 digits.'; }
+                    break;
+                case 'postal_code':
+                    if (!/^\d{6}$/.test(value)) { valid = false; message = 'Postal code must be 6 digits.'; }
+                    break;
+                case 'user_country': case 'user_state': case 'user_city':
+                    if (value === '' || value === '0') { valid = false; message = 'Please select an option.'; }
+                    break;
+                default:
+                    if (value === '') { valid = false; message = 'This field is required.'; }
+            }
+
+            if (errorSpan) {
+                if (!valid) {
+                    errorSpan.textContent = message;
+                    errorSpan.classList.remove('d-none');
+                    field.style.borderColor = 'red';
+                } else {
+                    errorSpan.textContent = '';
+                    errorSpan.classList.add('d-none');
+                    field.style.borderColor = '';
+                }
+            }
+            return valid;
+        }
+
+        document.querySelectorAll('#user_country, #user_state, #user_city').forEach(s => {
+            s.addEventListener('change', () => validateField(s));
+        });
+        form.querySelectorAll('input, textarea, select').forEach(f => f.addEventListener('blur', () => validateField(f)));
+
+        document.querySelector('.billing-address-checkbox-cc').addEventListener('change', function () {
+            const b = document.querySelector("textarea[name='billing_address']");
+            const s = document.querySelector("textarea[name='shipping_address']");
+            s.value = this.checked ? b.value : '';
+        });
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            let allValid = true;
+            form.querySelectorAll('input[required], select[required], textarea[required]')
+                .forEach(f => { if (!validateField(f)) allValid = false; });
+            if (!allValid) return;
+
+            const paymentMode = document.querySelector("input[name='payment_mode']:checked").value;
+            startPayment(showLoader, hideLoader, paymentMode);
         });
     });
 
-   // --- Verify OTP ---
-otpForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+    async function startPayment(showLoader, hideLoader, paymentMode) {
+        showLoader();
+        try {
+            const customerInfo = {
+                first_name       : document.querySelector("input[name='first_name']").value,
+                last_name        : document.querySelector("input[name='last_name']").value,
+                email            : document.querySelector("input[name='email']").value,
+                phone            : document.querySelector("input[name='phone']").value,
+                street           : document.querySelector("input[name='street']").value,
+                city             : document.querySelector('#user_city').value,
+                state            : document.querySelector('#user_state').value,
+                postal_code      : document.querySelector("input[name='postal_code']").value,
+                country          : document.querySelector('#user_country').value,
+                billing_address  : document.querySelector("textarea[name='billing_address']").value,
+                shipping_address : document.querySelector("textarea[name='shipping_address']").value,
+                description      : document.querySelector("textarea[name='order_note']").value || ''
+            };
 
-    const email = emailHidden.value;
-    const otp = document.getElementById('otp').value.trim();
-    const password = passwordField.value.trim();
-    const confirm_password = confirmPasswordField.value.trim();
+            let cartItems = [];
+            @foreach($cart as $item)
+            cartItems.push({
+                product_id   : '{{ $item['product_id'] ?? 0 }}',
+                product_name : @json($item['product_name'] ?? ''),
+                quantity     : {{ (int)($item['quantity'] ?? 1) }},
+                price        : {{ (float)($item['price'] ?? 0) }},
+                mrp          : {{ (float)($item['mrp'] ?? $item['price'] ?? 0) }},
+                subtotal     : {{ (float)($item['price'] ?? 0) * (int)($item['quantity'] ?? 1) }},
+                image        : @json($item['image'] ?? ''),
+                is_offer     : {{ !empty($item['is_offer']) ? 'true' : 'false' }},
+                offer_id     : {{ (int)($item['offer_id'] ?? 0) }},
+                cart_id      : {{ (int)($item['cart_id']  ?? 0) }},
+                size         : @json($item['size']  ?? ''),
+                print        : @json($item['print'] ?? '')
+            });
+            @endforeach
 
-    if (!otp || !password || !confirm_password) {
-        otpMessage.innerHTML = `<p class="text-danger">All fields are required</p>`;
-        notyf.error("All fields are required");
-        return;
-    }
+            const orderData = {
+                customer_info  : customerInfo,
+                cart_items     : cartItems,
+                payment_method : paymentMode,
+                totals: {
+                    subtotal : parseFloat(@json($finalSubtotal)) || 0,
+                    discount : parseFloat(@json($totalSavings))  || 0,
+                    shipping : parseFloat(@json($shipping))      || 0,
+                    total    : parseFloat(@json($total))         || 0
+                }
+            };
 
-    const submitBtn = otpForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Verifying...';
-    otpMessage.innerHTML = '';
-
-    fetch("{{ route('verify.otp') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type':'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN':'{{ csrf_token() }}',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({
-            email,
-            otp,
-            password,
-            password_confirmation: confirm_password
-        })
-    })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return res.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // ✅ Show Notyf success notification
-            notyf.open({
-                type: 'success',
-                message: data.message || 'Successfully logged in!'
+            const response = await fetch('{{ route('payment.process') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'X-CSRF-TOKEN' : document.querySelector("meta[name='csrf-token']").getAttribute('content')
+                },
+                body: JSON.stringify({ order_data: orderData })
             });
 
-            // Reload page after short delay so user sees the notification
-            setTimeout(() => window.location.reload(), 1500);
-        } else {
-            // ❌ Show Notyf error notification
-            notyf.error(data.message || 'Verification failed');
+            const data = await response.json();
+
+            if (data.cod && data.cod.success) {
+                window.location.href = data.cod.redirect_url;
+                return;
+            }
+            if (data.cashfree && data.cashfree.payment_session_id) {
+                const cashfree = Cashfree({ mode: 'sandbox' });
+                cashfree.checkout({ paymentSessionId: data.cashfree.payment_session_id, redirectTarget: '_self' });
+                return;
+            }
+
+            alert('Payment initialization failed.');
+            hideLoader();
+        } catch (err) {
+            console.error('Payment error:', err);
+            alert('Payment processing error.');
+            hideLoader();
         }
-
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Verify & Create Account';
-    })
-    .catch(err => {
-        console.error("Verify OTP fetch error:", err);
-        notyf.error("Something went wrong. Please try again.");
-        otpMessage.innerHTML = `<p class="text-danger">Something went wrong</p>`;
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Verify & Create Account';
-    });
-});
-
-});
-</script>
-
-
-
-
-
-
-        <!-- /Check Out -->
-        <!-- Footer -->
-                       @include('components.frontend.footer')    
-
-        <!-- /Footer -->
-    </div>
-
-    <!-- Mobile Menu -->
-    <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
-        <span class="icon-close-popup" data-bs-dismiss="offcanvas">
-            <i class="icon-close"></i>
-        </span>
-        <div class="canvas-header">
-            <p class="text-logo-mb"><img src="images/logo/logo.webp" data-src="images/logo/logo.webp"></p>
-            <a href="#" class="tf-btn type-small style-2">
-                Login
-                <i class="icon icon-user"></i>
-            </a>
-            <span class="br-line"></span>
-        </div>
-        <div class="canvas-body">
-            <div class="mb-content-top">
-                <ul class="nav-ul-mb" id="wrapper-menu-navigation"></ul>
-            </div>
-            <div class="group-btn">
-                <a href="#" class="tf-btn type-small style-2">
-                    Wishlist
-                    <i class="icon icon-heart"></i>
-                </a>
-                <div data-bs-dismiss="offcanvas">
-                    <a href="#" data-bs-toggle="modal" class="tf-btn type-small style-2">
-                        Search
-                        <i class="icon icon-magnifying-glass"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="flow-us-wrap">
-                <h5 class="title">Follow us on</h5>
-                <ul class="tf-social-icon">
-                    <li>
-                        <a href="https://www.facebook.com/" target="_blank" class="social-facebook">
-                            <span class="icon"><i class="icon-fb"></i></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com/" target="_blank" class="social-instagram">
-                            <span class="icon"><i class="icon-instagram-logo"></i></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://x.com/" target="_blank" class="social-x">
-                            <span class="icon"><i class="icon-x"></i></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- /Mobile Menu -->
-
-    <!-- Javascript -->
-       @include('components.frontend.main-js')
+    }
+    </script>
 
 </body>
-
 </html>

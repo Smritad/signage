@@ -13,6 +13,8 @@ class FragranceTypeDetails extends Model
 
     protected $fillable = [
         'title',
+        'slug',
+        'image',
         'created_by',
         'updated_by',
         'deleted_by'

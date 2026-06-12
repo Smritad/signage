@@ -47,18 +47,40 @@
                             <div class="col-12">
                             <div class="tab-content" id="wizard-tabContent">
                                 <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                 <form action="{{ route('category-details.store') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="category_name" class="form-label">Category Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="category_name" id="category_name" class="form-control" required>
-                                        @error('category_name')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="{{ route('category-details.index') }}" class="btn btn-secondary">Cancel</a>
-                                </form>
+                                    <form action="{{ route('category-details.store') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                    
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="category_name" class="form-label">
+                                                    Category Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" name="category_name" id="category_name" class="form-control" required>
+                                    
+                                                @error('category_name')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                    
+                                            <div class="col-md-6">
+                                                <label for="category_image" class="form-label">Category Image</label>
+                                                <input type="file" name="category_image" id="category_image" class="form-control" accept="image/*">
+                                    
+                                                <small class="text-secondary"><b>Note: Each file should be less than 2MB.</b></small><br>
+                                                <small class="text-secondary"><b>Allowed: jpg, jpeg, png, webp, svg</b></small>
+                                    
+                                                @error('category_image')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <a href="{{ route('category-details.index') }}" class="btn btn-secondary">Cancel</a>
+                                        </div>
+                                    </form>
+
 
                                 </div>
                             </div>

@@ -47,17 +47,46 @@
                             <div class="col-12">
                             <div class="tab-content" id="wizard-tabContent">
                                 <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                 <form action="{{ route('category-details.update', $category->id) }}" method="POST">
-                                        @csrf @method('PUT')
-                                        <div class="mb-3">
-                                            <label for="category_name" class="form-label">Category Name <span class="text-danger">*</span></label>
-                                            <input type="text" name="category_name" id="category_name" class="form-control" value="{{ $category->category_name }}" required>
-                                            @error('category_name')
-                                                <small class="text-danger">{{ $message }}</small>
-                                            @enderror
+                                    <form action="{{ route('category-details.update', $category->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                    
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="category_name" class="form-label">
+                                                    Category Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" name="category_name" id="category_name" class="form-control" value="{{ $category->category_name }}" required>
+                                    
+                                                @error('category_name')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+                                    
+                                            <div class="col-md-6">
+                                                <label for="category_image" class="form-label">Category Image</label>
+                                                <input type="file" name="category_image" id="category_image" class="form-control" accept="image/*">
+                                    
+                                                <small class="text-secondary"><b>Note: Each file should be less than 2MB.</b></small><br>
+                                                <small class="text-secondary"><b>Allowed: jpg, jpeg, png, webp, svg</b></small>
+                                    
+                                                @if($category->image)
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('signage/home/productimage/' . $category->image) }}" alt="Category Image" width="100">
+                                                        <input type="hidden" name="old_image" value="{{ $category->image }}">
+                                                    </div>
+                                                @endif
+                                    
+                                                @error('category_image')
+                                                    <small class="text-danger">{{ $message }}</small>
+                                                @enderror
+                                            </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                        <a href="{{ route('category-details.index') }}" class="btn btn-secondary">Cancel</a>
+                                    
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <a href="{{ route('category-details.index') }}" class="btn btn-secondary">Cancel</a>
+                                        </div>
                                     </form>
 
                                 </div>

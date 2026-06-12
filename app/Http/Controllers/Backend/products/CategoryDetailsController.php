@@ -27,20 +27,63 @@ class CategoryDetailsController extends Controller
 public function store(Request $request)
 {
     $request->validate([
-        'category_name' => 'required|string|max:255|unique:category_details,category_name'
+        'category_name' => 'required|string|max:255|unique:category_details,category_name',
+        'category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
     ]);
+
+    $imageName = null;
+    if ($request->hasFile('category_image')) {
+        $file = $request->file('category_image');
+        $imageName = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('signage/home/productimage'), $imageName);
+    }
 
     \App\Models\CategoryDetails::create([
         'category_name' => $request->category_name,
-        'slug'          => \Illuminate\Support\Str::slug($request->category_name),
-        'created_by'    => \Illuminate\Support\Facades\Auth::id(),
-        'updated_by'    => \Illuminate\Support\Facades\Auth::id(),
-        'created_at'    => \Carbon\Carbon::now(),
-        'updated_at'    => \Carbon\Carbon::now(),
+        'slug'          => Str::slug($request->category_name),
+        'image'         => $imageName,
+        'created_by'    => Auth::id(),
+        'updated_by'    => Auth::id(),
+        'created_at'    => Carbon::now(),
+        'updated_at'    => Carbon::now(),
     ]);
 
     return redirect()->route('category-details.index')->with('message', 'Category added successfully!');
 }
+
+
+public function update(Request $request, $id)
+{
+    $category = \App\Models\CategoryDetails::findOrFail($id);
+
+    $request->validate([
+        'category_name' => 'required|string|max:255|unique:category_details,category_name,' . $id,
+        'category_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+    ]);
+
+    // Handle new image
+    $imageName = $category->image;
+    if ($request->hasFile('category_image')) {
+        // Delete old image
+        if ($imageName && file_exists(public_path('signage/home/productimage/'.$imageName))) {
+            unlink(public_path('signage/home/productimage/'.$imageName));
+        }
+        $file = $request->file('category_image');
+        $imageName = time().'_'.$file->getClientOriginalName();
+        $file->move(public_path('signage/home/productimage'), $imageName);
+    }
+
+    $category->update([
+        'category_name' => $request->category_name,
+        'slug'          => Str::slug($request->category_name),
+        'image'         => $imageName,
+        'updated_by'    => Auth::id(),
+        'updated_at'    => Carbon::now(),
+    ]);
+
+    return redirect()->route('category-details.index')->with('message', 'Category updated successfully!');
+}
+
 
 
 public function edit($id)
@@ -49,22 +92,6 @@ public function edit($id)
     return view('backend.product-page.category-details.edit', compact('category'));
 }
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'category_name' => 'required|string|max:255|unique:category_details,category_name,' . $id
-    ]);
-
-    $category = \App\Models\CategoryDetails::findOrFail($id);
-    $category->update([
-        'category_name' => $request->category_name,
-        'slug'          => \Illuminate\Support\Str::slug($request->category_name),
-        'updated_by'    => \Illuminate\Support\Facades\Auth::id(),
-        'updated_at'    => \Carbon\Carbon::now(),
-    ]);
-
-    return redirect()->route('category-details.index')->with('message', 'Category updated successfully!');
-}
 
 public function destroy($id)
 {

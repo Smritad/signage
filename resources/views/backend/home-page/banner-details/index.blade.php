@@ -68,7 +68,7 @@
                                     <td>{{ $banner->banner_heading }}</td>
                                     <td>
                                         @if($banner->banner_images)
-                                            <img src="{{ asset('/home/banner/' . $banner->banner_images) }}" alt="Banner Image" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
+                                            <img src="{{ asset('home/banner/' . $banner->banner_images) }}" alt="Banner Image" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
                                         @else
                                             <span>No Image</span>
                                         @endif

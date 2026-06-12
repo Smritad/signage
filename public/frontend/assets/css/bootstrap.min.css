@@ -6295,9 +6295,9 @@ fieldset:disabled .btn {
 }
 
 .modal-backdrop {
-    --bs-backdrop-zindex: 1050;
-    --bs-backdrop-bg: #000;
-    --bs-backdrop-opacity: 0.5;
+    /*--bs-backdrop-zindex: 1050;*/
+    /*--bs-backdrop-bg: #000;*/
+    /*--bs-backdrop-opacity: 0.5;*/
     position: fixed;
     top: 0;
     left: 0;
@@ -6311,9 +6311,9 @@ fieldset:disabled .btn {
     opacity: 0;
 }
 
-.modal-backdrop.show {
-    opacity: var(--bs-backdrop-opacity);
-}
+/*.modal-backdrop.show {*/
+/*    opacity: var(--bs-backdrop-opacity);*/
+/*}*/
 
 .modal-header {
     display: flex;

@@ -65,7 +65,10 @@
                                     <label class="form-label">Address Line 2</label>
                                     <input type="text" class="form-control" name="address_line2" placeholder="Enter address line 2 (optional)" value="{{ old('address_line2', $record->address_line2) }}">
                                 </div>
-
+ <div class="col-md-6">
+                                    <label class="form-label">iframe address</label>
+                                    <input type="text" class="form-control" name="iframeaddress" placeholder="Enter address url" value="{{ old('iframeaddress', $record->iframeaddress) }}">
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="phone" required placeholder="Enter contact number" value="{{ old('phone', $record->phone) }}">

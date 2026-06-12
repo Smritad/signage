@@ -12,6 +12,7 @@ class FooterDetails extends Model
         'footer_heading',
         'address_line1',
         'address_line2',
+        'iframeaddress',
         'phone',
         'email',
         'newsletter_heading',

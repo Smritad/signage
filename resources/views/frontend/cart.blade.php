@@ -4,23 +4,25 @@
 
 <head>
     @include('components.frontend.head')
+   
 </head>
 
 <body>
+
     <button id="goTop">
         <span class="border-progress"></span>
         <span class="icon icon-caret-up"></span>
     </button>
+
     <div class="preload preload-container" id="preload">
         <div class="preload-logo">
             <div class="spinner"></div>
         </div>
     </div>
-    <div id="wrapper">
-              @include('components.frontend.header')
 
-        <!-- /Header -->
-        <!-- Page Title -->
+    <div id="wrapper">
+        @include('components.frontend.header')
+
         <section class="s-page-title">
             <div class="container">
                 <div class="content">
@@ -28,347 +30,683 @@
                     <ul class="breadcrumbs-page">
                         <li><a href="{{ route('frontend.index') }}" class="h6 link">Home</a></li>
                         <li class="d-flex"><i class="icon icon-caret-right"></i></li>
-                        <li>
-                            <h6 class="current-page fw-normal">Shopping Cart</h6>
-                        </li>
+                        <li><h6 class="current-page fw-normal">Shopping Cart</h6></li>
                     </ul>
                 </div>
             </div>
         </section>
-        <!-- /Page Title -->
-        <!-- View Cart -->
+
         <div class="flat-spacing each-list-prd">
             <div class="container">
                 <div class="row">
-                    <div class="col-xxl-9 col-xl-8">
-                        <div class="tf-cart-sold">
-                          
-                        </div>
+
+                    {{-- LEFT: cart table --}}
+                    <div class="col-xxl-7 col-xl-8 custom-cart-box">
                         <form>
-                                <table class="tf-table-page-cart">
-                                    <thead>
-                                        <tr>
-                                            <th class="h6">Product</th>
-                                            <th class="h6">Price</th>
-                                            <th class="h6">Quantity</th>
-                                            <th></th>
+                            <table class="tf-table-page-cart">
+                                <thead>
+                                    <tr>
+                                        <th class="h6">Product</th>
+                                        <th class="h6">Price</th>
+                                        <th class="h6">Quantity</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                @php
+                                    $offerRows  = $carts->where('combo', 'offer');
+                                    $normalRows = $carts->where('combo', '!=', 'offer');
+
+                                    function resolveProductImage(string $raw): string
+                                    {
+                                        $raw = trim($raw);
+                                        if (empty($raw)) return asset('images/no-image.png');
+                                        $decoded = json_decode($raw, true);
+                                        if (is_string($decoded)) $decoded = json_decode($decoded, true);
+                                        $filename = null;
+                                        if (is_array($decoded) && !empty($decoded[0])) {
+                                            $filename = $decoded[0];
+                                        } elseif (is_string($decoded) && !empty($decoded)) {
+                                            $filename = $decoded;
+                                        } else {
+                                            $filename = $raw;
+                                        }
+                                        $filename = trim($filename, '"\'');
+                                        if (empty($filename)) return asset('images/no-image.png');
+                                        return asset('signage/home/productimage/' . $filename);
+                                    }
+
+                                    function resolveOfferImage(string $raw): string
+                                    {
+                                        $raw = trim($raw);
+                                        if (empty($raw)) return asset('images/no-image.png');
+                                        $decoded = json_decode($raw, true);
+                                        if (is_string($decoded)) {
+                                            $filename = $decoded;
+                                        } elseif (is_array($decoded) && !empty($decoded[0])) {
+                                            $filename = $decoded[0];
+                                        } else {
+                                            $filename = $raw;
+                                        }
+                                        $filename = trim($filename, '"\'');
+                                        if (empty($filename)) return asset('images/no-image.png');
+                                        return asset('offerimage/' . $filename);
+                                    }
+                                @endphp
+
+                                {{-- OFFER / BUNDLE ROWS --}}
+                                @if($offerRows->count() > 0)
+
+                                    <tr>
+                                        <td colspan="4" class="cart-section-label">Offer Bundles</td>
+                                    </tr>
+
+                                    @foreach($offerRows as $cart)
+                                        @php
+                                            $offerImageUrl = resolveOfferImage((string)($cart->images ?? ''));
+                                            $mrpTotal      = (float) $cart->price;
+                                            $finalPrice    = (float) ($cart->offer_price ?? $cart->price);
+                                            $savings       = max(0, $mrpTotal - $finalPrice);
+                                            $realOfferId   = (int) ($cart->offer_id ?? 0);
+
+                                            // ✅ Fetch slug from offers table using offer_id
+                                            $offerSlug = null;
+                                            if ($realOfferId > 0) {
+                                                $offerSlug = \App\Models\Offer::where('id', $realOfferId)->value('slug');
+                                            }
+                                            // Fallback: use cart slug if offer slug not found
+                                            if (empty($offerSlug)) {
+                                                $offerSlug = $cart->slug ?? null;
+                                            }
+
+                                            $includedItems = [];
+                                            if (!empty($cart->combo_text)) {
+                                                $decoded = json_decode($cart->combo_text, true);
+                                                if (is_array($decoded)) $includedItems = $decoded;
+                                            }
+                                        @endphp
+
+                                        <tr class="tf-cart_item"
+                                            data-cart-id="{{ $cart->id }}"
+                                            data-price="{{ $finalPrice }}"
+                                            data-mrp="{{ $mrpTotal }}"
+                                            data-offer-id="{{ $realOfferId }}"
+                                            data-offer-slug="{{ $offerSlug }}"
+                                            data-offer-name="{{ e($cart->product_name) }}"
+                                            data-offer-image="{{ $offerImageUrl }}"
+                                            data-combo="offer">
+
+                                            <td>
+                                                <div class="cart_product">
+                                                    @if(!empty($offerSlug))
+                                                        <a href="{{ route('crazy.show', $offerSlug) }}" class="img-prd">
+                                                    @else
+                                                        <span class="img-prd">
+                                                    @endif
+                                                        <img src="{{ $offerImageUrl }}"
+                                                             alt="{{ e($cart->product_name) }}"
+                                                             onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                                    @if(!empty($offerSlug))
+                                                        </a>
+                                                    @else
+                                                        </span>
+                                                    @endif
+
+                                                    <div class="infor-prd">
+                                                        <h6 class="prd_name">
+                                                            @if(!empty($offerSlug))
+                                                                <a href="{{ route('crazy.show', $offerSlug) }}">{{ $cart->product_name }}</a>
+                                                            @else
+                                                                {{ $cart->product_name }}
+                                                            @endif
+
+                                                            @if(!empty($includedItems))
+                                                                <small class="text-muted d-block mt-1">Bundle includes:</small>
+                                                                <ul class="cart-bundle-list">
+                                                                    @foreach($includedItems as $it)
+                                                                        <li>
+                                                                            {{ $it['name'] ?? '' }}
+                                                                            @if(!empty($it['unit'])) ({{ $it['unit'] }}) @endif
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @endif
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td class="cart_price h6 each-price">
+                                                @if($savings > 0)
+                                                    <span class="price-original">₹ {{ number_format($mrpTotal, 0) }}</span>
+                                                @endif
+                                                <span class="price-final">₹ {{ number_format($finalPrice, 0) }}</span>
+                                            </td>
+
+                                            <td class="cart_quantity">
+                                                <span class="bundle-qty-val">1</span>
+                                                <span class="bundle-qty-label">Bundle</span>
+                                            </td>
+
+                                            <td class="cart_remove remove link">
+                                                <i class="icon icon-close"></i>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($carts as $cart)
-                                            @php
-                                $category = \App\Models\CategoryDetails::find($cart->category_id);
-                                $subcategory = \App\Models\SabCategoryDetails::find($cart->sub_category_id);
+                                    @endforeach
 
-                                // Use fallback strings if null to avoid missing parameter error
-                                $catSlug = $category->slug ?? 'category';
-                                $subcatSlug = $subcategory->slug ?? 'subcategory';
+                                @endif
 
-                                $productUrl = route('product.details', [
-                                    'cat' => $catSlug,
-                                    'sabcat' => $subcatSlug,
-                                    'slug' => $cart->slug
-                                ]);
-                            @endphp
+                                {{-- NORMAL PRODUCT ROWS --}}
+                                @if($normalRows->count() > 0)
 
+                                    @if($offerRows->count() > 0)
+                                        <tr>
+                                            <td colspan="4" class="cart-section-label normal">Products</td>
+                                        </tr>
+                                    @endif
 
-                            <tr class="tf-cart_item each-prd" 
-                                data-cart-id="{{ $cart->id }}" 
-                                data-price="{{ $cart->offer_price ?? $cart->price }}">
+                                    @foreach($normalRows as $cart)
+                                        @php
+                                            $category    = \App\Models\CategoryDetails::find($cart->category_id);
+                                            $subcategory = \App\Models\SabCategoryDetails::find($cart->sub_category_id);
+                                            $catSlug     = $category->slug    ?? 'category';
+                                            $subcatSlug  = $subcategory->slug ?? 'subcategory';
 
-                                                <td>
-                                                    <div class="cart_product">
-                                                        <a href="{{ $productUrl }}" class="img-prd">
-                            @php
-                                $images = json_decode($cart->images, true); // decode JSON to array
-                                $firstImage = $images[0] ?? 'placeholder.jpg'; // first image or fallback
-                            @endphp
+                                            $productUrl = route('product.details', [
+                                                'cat'    => $catSlug,
+                                                'sabcat' => $subcatSlug,
+                                                'slug'   => $cart->slug,
+                                            ]);
 
-                            <img class="lazyload" src="{{ asset('signage/home/productimage/' . $firstImage) }}" alt="{{ $cart->product_name }}">
-                            </a>
+                                            // ── Offer-aware pricing ──
+                                            $mrp             = (float) $cart->price;
+                                            $hasOffer        = !empty($cart->offer_price) && (float) $cart->offer_price < $mrp;
+                                            $unitPrice       = $hasOffer ? (float) $cart->offer_price : $mrp;
+                                            $discountPercent = ($hasOffer && $mrp > 0)
+                                                                ? (int) round((($mrp - $unitPrice) / $mrp) * 100)
+                                                                : 0;
 
+                                            // Line totals for the current saved quantity
+                                            $qtyNow    = (int) $cart->quantity;
+                                            $lineFinal = $unitPrice * $qtyNow;
+                                            $lineMrp   = $mrp * $qtyNow;
 
+                                            $productImageUrl = resolveProductImage((string)($cart->images ?? ''));
+                                            $productQuantity = \App\Models\ProductsDetails::where('id', $cart->product_id)->value('quantity') ?? 0;
+                                        @endphp
 
-                           <div class="infor-prd">
-    <h6 class="prd_name">
-        <a href="{{ $productUrl }}" class="link">
-            {{ $cart->product_name }}
-        </a>
-        <!-- Hidden input to store product ID -->
-        <input type="text" name="product_ids[]" value="{{ $cart->product_id }}">
-    </h6>
-</div>
+                                        <tr class="tf-cart_item"
+                                            data-cart-id="{{ $cart->id }}"
+                                            data-price="{{ $unitPrice }}"
+                                            data-mrp="{{ $mrp }}"
+                                            data-product-id="{{ $cart->product_id }}"
+                                            data-product-image="{{ $productImageUrl }}"
+                                            data-combo="no">
 
-                        </div>
-                    </td>
-                    
-                    @php
-                            $unitPrice = $cart->offer_price ?? $cart->price;
-                            $totalPrice = $unitPrice * $cart->quantity;
-                        @endphp
-                        <td class="cart_price h6 each-price">Rs. {{ number_format($totalPrice, 2) }}</td>                   
-                         <td class="cart_quantity">
-                        <div class="wg-quantity">
-                            <button class="btn-quantity minus-quantity" type="button" data-cart-id="{{ $cart->id }}">
-                                <i class="icon-minus fs-14"></i>
-                            </button>
-                            <input class="quantity-product" type="text" name="quantity" value="{{ $cart->quantity }}" data-cart-id="{{ $cart->id }}">
-                            <button class="btn-quantity plus-quantity" type="button" data-cart-id="{{ $cart->id }}">
-                                <i class="icon-plus fs-14"></i>
-                            </button>
-                        </div>
-                    </td>
-                    <td class="cart_remove remove link" data-cart-id="{{ $cart->id }}">
-                        <i class="icon icon-close"></i>
-                    </td>
-                    
-                </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">Your cart is empty.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-                        </table>
+                                            <td>
+                                                <div class="cart_product">
+                                                    <a href="{{ $productUrl }}" class="img-prd">
+                                                        <img src="{{ $productImageUrl }}"
+                                                             alt="{{ e($cart->product_name) }}"
+                                                             onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                                    </a>
+                                                    <div class="infor-prd">
+                                                        <h6 class="prd_name">
+                                                            <a href="{{ $productUrl }}">{{ $cart->product_name }}</a>
+                                                            <small class="d-block text-muted">
+                                                                @if($hasOffer)
+                                                                    <span class="price-original">₹ {{ number_format($mrp, 0) }}</span>
+                                                                    <span class="price-final">₹ {{ number_format($unitPrice, 0) }}</span>
+                                                                    <span class="text-danger">({{ $discountPercent }}% OFF)</span>
+                                                                @else
+                                                                    ₹ {{ number_format($unitPrice, 0) }}
+                                                                @endif
+                                                            </small>
+                                                            <input type="hidden" name="product_ids[]" value="{{ $cart->product_id }}">
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </td>
 
-                    </form>
+                                            {{-- each-price shows the LINE total; price-original is struck MRP --}}
+                                            <td class="cart_price h6 each-price">
+                                                @if($hasOffer)
+                                                    <span class="price-original">₹ {{ number_format($lineMrp, 0) }}</span>
+                                                @endif
+                                                <span class="price-final">₹ {{ number_format($lineFinal, 0) }}</span>
+                                            </td>
 
+                                            <td class="cart_quantity">
+                                                <div class="wg-quantity">
+                                                    <button class="btn-quantity minus-quantity" type="button">
+                                                        <i class="icon-minus fs-14"></i>
+                                                    </button>
+                                                    <input class="quantity-product"
+                                                           type="text"
+                                                           value="{{ $cart->quantity }}"
+                                                           data-max="{{ $productQuantity }}">
+                                                    <button class="btn-quantity plus-quantity" type="button">
+                                                        <i class="icon-plus fs-14"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td class="cart_remove remove link">
+                                                <i class="icon icon-close"></i>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                @endif
+
+                                @if($carts->count() == 0)
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4">Your cart is empty.</td>
+                                    </tr>
+                                @endif
+
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
-                    <div class="col-xxl-3 col-xl-4">
+
+                    {{-- RIGHT: Order summary --}}
+                    <div class="col-xxl-5 col-xl-4">
                         <div class="fl-sidebar-cart bg-white-smoke sticky-top">
-                            <div class="box-order-summary">
-                                <h4 class="title fw-semibold">Order Summary</h4>
-                                <div class="subtotal h6 text-button d-flex justify-content-between align-items-center">
-                                    <h6 class="fw-bold">Subtotal</h6>
-                                    <span id="cart-subtotal" class="total">Rs. 0</span>
-                                </div>
-                                <div class="discount text-button d-flex justify-content-between align-items-center">
-                                    <h6 class="fw-bold">Discounts</h6>
-                                    <span id="cart-discount" class="total h6">Rs. 0</span>
-                                </div>
-                                <div class="ship">
-                                    <h6 class="fw-bold">Shipping</h6>
-                                    <div class="flex-grow-1">
-                                        <fieldset class="ship-item">
-                                            <input type="radio" name="ship-check" class="tf-check-rounded" id="free" checked>
-                                            <label class="h6" for="free">
-                                                <span>Free Shipping</span>
-                                                <span id="cart-shipping" class="price">Rs. 0</span>
-                                            </label>
-                                        </fieldset>
+                            <div class="box-order-summary p-3 rounded shadow-sm">
+                                <h4 class="title fw-semibold mb-3">Order Summary</h4>
+
+                                <div class="offer-summary mb-3"></div>
+
+                                <div id="offer-total-box" class="border rounded p-2 mb-3 bg-light" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small">Bundle MRP</span>
+                                        <span id="offer-mrp" class="text-muted small price-original">₹ 0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-danger fw-semibold small">You Save</span>
+                                        <span id="offer-savings" class="text-danger small">- ₹ 0</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="fw-bold mb-0">Bundle Subtotal</h6>
+                                        <span id="offer-subtotal" class="fw-bold text-success">₹ 0</span>
                                     </div>
                                 </div>
-                                <h5 class="total-order d-flex justify-content-between align-items-center">
-                                    <span>Total</span>
-                                    <span id="cart-total" class="total">Rs. 0</span>
-                                </h5>
-                                <div class="list-ver">
-                                   <a href="#" id="proceed-to-checkout" class="tf-btn w-100 animate-btn">
-                                        Process to checkout
-                                        <i class="icon icon-arrow-right"></i>
-                                    </a>
 
+                                <div class="normal-summary mb-2"></div>
+
+                                <div id="normal-total-box" class="border rounded p-2 mb-3 bg-light" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-mrp-row" style="display:none;">
+                                        <span class="text-muted small">Total MRP</span>
+                                        <span id="normal-mrp" class="text-muted small price-original">₹ 0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-savings-row" style="display:none;">
+                                        <span class="text-danger fw-semibold small">You Save</span>
+                                        <span id="normal-savings" class="text-danger small">- ₹ 0</span>
+                                    </div>
+                                    <hr class="my-2" id="normal-divider" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="fw-bold mb-0">Subtotal</h6>
+                                        <span id="normal-subtotal" class="fw-bold text-success">₹ 0</span>
+                                    </div>
+                                </div>
+
+                                <div class="border rounded p-3 bg-white shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0">Shipping</h6>
+                                        <span id="cart-shipping" class="fw-bold">Free</span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="fw-bold mb-0">Grand Total</h6>
+                                        <span id="cart-total" class="fw-bold text-success fs-5">₹ 0</span>
+                                    </div>
+                                </div>
+
+                                <div class="list-ver d-grid gap-2 mt-4">
+                                    <a href="#" id="proceed-to-checkout" class="tf-btn w-100 animate-btn">
+                                        Proceed to checkout <i class="icon icon-arrow-right"></i>
+                                    </a>
                                     <a href="{{ route('frontend.index') }}" class="tf-btn btn-white animate-btn animate-dark w-100">
-                                        Continue shopping
-                                        <i class="icon icon-arrow-right"></i>
+                                        Continue shopping <i class="icon icon-arrow-right"></i>
                                     </a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
+
                 </div>
             </div>
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+            $(document).ready(function () {
+
+                const notyf = new Notyf({
+                    duration: 2500,
+                    position: { x: 'right', y: 'top' }
+                });
+
+                // ✅ Base URL for offer slug links
+                const dealsBaseUrl = '{{ url("/deals") }}';
+
+                // ✅ Indian-format helper — rounds and drops decimals
+                function money(n) {
+                    return Math.round(n).toLocaleString('en-IN');
+                }
+
+                function updateSummary() {
+                    let shipping    = 0;
+                    let offerMrp    = 0;
+                    let offerFinal  = 0;
+                    let normalTotal = 0;
+                    let normalMrp   = 0;
+
+                    const $offerSummary  = $('.offer-summary').empty();
+                    const $normalSummary = $('.normal-summary').empty();
+
+                    $('.tf-cart_item').each(function () {
+                        const $row       = $(this);
+                        const isOffer    = $row.data('combo') === 'offer';
+                        const qty        = isOffer ? 1 : (parseInt($row.find('.quantity-product').val()) || 1);
+                        const price      = parseFloat($row.data('price')) || 0;
+                        const mrp        = parseFloat($row.data('mrp'))   || price;
+
+                        // ✅ Use slug for URL (not numeric id)
+                        const offerSlug  = $row.data('offer-slug') || '';
+
+                        const imgSrc = isOffer
+                            ? ($row.data('offer-image')   || '{{ asset('images/no-image.png') }}')
+                            : ($row.data('product-image') || '{{ asset('images/no-image.png') }}');
+
+                        // ✅ Build link using slug
+                        const linkHref = isOffer && offerSlug
+                            ? dealsBaseUrl + '/' + offerSlug
+                            : ($row.find('.prd_name a').first().attr('href') || '#');
+
+                        const name = isOffer
+                            ? ($row.data('offer-name') || '')
+                            : ($row.find('.prd_name a').first().text().trim() || '');
+
+                        const lineTotal = isOffer ? price : price * qty;
+                        const lineMrp   = isOffer ? mrp   : mrp * qty;
+                        const lineHasOffer = lineMrp > lineTotal;
+
+                        const itemHTML = `
+                            <div class="summary-item">
+                                <a href="${linkHref}">
+                                    <img src="${imgSrc}" class="summary-thumb"
+                                         onerror="this.src='{{ asset('images/no-image.png') }}'">
+                                </a>
+                                <div class="summary-item-info">
+                                    <a href="${linkHref}">${name}</a><br>
+                                    ${lineHasOffer ? `<small class="text-muted text-decoration-line-through">₹ ${money(lineMrp)}</small> ` : ''}
+                                    <small>₹ ${money(lineTotal)}</small>
+                                    <small>${isOffer ? ' — Bundle' : ' × ' + qty}</small>
+                                </div>
+                            </div>`;
+
+                        if (isOffer) {
+                            offerMrp   += mrp;
+                            offerFinal += price;
+                            $offerSummary.append(itemHTML);
+                        } else {
+                            normalTotal += price * qty;
+                            normalMrp   += mrp * qty;
+                            $normalSummary.append(itemHTML);
+                        }
+                    });
+
+                    if (offerFinal > 0) {
+                        const savings = Math.max(0, offerMrp - offerFinal);
+                        $('#offer-total-box').show();
+                        $('#offer-mrp').text('₹ ' + money(offerMrp));
+                        $('#offer-savings').text('- ₹ ' + money(savings));
+                        $('#offer-subtotal').text('₹ ' + money(offerFinal));
+                    } else {
+                        $('#offer-total-box').hide();
+                    }
+
+                    if (normalTotal > 0) {
+                        const nSavings = Math.max(0, normalMrp - normalTotal);
+                        $('#normal-total-box').show();
+                        $('#normal-subtotal').text('₹ ' + money(normalTotal));
+
+                        if (nSavings > 0) {
+                            $('#normal-mrp').text('₹ ' + money(normalMrp));
+                            $('#normal-savings').text('- ₹ ' + money(nSavings));
+                            $('#normal-mrp-row, #normal-savings-row, #normal-divider').show();
+                        } else {
+                            $('#normal-mrp-row, #normal-savings-row, #normal-divider').hide();
+                        }
+                    } else {
+                        $('#normal-total-box').hide();
+                    }
+
+                    const grand = offerFinal + normalTotal + shipping;
+                    $('#cart-shipping').text('₹ ' + money(shipping));
+                    $('#cart-total').text('₹ ' + money(grand));
+                }
+
+                function updateRowPrice($row) {
+                    if ($row.data('combo') !== 'offer') {
+                        const price    = parseFloat($row.data('price')) || 0;
+                        const mrp      = parseFloat($row.data('mrp'))   || price;
+                        const qty      = parseInt($row.find('.quantity-product').val()) || 1;
+                        const hasOffer = mrp > price;
+
+                        // Rebuild the price cell so the struck MRP stays visible on qty change
+                        let cellHtml = '';
+                        if (hasOffer) {
+                            cellHtml += '<span class="price-original">₹ ' + money(mrp * qty) + '</span>';
+                        }
+                        cellHtml += '<span class="price-final">₹ ' + money(price * qty) + '</span>';
+                        $row.find('.each-price').html(cellHtml);
+
+                        // ✅ PERSIST the quantity to the database
+                        const cartId = $row.data('cart-id');
+                        fetch('{{ route('cart.updateQuantity') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type'    : 'application/json',
+                                'X-CSRF-TOKEN'    : '{{ csrf_token() }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({ cart_id: cartId, quantity: qty })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                $('.cart-count').text(data.cart_count || 0);
+                            }
+                        })
+                        .catch(() => console.error('Quantity update failed'));
+                    }
+                    updateSummary();
+                }
+
+                $(document).on('click', '.plus-quantity', function () {
+                    const $row = $(this).closest('.tf-cart_item');
+                    const $inp = $row.find('.quantity-product');
+                    const max  = parseInt($inp.data('max')) || 0;
+                    const cur  = parseInt($inp.val()) || 1;
+                    if (cur < max) {
+                        $inp.val(cur + 1);
+                        updateRowPrice($row);
+                    } else {
+                        notyf.error('Only ' + max + ' units available in stock.');
+                    }
+                });
+
+                $(document).on('click', '.minus-quantity', function () {
+                    const $row = $(this).closest('.tf-cart_item');
+                    const $inp = $row.find('.quantity-product');
+                    const cur  = parseInt($inp.val()) || 1;
+                    if (cur > 1) { $inp.val(cur - 1); updateRowPrice($row); }
+                });
+
+                $(document).on('change', '.quantity-product', function () {
+                    const $row = $(this).closest('.tf-cart_item');
+                    $(this).val(Math.max(parseInt($(this).val()) || 1, 1));
+                    updateRowPrice($row);
+                });
+
+                $(document).on('click', '.cart_remove', function () {
+                    const $row   = $(this).closest('.tf-cart_item');
+                    const cartId = $row.data('cart-id');
+                    const isOffer = $row.data('combo') === 'offer';
+                
+                    $row.remove();
+                
+                    // ✅ Remove section label if no items remain in that section
+                    const remainingOffers  = $('.tf-cart_item[data-combo="offer"]').length;
+                    const remainingNormals = $('.tf-cart_item[data-combo="no"]').length;
+                
+                    if (remainingOffers === 0) {
+                        // Remove "Offer Bundles" label row
+                        $('td.cart-section-label:not(.normal)').closest('tr').remove();
+                    }
+                    if (remainingNormals === 0) {
+                        // Remove "Products" label row
+                        $('td.cart-section-label.normal').closest('tr').remove();
+                    }
+                
+                    updateSummary();
+                    checkEmptyCart();
+                
+                    fetch('{{ route('cart.remove') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type'    : 'application/json',
+                            'X-CSRF-TOKEN'    : '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ cart_id: cartId })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            $('.cart-count').text(data.cart_count || 0);
+                            if (data.cart_count == 0) location.reload();
+                        }
+                    })
+                    .catch(() => console.error('Remove request failed'));
+                });
+
+                $('#proceed-to-checkout').on('click', function (e) {
+                    e.preventDefault();
+                    const cartData = [];
+
+                    $('.tf-cart_item').each(function () {
+                        const $row      = $(this);
+                        const isOffer   = $row.data('combo') === 'offer';
+                        const offerId   = parseInt($row.data('offer-id')) || 0;
+                        const offerSlug = $row.data('offer-slug') || '';   // ✅ pass slug too
+                        const price     = parseFloat($row.data('price')) || 0;
+                        const mrp       = parseFloat($row.data('mrp'))   || price;
+                        const image     = isOffer
+                            ? ($row.data('offer-image')   || '')
+                            : ($row.data('product-image') || '');
+
+                        if (isOffer) {
+                            cartData.push({
+                                cart_id      : $row.data('cart-id'),
+                                is_offer     : true,
+                                offer_id     : offerId,
+                                offer_slug   : offerSlug,   // ✅ included for checkout page use
+                                product_id   : 0,
+                                product_name : $row.data('offer-name') || '',
+                                quantity     : 1,
+                                price        : price,
+                                mrp          : mrp,
+                                subtotal     : price,
+                                image        : image,
+                                size         : '',
+                                print        : '',
+                            });
+                        } else {
+                            const qty = parseInt($row.find('.quantity-product').val()) || 1;
+                            cartData.push({
+                                cart_id      : $row.data('cart-id'),
+                                is_offer     : false,
+                                offer_id     : 0,
+                                offer_slug   : '',
+                                product_id   : $row.data('product-id') || $row.find('input[name="product_ids[]"]').val() || 0,
+                                product_name : $row.find('.prd_name a').first().text().trim(),
+                                quantity     : qty,
+                                price        : price,
+                                mrp          : mrp,   // ✅ FIX: send real MRP (was hardcoded to price)
+                                subtotal     : price * qty,
+                                image        : image,
+                                size         : '',
+                                print        : '',
+                            });
+                        }
+                    });
+
+                    if (cartData.length === 0) { notyf.error('Your cart is empty.'); return; }
+
+                    fetch('{{ route('cart.storeCheckoutData') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type'    : 'application/json',
+                            'X-CSRF-TOKEN'    : '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ cart: cartData })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '{{ route('show.checkout') }}';
+                        } else {
+                            notyf.error('Failed to process checkout. Please try again.');
+                        }
+                    })
+                    .catch(() => notyf.error('Something went wrong. Please try again.'));
+                });
+
+                updateSummary();
+            });
+
+            function checkEmptyCart() {
+                if ($('.tf-cart_item').length === 0) {
+                    $('.custom-cart-box, .fl-sidebar-cart').hide();
+                    if ($('#emptyCartMessage').length === 0) {
+                        $('.each-list-prd .container .row').append(`
+                            <div id="emptyCartMessage" class="col-12 text-center py-5">
+                                <h4 class="fw-semibold mb-3">No products found in your cart.</h4>
+                                <a href="{{ route('frontend.index') }}" class="tf-btn animate-btn">
+                                    Continue Shopping <i class="icon icon-arrow-right"></i>
+                                </a>
+                            </div>
+                        `);
+                    }
+                } else {
+                    $('.custom-cart-box, .fl-sidebar-cart').show();
+                    $('#emptyCartMessage').remove();
+                }
+            }
+
+            $(document).ready(checkEmptyCart);
+            </script>
+
         </div>
-        
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Toastr JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<script>
-$(document).ready(function(){
-
-    function updateRowPrice(row){
-        let quantity = parseInt(row.find('.quantity-product').val()) || 1;
-        let unitPrice = parseFloat(row.data('price')) || 0;
-        let totalPrice = unitPrice * quantity;
-        row.find('.each-price').text('Rs. ' + totalPrice.toFixed(2));
-        updateSummary();
-    }
-
-    function updateSummary(){
-        let subtotal = 0;
-        $(".tf-cart_item").each(function(){
-            let quantity = parseInt($(this).find('.quantity-product').val()) || 1;
-            let unitPrice = parseFloat($(this).data('price')) || 0;
-            subtotal += (unitPrice * quantity);
-        });
-
-        let discount = 0; // 👉 you can calculate based on offers
-        let shipping = 0; // 👉 free shipping for now
-        let total = subtotal - discount + shipping;
-
-        $("#cart-subtotal").text("Rs. " + subtotal.toFixed(2));
-        $("#cart-discount").text("Rs. " + discount.toFixed(2));
-        $("#cart-shipping").text("Rs. " + shipping.toFixed(2));
-        $("#cart-total").text("Rs. " + total.toFixed(2));
-    }
-
-    // Plus
-    $(document).on('click', '.plus-quantity', function(){
-        let row = $(this).closest('.tf-cart_item');
-        let input = row.find('.quantity-product');
-        let quantity = parseInt(input.val()) + 1;
-        input.val(quantity);
-        updateRowPrice(row);
-    });
-
-    // Minus
-    $(document).on('click', '.minus-quantity', function(){
-        let row = $(this).closest('.tf-cart_item');
-        let input = row.find('.quantity-product');
-        let quantity = Math.max(parseInt(input.val()) - 1, 1);
-        input.val(quantity);
-        updateRowPrice(row);
-    });
-
-    // Manual change
-    $(document).on('change', '.quantity-product', function(){
-        let row = $(this).closest('.tf-cart_item');
-        let quantity = Math.max(parseInt($(this).val()) || 1, 1);
-        $(this).val(quantity);
-        updateRowPrice(row);
-    });
-
-    // Remove cart row
-   // Remove cart row
-$(document).on('click', '.cart_remove', function(){
-    let row = $(this).closest('.tf-cart_item');
-    let cartId = row.data('cart-id');
-
-    // Remove row from UI
-    row.remove();
-    updateSummary();
-
-    // Backend sync
-    fetch("{{ route('cart.remove') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        body: JSON.stringify({ cart_id: cartId })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success){
-            $('.cart-count').text(data.cart_count || 0);
-
-            // reload if empty cart
-            if(data.cart_count == 0){
-                location.reload();
-            }
-
-            // ✅ show Notyf message instead of Toastr
-            notyf.open({
-                type: 'custom-success',
-                message: data.message || 'Product removed from cart!'
-            });
-        } else {
-            notyf.error(data.message || 'Failed to remove item.');
-        }
-    })
-    .catch(() => {
-        notyf.error('Something went wrong. Try again.');
-    });
-});
-
-    // Initial calculation on page load
-    updateSummary();
-});
-</script>
-<script>
-$(document).ready(function(){
-
-    // Initialize Notyf
-    const notyf = new Notyf({
-        duration: 3000,
-        position: { x: 'right', y: 'top' },
-        dismissible: true
-    });
-
-    $('#proceed-to-checkout').on('click', function(e){
-        e.preventDefault();
-
-        const cartData = [];
-
-        $('.tf-cart_item').each(function(){
-            const row = $(this);
-            cartData.push({
-                id: row.find('input[name="product_ids[]"]').val(), // get product ID from hidden input
-                product_name: row.find('.prd_name a').text().trim(),
-                quantity: parseInt(row.find('.quantity-product').val()) || 1,
-                price: parseFloat(row.data('price')) || 0,
-                image: row.find('img').attr('src')
-            });
-        });
-
-        fetch('{{ route("cart.storeCheckoutData") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({ cart: cartData })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                // Show success notification
-                notyf.success('Products added to cart successfully!');
-
-                // Redirect to checkout after short delay
-                setTimeout(() => {
-                    window.location.href = "{{ route('show.checkout') }}";
-                }, 1000);
-
-            } else {
-                notyf.error('Failed to process checkout.');
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            notyf.error('Something went wrong.');
-        });
-    });
-
-});
-</script>
-
-
-
-        <!-- /View Cart -->
-        <!-- Footer -->
-               @include('components.frontend.footer')    
-
-        <!-- /Footer -->
+        @include('components.frontend.footer')
     </div>
 
-    <!-- Mobile Menu -->
     <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
         <span class="icon-close-popup" data-bs-dismiss="offcanvas">
             <i class="icon-close"></i>
         </span>
         <div class="canvas-header">
-            <p class="text-logo-mb"><img src="images/logo/logo.webp" data-src="images/logo/logo.webp"></p>
-            <a href="#" class="tf-btn type-small style-2">
-                Login
-                <i class="icon icon-user"></i>
-            </a>
+            <p class="text-logo-mb">
+                <img src="images/logo/logo.webp" data-src="images/logo/logo.webp" alt="Logo">
+            </p>
+            <a href="#" class="tf-btn type-small style-2">Login <i class="icon icon-user"></i></a>
             <span class="br-line"></span>
         </div>
         <div class="canvas-body">
@@ -376,44 +714,16 @@ $(document).ready(function(){
                 <ul class="nav-ul-mb" id="wrapper-menu-navigation"></ul>
             </div>
             <div class="group-btn">
-                <a href="#" class="tf-btn type-small style-2">
-                    Wishlist
-                    <i class="icon icon-heart"></i>
-                </a>
+                <a href="#" class="tf-btn type-small style-2">Wishlist <i class="icon icon-heart"></i></a>
                 <div data-bs-dismiss="offcanvas">
                     <a href="#" data-bs-toggle="modal" class="tf-btn type-small style-2">
-                        Search
-                        <i class="icon icon-magnifying-glass"></i>
+                        Search <i class="icon icon-magnifying-glass"></i>
                     </a>
                 </div>
             </div>
-            <div class="flow-us-wrap">
-                <h5 class="title">Follow us on</h5>
-                <ul class="tf-social-icon">
-                    <li>
-                        <a href="https://www.facebook.com/" target="_blank" class="social-facebook">
-                            <span class="icon"><i class="icon-fb"></i></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com/" target="_blank" class="social-instagram">
-                            <span class="icon"><i class="icon-instagram-logo"></i></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://x.com/" target="_blank" class="social-x">
-                            <span class="icon"><i class="icon-x"></i></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
-    <!-- /Mobile Menu -->
 
-    <!-- Javascript -->
-   @include('components.frontend.main-js')
-
+    @include('components.frontend.main-js')
 </body>
-
 </html>

@@ -26,6 +26,8 @@ class FooterDetailsController extends Controller
             'footer_heading' => 'nullable|string|max:255',
             'address_line1' => 'nullable|string|max:255',
             'address_line2' => 'nullable|string|max:255',
+                        'iframeaddress' => 'nullable|string',
+
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'newsletter_heading' => 'nullable|string|max:255',
@@ -56,6 +58,8 @@ class FooterDetailsController extends Controller
             'footer_heading' => 'nullable|string|max:255',
             'address_line1' => 'nullable|string|max:255',
             'address_line2' => 'nullable|string|max:255',
+                                    'iframeaddress' => 'nullable|string',
+
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'newsletter_heading' => 'nullable|string|max:255',

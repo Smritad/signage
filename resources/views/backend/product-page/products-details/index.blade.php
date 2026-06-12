@@ -51,32 +51,62 @@
 							</div>
 
 
-                    <div class="table-responsive custom-scrollbar">
-    <table class="table table-striped" id="basic-1">
-        <thead>
+<div class="table-responsive custom-scrollbar">
+<table class="table table-striped" id="basic-1">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Products Name</th>
+            <th>Priority</th>
+            <th>Bestseller</th> <!-- New column -->
+            <th>New Arrival</th> <!-- New column -->
+            <th width="200">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($products as $key => $product)
             <tr>
-                <th>#</th>
-                <th>Products Name</th>
-                <th width="200">Action</th>
+                <td>{{ $key+1 }}</td>
+                <td>{{ $product->product_name }}</td>
+                <td>
+                    <form action="{{ route('products-details.updatePriority', $product->id) }}" method="POST" class="d-flex">
+                        @csrf
+                        @method('PATCH')
+                        <input type="number" name="priority" value="{{ $product->priority }}" class="form-control form-control-sm me-1" style="width:80px;">
+                        <button type="submit" class="btn btn-sm btn-success">Save</button>
+                    </form>
+                </td>
+
+                <!-- Bestseller toggle -->
+                <td>
+                    <form action="{{ route('products-details.toggleBestseller', $product->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="checkbox" name="is_bestseller" onchange="this.form.submit()" {{ $product->is_bestseller ? 'checked' : '' }}>
+                    </form>
+                </td>
+
+                <!-- New Arrival toggle -->
+                <td>
+                    <form action="{{ route('products-details.toggleNewArrival', $product->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="checkbox" name="is_new_arrival" onchange="this.form.submit()" {{ $product->is_new_arrival ? 'checked' : '' }}>
+                    </form>
+                </td>
+
+                <td>
+                    <a href="{{ route('products-details.edit', $product->id) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ route('products-details.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?')">Delete</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach($products as $key => $product)
-                <tr>
-                    <td>{{ $key+1 }}</td>
-                    <td>{{ $product->product_name }}</td>
-                    <td>
-                        <a href="{{ route('products-details.edit', $product->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('products-details.destroy', $product->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this product?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @endforeach
+    </tbody>
+</table>
 </div>
 
                   </div>

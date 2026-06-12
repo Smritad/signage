@@ -85,7 +85,9 @@
                                                                         <input type="file" class="form-control signage-image" name="items[${rowIndex}][image]" accept=".jpg, .jpeg, .png, .webp, .svg" onchange="previewImage(event, ${rowIndex})">
                                                                     </td>
                                                                     <td>
-                                                                        <img id="preview_{{ $i }}" src="{{ asset($item['image']) }}" class="img-thumbnail" style="max-height: 80px;">
+<img id="preview_{{ $i }}" 
+     src="{{ asset('' . $item['image']) }}" 
+     class="img-thumbnail" style="max-height: 80px;">
                                                                     </td>
                                                                     <td>
                                                                         <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remove</button>

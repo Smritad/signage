@@ -47,16 +47,28 @@
                             <div class="col-12">
                             <div class="tab-content" id="wizard-tabContent">
                                 <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                 <form action="{{ route('fragrance-type-details.store') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Fragrance Type Title</label>
-                                        <input type="text" name="title" id="title" class="form-control" placeholder="Enter Fragrance Type" required>
-                                    </div>
+                                    <form action="{{ route('fragrance-type-details.store') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="title" class="form-label">Fragrance Type Title</label>
+                                                <input type="text" name="title" id="title" class="form-control" placeholder="Enter Fragrance Type" required>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="image" class="form-label">Fragrance Image</label>
+                                                <input type="file" name="image" id="image" class="form-control" accept="image/*">
+                                                <small class="text-secondary"><b>Note: Each file should be less than 2MB.</b></small><br>
+                                                <small class="text-secondary"><b>Allowed: jpg, jpeg, png, webp, svg</b></small>
 
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="{{ route('fragrance-type-details.index') }}" class="btn btn-secondary">Cancel</a>
-                                </form>
+                                            </div>
+                                        </div>
+                                    
+                                        <button type="submit" class="btn btn-primary mt-5">Save</button>
+                                        <a href="{{ route('fragrance-type-details.index') }}" class="btn btn-secondary mt-5">Cancel</a>
+                                    </form>
+
                                 </div>
                             </div>
                             </div>

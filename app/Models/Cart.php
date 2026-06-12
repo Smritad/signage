@@ -17,16 +17,24 @@ class Cart extends Model
         'category_id',
         'sub_category_id',
         'product_id',
+        'offer_id',        // ★ was missing — caused offer_id to be silently dropped on Eloquent create()
         'product_name',
         'slug',
         'price',
         'offer_price',
         'quantity',
-        'images',
+        'images',          // ★ NO cast — store as plain string (filename or JSON array string)
+        'combo',
+        'combo_text',
     ];
 
-    // If you want to automatically cast images to array
+    // ╔══════════════════════════════════════════════════════╗
+    // ║  DO NOT cast 'images' to 'array'.                   ║
+    // ║  Casting causes Eloquent to JSON-encode the value   ║
+    // ║  on every save, turning "file.png" into             ║
+    // ║  "\"file.png\"" (double-encoded, breaks img URLs).  ║
+    // ╚══════════════════════════════════════════════════════╝
     protected $casts = [
-        'images' => 'array',
+        // intentionally empty for images
     ];
 }

@@ -47,17 +47,35 @@
                             <div class="col-12">
                             <div class="tab-content" id="wizard-tabContent">
                                 <div class="tab-pane fade show active" id="wizard-contact" role="tabpanel" aria-labelledby="wizard-contact-tab">
-                                 <form action="{{ route('fragrance-type-details.update', $note->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Fragrance Type Title</label>
-                                        <input type="text" name="title" id="title" value="{{ $note->title }}" class="form-control" required>
-                                    </div>
+                                    <form action="{{ route('fragrance-type-details.update', $note->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                    
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="title" class="form-label">Fragrance Type Title</label>
+                                                <input type="text" name="title" id="title" value="{{ $note->title }}" class="form-control" required>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="image" class="form-label">Fragrance Image</label>
+                                                <input type="file" name="image" id="image" class="form-control" accept="image/*">
+                                                <small class="text-secondary"><b>Note: Each file should be less than 2MB.</b></small><br>
+                                                <small class="text-secondary"><b>Allowed: jpg, jpeg, png, webp, svg</b></small>
 
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                    <a href="{{ route('fragrance-type-details.index') }}" class="btn btn-secondary">Cancel</a>
-                                </form>
+                                                @if($note->image)
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('signage/home/productimage/' . $note->image) }}" width="100" alt="Fragrance Image">
+                                                        <input type="hidden" name="old_image" value="{{ $note->image }}">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <a href="{{ route('fragrance-type-details.index') }}" class="btn btn-secondary">Cancel</a>
+                                    </form>
+
                                 </div>
                             </div>
                             </div>

@@ -7,11 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class OrderDetail extends Model
 {
     protected $table = 'order_details';
-    
+
     protected $fillable = [
         'user_id',
         'order_id',
         'payment_id',
+        'transaction_id',
+        'payment_status',
+        'payment_method',
+        'failure_reason',
+        'gateway_response',
         'customer_name',
         'customer_email',
         'customer_phone',
@@ -36,19 +41,44 @@ class OrderDetail extends Model
         'images',
         'sizes',
         'colors',
+        'combo_product',
+        'sub_category_ids',
+        'offer_ids',
+        'offer_data',
         'invoice_id',
+        'is_shipped',
+        'shipment_id',
+        'channel_order_id',
+        'awb_code',
+        'courier_company_id',
+        'courier_name',
+        'courier_status',
+        'delivery_status',
+        'created_by',
         'created_at',
-        'created_by'
+        'updated_at',
     ];
 
+    // ╔══════════════════════════════════════════════════════════╗
+    // ║  These columns are JSON arrays stored as text in DB.    ║
+    // ║  Eloquent will auto encode/decode them on read/write.   ║
+    // ║  'images' here is an ARRAY of filenames for the order   ║
+    // ║  (one per line item) — different from cart.images.      ║
+    // ╚══════════════════════════════════════════════════════════╝
     protected $casts = [
-        'product_ids'   => 'array',
-        'product_names' => 'array',
-        'quantities'    => 'array',
-        'prices'        => 'array',
-        'subtotals'     => 'array',
-        'images'        => 'array',
-        'sizes'         => 'array',
-        'colors'        => 'array'
+        'product_ids'      => 'array',
+        'product_names'    => 'array',
+        'quantities'       => 'array',
+        'prices'           => 'array',
+        'subtotals'        => 'array',
+        'images'           => 'array',   // array of per-item filenames
+        'sizes'            => 'array',
+        'colors'           => 'array',
+        'offer_ids'        => 'array',
+        'offer_data'       => 'array',
+        'gateway_response' => 'array',
+        'total_price'      => 'float',
+        'created_at'       => 'datetime',
+        'updated_at'       => 'datetime',
     ];
 }

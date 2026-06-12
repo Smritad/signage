@@ -811,7 +811,7 @@
                 $wishlistInner.append(`
           <div class="tf-wishlist-empty text-center">
             <p class="text-notice">NO PRODUCTS WERE ADDED TO THE WISHLIST.</p>
-            <a href="index.html" class="tf-btn animate-btn btn-fill btn-back-shop">BACK TO SHOPPING</a>
+            <a href="https://anvayafoundation.com/signage/" class="tf-btn animate-btn btn-fill btn-back-shop">BACK TO SHOPPING</a>
           </div>
         `);
             } else {
@@ -924,108 +924,108 @@
     /* Handle Mobile Menu
     -------------------------------------------------------------------------*/
     var handleMobileMenu = function () {
-        const $desktopMenu = $(".box-nav-menu:not(.not-append)").clone();
-        $desktopMenu.find(".list-ver, .list-hor,.mn-none").remove();
+        // const $desktopMenu = $(".box-nav-menu:not(.not-append)").clone();
+        // $desktopMenu.find(".list-ver, .list-hor,.mn-none").remove();
 
-        const $mobileMenu = $('<ul class="nav-ul-mb"></ul>');
+        // const $mobileMenu = $('<ul class="nav-ul-mb"></ul>');
 
-        $desktopMenu.find("> li.menu-item").each(function (i, menuItem) {
-            const $item = $(menuItem);
-            const text = $item.find("> a.item-link").clone().children().remove().end().text().trim();
-            const submenu = $item.find("> .sub-menu");
-            const id = "dropdown-menu-" + i;
-            if (text.toLowerCase() === "home") {
-                const $li = $(`
-              <li class="nav-mb-item">
-                  <a href="#${id}" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${id}">
-                      <span>${text}</span>
-                      <span class="icon icon-caret-down"></span>
-                  </a>
-                  <div id="${id}" class="collapse">
-                      <ul class="sub-nav-menu"></ul>
-                  </div>
-              </li>
-          `);
-                $(".modalDemo .demo-name").each(function () {
-                    const $demoName = $(this);
-                    const link = $demoName.attr("href") || "#";
-                    const title = $demoName.text().trim();
-                    const isActive = $demoName.hasClass("active");
-                    if (title) {
-                        const activeClass = isActive ? "active" : "";
-                        $li.find(".sub-nav-menu").append(`<li><a href="${link}" class="sub-nav-link ${activeClass}">${title}</a></li>`);
-                    }
-                });
-                $mobileMenu.append($li);
-                return;
-            }
+        // $desktopMenu.find("> li.menu-item").each(function (i, menuItem) {
+        //     const $item = $(menuItem);
+        //     const text = $item.find("> a.item-link").clone().children().remove().end().text().trim();
+        //     const submenu = $item.find("> .sub-menu");
+        //     const id = "dropdown-menu-" + i;
+        //     if (text.toLowerCase() === "home") {
+        //         const $li = $(`
+        //       <li class="nav-mb-item">
+        //           <a href="#${id}" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${id}">
+        //               <span>${text}</span>
+        //               <span class="icon icon-caret-down"></span>
+        //           </a>
+        //           <div id="${id}" class="collapse">
+        //               <ul class="sub-nav-menu"></ul>
+        //           </div>
+        //       </li>
+        //   `);
+        //         $(".modalDemo .demo-name").each(function () {
+        //             const $demoName = $(this);
+        //             const link = $demoName.attr("href") || "#";
+        //             const title = $demoName.text().trim();
+        //             const isActive = $demoName.hasClass("active");
+        //             if (title) {
+        //                 const activeClass = isActive ? "active" : "";
+        //                 $li.find(".sub-nav-menu").append(`<li><a href="${link}" class="sub-nav-link ${activeClass}">${title}</a></li>`);
+        //             }
+        //         });
+        //         $mobileMenu.append($li);
+        //         return;
+        //     }
 
-            if (submenu.length > 0) {
-                const $li = $(`
-                <li class="nav-mb-item">
-                    <a href="#${id}" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${id}">
-                        <span>${text}</span>
-                        <span class="icon icon-caret-down"></span>
-                    </a>
-                    <div id="${id}" class="collapse"></div>
-                </li>
-            `);
+        //     if (submenu.length > 0) {
+        //         const $li = $(`
+        //         <li class="nav-mb-item">
+        //             <a href="#${id}" class="collapsed mb-menu-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${id}">
+        //                 <span>${text}</span>
+        //                 <span class="icon icon-caret-down"></span>
+        //             </a>
+        //             <div id="${id}" class="collapse"></div>
+        //         </li>
+        //     `);
 
-                const $subNav = $('<ul class="sub-nav-menu"></ul>');
+        //         const $subNav = $('<ul class="sub-nav-menu"></ul>');
 
-                submenu.find(".mega-menu-item").each(function (j) {
-                    const heading = $(this).find(".menu-heading").text().trim();
-                    const subId = `${id}-group-${j}`;
-                    const $group = $(`
-                    <li>
-                        <a href="#${subId}" class="collapsed sub-nav-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${subId}">
-                            <span>${heading}</span>
-                            <span class="icon icon-caret-down"></span>
-                        </a>
-                        <div id="${subId}" class="collapse">
-                            <ul class="sub-nav-menu sub-menu-level-2"></ul>
-                        </div>
-                    </li>
-                `);
+        //         submenu.find(".mega-menu-item").each(function (j) {
+        //             const heading = $(this).find(".menu-heading").text().trim();
+        //             const subId = `${id}-group-${j}`;
+        //             const $group = $(`
+        //             <li>
+        //                 <a href="#${subId}" class="collapsed sub-nav-link" data-bs-toggle="collapse" aria-expanded="false" aria-controls="${subId}">
+        //                     <span>${heading}</span>
+        //                     <span class="icon icon-caret-down"></span>
+        //                 </a>
+        //                 <div id="${subId}" class="collapse">
+        //                     <ul class="sub-nav-menu sub-menu-level-2"></ul>
+        //                 </div>
+        //             </li>
+        //         `);
 
-                    $(this)
-                        .find(".sub-menu_list a")
-                        .each(function () {
-                            const $link = $(this);
-                            const linkHref = $link.attr("href") || "#";
-                            const title = $link.text().trim();
-                            const isActive = $link.hasClass("active");
+        //             $(this)
+        //                 .find(".sub-menu_list a")
+        //                 .each(function () {
+        //                     const $link = $(this);
+        //                     const linkHref = $link.attr("href") || "#";
+        //                     const title = $link.text().trim();
+        //                     const isActive = $link.hasClass("active");
 
-                            if (title !== "") {
-                                const activeClass = isActive ? "active" : "";
-                                $group
-                                    .find(".sub-menu-level-2")
-                                    .append(`<li><a href="${linkHref}" class="sub-nav-link ${activeClass}">${title}</a></li>`);
-                            }
-                        });
+        //                     if (title !== "") {
+        //                         const activeClass = isActive ? "active" : "";
+        //                         $group
+        //                             .find(".sub-menu-level-2")
+        //                             .append(`<li><a href="${linkHref}" class="sub-nav-link ${activeClass}">${title}</a></li>`);
+        //                     }
+        //                 });
 
-                    $subNav.append($group);
-                });
+        //             $subNav.append($group);
+        //         });
 
-                if ($subNav.children().length === 0) {
-                    submenu.find("a").each(function () {
-                        const link = $(this).attr("href") || "#";
-                        const title = $(this).text().trim();
-                        if (title !== "") {
-                            $subNav.append(`<li><a href="${link}" class="sub-nav-link">${title}</a></li>`);
-                        }
-                    });
-                }
-                $li.find(`#${id}`).append($subNav);
-                $mobileMenu.append($li);
-            } else {
-                $mobileMenu.append(
-                    `<li class="nav-mb-item"><a href="${$item.find("a").attr("href")}" class="mb-menu-link"><span>${text}</span></a></li>`
-                );
-            }
-        });
+        //         if ($subNav.children().length === 0) {
+        //             submenu.find("a").each(function () {
+        //                 const link = $(this).attr("href") || "#";
+        //                 const title = $(this).text().trim();
+        //                 if (title !== "") {
+        //                     $subNav.append(`<li><a href="${link}" class="sub-nav-link">${title}</a></li>`);
+        //                 }
+        //             });
+        //         }
+        //         $li.find(`#${id}`).append($subNav);
+        //         $mobileMenu.append($li);
+        //     } else {
+        //         $mobileMenu.append(
+        //             `<li class="nav-mb-item"><a href="${$item.find("a").attr("href")}" class="mb-menu-link"><span>${text}</span></a></li>`
+        //         );
+        //     }
+        // });
 
-        $("#wrapper-menu-navigation").empty().append($mobileMenu.html());
+        // $("#wrapper-menu-navigation").empty().append($mobileMenu.html());
     };
 
     /* Color Swatch Product
@@ -1350,7 +1350,6 @@
         writeReview();
         videoWrap();
         showPassword();
-        changeImageDash();
         preventDefault();
         notifyForm();
         customSelect();
@@ -1358,3 +1357,420 @@
         preloader();
     });
 })(jQuery);
+
+
+
+document.querySelectorAll('.caret-toggle').forEach(caret => {
+  caret.addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const menuItem = caret.closest('.menu-item');
+    const subMenu = menuItem.querySelector('.sub-menu');
+    if (subMenu) {
+      subMenu.classList.toggle('open');
+    }
+  });
+});
+document.querySelectorAll('.swiper-slide-blank').forEach(el => el.remove());
+
+
+(function () {
+
+    let current = 1;
+
+    let total = document.querySelectorAll('.cd-step-btn').length;
+
+    let selections = {};
+
+
+
+    /* =========================================================
+       STEP NAVIGATION
+    ========================================================= */
+
+    function cdGoTo(step)
+    {
+        if(step < 1 || step > total){
+            return;
+        }
+
+        /* HIDE ALL PANELS */
+        document.querySelectorAll('.cd-tab-panel').forEach(panel => {
+
+            panel.classList.remove('active');
+
+        });
+
+        /* SHOW ACTIVE PANEL */
+        document.getElementById('cdPanel' + step)
+            .classList.add('active');
+
+
+
+        /* STEP BUTTONS */
+        document.querySelectorAll('.cd-step-btn').forEach(btn => {
+
+            let s = parseInt(btn.dataset.step);
+
+            btn.classList.remove('active', 'completed');
+
+            if(s < step){
+
+                btn.classList.add('completed');
+
+                btn.querySelector('.cd-circle').innerHTML = '✓';
+
+            }
+            else if(s == step){
+
+                btn.classList.add('active');
+
+                btn.querySelector('.cd-circle').innerHTML = s;
+
+            }
+            else{
+
+                btn.querySelector('.cd-circle').innerHTML = s;
+
+            }
+
+        });
+
+
+
+        /* CONNECTORS */
+        document.querySelectorAll('.cd-connector').forEach((conn, index) => {
+
+            if(index < step - 1){
+
+                conn.classList.add('done');
+
+            }else{
+
+                conn.classList.remove('done');
+
+            }
+
+        });
+
+        current = step;
+
+
+
+        let nav = document.getElementById('cdStepsNav');
+
+        if(nav){
+
+            nav.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+        }
+    }
+
+
+
+    /* GLOBAL FUNCTION */
+    window.cdGoTo = cdGoTo;
+
+
+
+
+    /* =========================================================
+       PRODUCT SELECTION
+    ========================================================= */
+
+    document.querySelectorAll('.selectProductBtn').forEach(button => {
+
+        button.addEventListener('click', function () {
+
+            let card = this.closest('.cd-product-card');
+
+            let step = parseInt(card.dataset.step);
+
+            let productId = card.dataset.productId;
+
+
+
+            let maxSelection = parseInt(
+                document.querySelector(
+                    '#selectedCount' + step
+                ).parentElement.innerText.split('/')[1]
+            );
+
+
+
+            if(!selections[step]){
+                selections[step] = [];
+            }
+
+
+
+            /* REMOVE */
+            if(card.classList.contains('selected')){
+
+                card.classList.remove('selected');
+
+                this.classList.remove('active');
+
+                this.innerText = 'Select Product';
+
+                selections[step] = selections[step]
+                    .filter(id => id != productId);
+
+            }
+
+            /* ADD */
+            else{
+
+                if(selections[step].length >= maxSelection){
+
+                    alert(
+                        'You can select only '
+                        + maxSelection
+                        + ' products'
+                    );
+
+                    return;
+                }
+
+                card.classList.add('selected');
+
+                this.classList.add('active');
+
+                this.innerText = 'Selected';
+
+                selections[step].push(productId);
+
+            }
+
+
+
+            /* UPDATE COUNT */
+            document.getElementById(
+                'selectedCount' + step
+            ).innerText = selections[step].length;
+
+
+
+
+            /* AUTO NEXT STEP */
+            if(selections[step].length == maxSelection){
+
+                setTimeout(() => {
+
+                    let nextStep = step + 1;
+
+                    if(document.getElementById('cdPanel' + nextStep)){
+
+                        cdGoTo(nextStep);
+
+                    }else{
+
+                        prepareForm();
+
+                    }
+
+                }, 500);
+
+            }
+
+        });
+
+    });
+
+
+
+
+
+    /* =========================================================
+       FINAL FORM
+    ========================================================= */
+
+    function prepareForm()
+    {
+        let wrapper = document.getElementById(
+            'selectedProductsWrapper'
+        );
+
+        wrapper.innerHTML = '';
+
+
+
+        Object.keys(selections).forEach(step => {
+
+            selections[step].forEach(productId => {
+
+                let input = document.createElement('input');
+
+                input.type = 'hidden';
+
+                input.name = 'products[]';
+
+                input.value = productId;
+
+                wrapper.appendChild(input);
+
+            });
+
+        });
+
+
+
+        console.log('ALL STEPS COMPLETED');
+
+
+
+        /*
+            AUTO SUBMIT
+        */
+
+        // document.getElementById('crazyDealForm').submit();
+    }
+
+})();
+
+
+
+ // loader overlay is injected automatically — no markup needed.
+/* =========================================================
+   PROFILE IMAGE UPLOAD (single instance, guarded)
+========================================================= */
+(function () {
+    'use strict';
+ // 🔍 TEMPORARY DEBUG — remove after checking
+    window.addEventListener('load', function () {
+        console.log('forms:',   document.querySelectorAll('#uploadProfileForm').length);
+        console.log('inputs:',  document.querySelectorAll('#fileInputDash').length);
+        console.log('cameras:', document.querySelectorAll('#changeImgDash').length);
+    });
+    // 🔍 END DEBUG
+    // Guard: never initialize twice
+    if (window.__profileUploadInit) return;
+    window.__profileUploadInit = true;
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var form      = document.getElementById('uploadProfileForm');
+        var fileInput = document.getElementById('fileInputDash');
+        var trigger   = document.getElementById('changeImgDash');
+        var imgEl     = document.getElementById('profileImgDash');
+
+        if (!form || !fileInput) return;
+
+        // Guard the input too
+        if (fileInput.dataset.piuBound) return;
+        fileInput.dataset.piuBound = '1';
+
+        /* ---- Build the loader overlay once ---- */
+        if (!document.getElementById('profileUploadOverlay')) {
+            var overlay = document.createElement('div');
+            overlay.id = 'profileUploadOverlay';
+            overlay.innerHTML =
+                '<div class="piu-box">' +
+                    '<div class="piu-spinner"></div>' +
+                    '<div class="piu-text">Uploading profile...</div>' +
+                '</div>';
+            document.body.appendChild(overlay);
+        }
+        var overlayEl = document.getElementById('profileUploadOverlay');
+
+        /* ---- Inject styles once ---- */
+        if (!document.getElementById('profileUploadStyles')) {
+            var style = document.createElement('style');
+            style.id = 'profileUploadStyles';
+            style.textContent =
+                '#profileUploadOverlay{position:fixed;inset:0;z-index:99999;' +
+                'display:none;align-items:center;justify-content:center;' +
+                'background:rgba(255,255,255,.7);backdrop-filter:blur(2px);}' +
+                '#profileUploadOverlay.show{display:flex;}' +
+                '#profileUploadOverlay .piu-box{text-align:center;}' +
+                '#profileUploadOverlay .piu-spinner{width:54px;height:54px;' +
+                'margin:0 auto 14px;border:5px solid #e0e0e0;border-top-color:#004281;' +
+                'border-radius:50%;animation:piuSpin .8s linear infinite;}' +
+                '#profileUploadOverlay .piu-text{font-size:16px;font-weight:600;' +
+                'color:#004281;letter-spacing:.3px;}' +
+                '@keyframes piuSpin{to{transform:rotate(360deg);}}';
+            document.head.appendChild(style);
+        }
+
+        function showLoader() { overlayEl.classList.add('show'); }
+        function hideLoader() { overlayEl.classList.remove('show'); }
+
+        /* ---- Camera button opens the file picker ---- */
+        if (trigger && !trigger.dataset.piuBound) {
+            trigger.dataset.piuBound = '1';
+            trigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+        }
+
+        /* ---- On file chosen -> validate + upload ---- */
+        fileInput.addEventListener('change', function () {
+            if (!fileInput.files || !fileInput.files.length) return;
+
+            var file = fileInput.files[0];
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file.');
+                fileInput.value = '';
+                return;
+            }
+            if (file.size > 2 * 1024 * 1024) { // 2MB (matches controller max:2048)
+                alert('Image must be smaller than 2MB.');
+                fileInput.value = '';
+                return;
+            }
+
+            uploadImage(file);
+        });
+
+        function uploadImage(file) {
+            showLoader();
+
+            var formData = new FormData(form);
+            var token = form.querySelector('input[name="_token"]');
+            var csrf  = token ? token.value
+                              : (document.querySelector('meta[name="csrf-token"]') || {}).content;
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN'    : csrf,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept'          : 'application/json'
+                },
+                body: formData
+            })
+            .then(function (r) {
+                return r.json().catch(function () { return {}; })
+                        .then(function (d) { return { ok: r.ok, data: d }; });
+            })
+            .then(function (res) {
+                if (res.ok && res.data && res.data.success) {
+                    if (imgEl && res.data.avatar_url) {
+                        imgEl.src = res.data.avatar_url + '?t=' + Date.now();
+                    } else if (imgEl) {
+                        imgEl.src = URL.createObjectURL(file);
+                    }
+                    hideLoader();
+                } else {
+                    hideLoader();
+                    alert((res.data && (res.data.message || res.data.error)) || 'Upload failed. Please try again.');
+                }
+                fileInput.value = '';
+            })
+            .catch(function () {
+                hideLoader();
+                alert('Something went wrong while uploading. Please try again.');
+                fileInput.value = '';
+            });
+        }
+    });
+})();
+
+
+

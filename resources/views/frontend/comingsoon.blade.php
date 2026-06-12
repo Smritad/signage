@@ -43,7 +43,7 @@
                 We are working hard to launch our exciting products. Stay tuned!
             </p>
             <a href="{{ url('/') }}" class="btn-back-home" 
-               style="display:inline-block; padding:12px 30px; background:#333; color:#fff; border-radius:5px; text-decoration:none;">
+               style="display:inline-block; padding:12px 30px; background:#ab924a; color:#fff; border-radius:5px; font-size: 17px; text-decoration:none;">
                 Back to Home
             </a>
         </div>

@@ -14,7 +14,7 @@ class CategoryDetails extends Model
 
     protected $fillable = [
         'category_name',
-        'category_image',
+        'image',
         'slug',
         'created_by',
         'updated_by',

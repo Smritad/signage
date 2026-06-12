@@ -54,7 +54,7 @@
                                     <!-- Banner Heading-->
                                     <div class="col-xxl-4 col-sm-6">
                                         <label class="form-label" for="banner_heading">Banner Heading <span class="txt-danger">*</span></label>
-                                        <input class="form-control" id="banner_heading" id="summernotes" type="text" name="banner_heading" value="{{ old('banner_heading', $banner_details->banner_heading) }}" placeholder="Enter Banner Heading" required>
+                                        <input class="form-control" id="banner_heading" id="summernotes" type="text" name="banner_heading" value="{!! old('banner_heading', $banner_details->banner_heading) !!}" placeholder="Enter Banner Heading" required>
                                         <div class="invalid-feedback">Please enter a Banner Heading.</div>
                                     </div>
 
@@ -78,7 +78,7 @@
                                     <!-- Existing Banner Image -->
                                     <div class="col-xxl-4 col-sm-12" id="existingBannerImageContainer" @if (!$banner_details->banner_images) style="display: none;" @endif>
                                         @if ($banner_details->banner_images)
-                                            <img id="existing_banner_image" src="{{ asset('/home/banner/' . $banner_details->banner_images) }}" alt="Current Banner Image" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
+                                            <img id="existing_banner_image" src="{{ asset('home/banner/' . $banner_details->banner_images) }}" alt="Current Banner Image" style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
                                         @endif
                                     </div>
 

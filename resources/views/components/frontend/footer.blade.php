@@ -33,6 +33,15 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                                     <span class="br-line"></span>
                                     <a href="mailto:{{ $footerData->email }}" class="h6 link">{{ $footerData->email }}</a>
                                 </li>
+                                
+                                <li>
+                                    <i class="icon icon-alarm"></i>
+                                    <span class="br-line"></span>
+                                    <a href="#" class="h6 link">
+                                        Customer care time – 10am to 8pm
+                                    </a>
+                                </li>
+                
                             </ul>
                             <div class="social-wrap">
                                 <ul class="tf-social-icon style-2">
@@ -41,11 +50,11 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                                             <span class="icon"><i class="icon-fb"></i></span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="{{ $footerData->instagram_link }}" target="_blank" class="social-instagram">
-                                            <span class="icon"><i class="icon-instagram-logo"></i></span>
-                                        </a>
-                                    </li>
+                                    <!--<li>-->
+                                    <!--    <a href="{{ $footerData->instagram_link }}" target="_blank" class="social-instagram">-->
+                                    <!--        <span class="icon"><i class="icon-instagram-logo"></i></span>-->
+                                    <!--    </a>-->
+                                    <!--</li>-->
                                     <li>
                                         <a href="{{ $footerData->twitter_link }}" target="_blank" class="social-x">
                                             <span class="icon"><i class="icon-x"></i></span>
@@ -57,29 +66,48 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                     </div>
                 </div>
                   <div class="col-xl-2 col-sm-6 mb_30 mb-xl-0">
-                            <div class="footer-col-block footer-wrap-1 ms-xl-auto">
-                                <p class="footer-heading footer-heading-mobile">Shopping</p>
-                                <div class="tf-collapse-content">
-                                    <ul class="footer-menu-list">
-                                        <li><a href="#" class="link h6">Shipping</a></li>
-                                        <li><a href="#" class="link h6">Shop by Brand</a></li>
-                                        <li><a href="#" class="link h6">Track order</a></li>
-                                        <li><a href="#" class="link h6">Terms & Conditions</a></li>
-                                        <li><a href="#" class="link h6">My Wishlist</a></li>
-                                    </ul>
-                                </div>
+                            @php
+                        use App\Models\CategoryDetails;
+                        use App\Models\ProductsDetails;
+                        
+                        // Fetch all master categories
+                        $masterCategories = CategoryDetails::all();
+                        @endphp
+                        
+                        <div class="footer-col-block footer-wrap-1 ms-xl-auto">
+                            <p class="footer-heading footer-heading-mobile">Category</p>
+                            <div class="tf-collapse-content">
+                                <ul class="footer-menu-list">
+                                    @foreach($masterCategories as $master)
+                                        @php
+                                            // Check if master category has products
+                                            $masterHasProducts = ProductsDetails::where('category_id', $master->id)->exists();
+                                        @endphp
+                        
+                                        <li>
+                                            <a href="{{ $masterHasProducts ? route('product.category', $master->slug) : route('coming.soon') }}">
+                                                {{ $master->category_name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
+                        </div>
+
                         </div>
                         <div class="col-xl-3 col-sm-6 mb_30 mb-sm-0">
                             <div class="footer-col-block footer-wrap-2 mx-xl-auto">
                                 <p class="footer-heading footer-heading-mobile">Information</p>
                                 <div class="tf-collapse-content">
                                     <ul class="footer-menu-list">
-                                        <li><a href="#" class="link h6">About Us</a></li>
-                                        <li><a href="#" class="link h6">Term & Policy</a></li>
-                                        <li><a href="#" class="link h6">Help Center</a></li>
-                                        <li><a href="#" class="link h6">Refunds</a></li>
-                                        <li><a href="#" class="link h6">Careers</a></li>
+                                       <li><a href="{{ route('about.us') }}" class="link h6">About Us</a></li>
+                                        <li><a href="{{ route('contact.us') }}" class="link h6">Contact Us</a></li>
+                                        <li><a href="{{ route('wishlist.index') }}" class="link h6">My Wishlist</a></li>
+
+                                        <li><a href="{{ route('frontend.termsconditions') }}" class="link h6">Terms of Services</a></li>
+                                         <li><a href="{{ route('frontend.privacy') }}" class="link h6">Privacy & Policy</a></li>
+                                        <li><a href="{{ route('frontend.return') }}" class="link h6">Return & Refund Policy</a></li>
+
                                     </ul>
                                 </div>
                             </div>
@@ -97,7 +125,7 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                                     <div class="f-content" id="subscribe-content">
                                         <fieldset class="col">
                                             <input class="style-stroke-2" id="subscribe-email" type="email"
-                                                name="email-form" placeholder="Enter your email" required>
+                                                name="email" placeholder="Enter your email" required>
                                         </fieldset>
                                         <button id="subscribe-button" type="button"
                                             class="tf-btn btn-white animate-btn animate-dark type-small-2">
@@ -106,26 +134,77 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                                         </button>
                                     </div>
                                     <div class="checkbox-wrap">
-                                        <input id="remember" type="checkbox" class="tf-check style-3 style-white">
+                                        <input id="remember" type="checkbox" class="tf-check style-3 style-white" required>
                                         <label for="remember" class="h6 text-main-5">
                                             By clicking subscribe, you agree to the  
-                                            <a href="#" class="text-decoration-underline link text-main-5">Terms of Service</a>
+                                            <a href="{{ route('frontend.termsconditions') }}" class="text-decoration-underline link text-main-5">Terms of Service</a>
                                             and 
-                                            <a href="#" class="text-decoration-underline link text-main-5">Privacy Policy</a>.
+                                            <a href="{{ route('frontend.privacy') }}" class="text-decoration-underline link text-main-5">Privacy Policy</a>.
                                         </label>
                                     </div>
                                     <div id="subscribe-msg"></div>
                                 </form>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('subscribe-button').addEventListener('click', function() {
+    const email = document.getElementById('subscribe-email').value.trim();
+    const checkbox = document.getElementById('remember').checked;
+
+    if (!email) {
+        Swal.fire('Oops!', 'Please enter your email.', 'warning');
+        return;
+    }
+    if (!checkbox) {
+        Swal.fire('Required', 'Please agree to Terms of Service and Privacy Policy.', 'info');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Sending...',
+        text: 'Please wait while we process your subscription.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch('{{ route("subscribe.send") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Thank you for subscribing!',
+            text: data.message,
+            showConfirmButton: false,
+            timer: 2500
+        });
+        document.getElementById('subscribe-form').reset();
+    })
+    .catch(err => {
+        Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+        console.error(err);
+    });
+});
+</script>
+
                             </div>
                         </div>
                     </div>
                 </div>
-<br><br>
+            <br><br>
            <div class="footer-bottom">
                 <div class="container">
                     <div class="inner-bottom">
 
-                        <p class="h6">Copyright © 2025 Signage Wellness. All rights reserved. Designed By <a
+                        <p class="h6">Copyright © {{ date('Y') }} Signage Wellness. All rights reserved. Designed By <a
                                 class="link" href="https://www.matrixbricks.com/" target="_blank">Matrix Bricks</a></p>
 
                         <div class="list-hor flex-wrap">

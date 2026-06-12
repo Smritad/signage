@@ -9,29 +9,28 @@ use App\Models\BannerDetails;
 use App\Models\HomeContactAdverstimentDetails;
 use App\Models\SignageWellnessDetails;
 use App\Models\CustomerReviewDetails;
-
+use App\Models\ProductsDetails;
+use App\Models\FragranceTypeDetails;
 
 class HomeController extends Controller
 {
 
-   public function home(Request $request)
+ public function home(Request $request)
 {
-    $banners = BannerDetails::all();
-    $advertisements = HomeContactAdverstimentDetails::all();
+   $banners = BannerDetails::whereNull('deleted_by')->get();
 
-    // Fetch the single SignageWellnessDetails row
+$advertisements = HomeContactAdverstimentDetails::whereNull('deleted_by')->get();
+
+    // Signage section
     $signage = SignageWellnessDetails::first();
-
     $signageHeading = $signage?->heading ?? ''; 
     $signageItems = [];
 
     if (!empty($signage?->items)) {
         $decodedItems = json_decode($signage->items, true) ?? [];
 
-        // Clean image paths
         foreach ($decodedItems as &$item) {
             if (!empty($item['image'])) {
-                // Replace triple backslashes or double slashes with single forward slash
                 $item['image'] = str_replace(['\\\\\\', '\\\\', '\\', '//'], '/', $item['image']);
             }
         }
@@ -47,15 +46,45 @@ class HomeController extends Controller
         $customerReviews = json_decode($customerReview->items, true) ?? [];
     }
 
+    // ✅ Fetch latest products dynamically
+$products = ProductsDetails::orderBy('priority', 'asc')
+    ->take(10)
+    ->get();
+
+    foreach ($products as $product) {
+        if (!empty($product->images)) {
+            $decoded = json_decode($product->images, true);
+            $product->images = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                ? $decoded
+                : [$product->images]; // fallback if not json
+        } else {
+            $product->images = [];
+        }
+    }
+
+  // Fetch all fragrance types in descending order of ID
+$fragranceTypes = FragranceTypeDetails::orderBy('title', 'asc')->get();
+
+
+    // Get product counts per fragrance
+    $fragranceCounts = ProductsDetails::selectRaw('fragrance_type_id, COUNT(*) as count')
+        ->groupBy('fragrance_type_id')
+        ->pluck('count', 'fragrance_type_id');
+
+    // Return only **one view** with all required data
     return view('frontend.home', compact(
         'banners',
         'advertisements',
         'signageHeading',
         'signageItems',
         'customerReviewHeading',
-        'customerReviews'
+        'customerReviews',
+        'products',
+        'fragranceTypes',
+        'fragranceCounts'
     ));
 }
+
 
 
 

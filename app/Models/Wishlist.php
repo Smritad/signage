@@ -28,4 +28,11 @@ class Wishlist extends Model
     protected $casts = [
         'images' => 'array', // Automatically decode JSON
     ];
+    
+    // app/Models/Wishlist.php
+public function product()
+{
+    return $this->belongsTo(\App\Models\ProductsDetails::class, 'product_id');
+}
+
 }
