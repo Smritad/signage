@@ -25,7 +25,7 @@
     $deliveryEnd   = \Carbon\Carbon::parse($orderDate)->addDays(9);
 
     $buildImageUrl = function ($raw, string $folder = 'product') : string {
-        $default = asset('signage/home/productimage/default.png');
+        $default = asset('/home/productimage/default.png');
         if (empty($raw)) return $default;
         if (str_starts_with((string)$raw, 'http://') || str_starts_with((string)$raw, 'https://')) {
             return (string)$raw;
