@@ -8,14 +8,13 @@
 
     @include('components.frontend.header')
 
- @if(!empty($offer->banner_image))
     <section class="s-page-title">
         <div class="container">
             <div class="content">
                 <h1 class="title-page">{{ $offer->offer_name }}</h1>
                 <ul class="breadcrumbs-page">
                     <li>
-                        <a href="https://anvayafoundation.com/signage" class="h6 link">Home</a>
+                        <a href="{{ url('/') }}" class="h6 link">Home</a>
                     </li>
                     <li class="d-flex">
                         <i class="icon icon-caret-right"></i>
@@ -27,7 +26,6 @@
             </div>
         </div>
     </section>
-@endif
 
     <div class="flat-spacing">
         <div class="container">
