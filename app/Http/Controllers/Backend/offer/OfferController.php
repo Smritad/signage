@@ -57,8 +57,8 @@ class OfferController extends Controller
             'offer_name'       => 'required|string|max:255',
             'offer_price_type' => 'required|in:fixed,percent',
             'products'         => 'required|string',
-            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
         ];
 
         if ($request->offer_price_type === 'percent') {
@@ -143,8 +143,8 @@ class OfferController extends Controller
             'offer_name'       => 'required|string|max:255',
             'offer_price_type' => 'required|in:fixed,percent',
             'products'         => 'required|string',
-            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
         ];
 
         if ($request->offer_price_type === 'percent') {
