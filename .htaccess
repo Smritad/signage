@@ -9,8 +9,22 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Forward every request into the public/ folder so assets and routes
-    # resolve correctly WITHOUT showing "public" in the URL.
-    # (?!public/) stops it from looping once it's already inside public/.
+    # Serve static asset files (anything with a .ext that isn't already at the
+    # root) from the public/ folder -- so CSS/JS/images load WITHOUT "public"
+    # appearing in the URL. Page routes (no extension) skip this and fall
+    # through to the front controller below.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} \.[a-zA-Z0-9]+$
     RewriteRule ^(?!public/)(.*)$ public/$1 [L]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send page requests to the front controller (handles the subfolder path).
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 </IfModule>
