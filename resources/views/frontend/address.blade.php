@@ -40,7 +40,7 @@
                                 <div class="author_avatar position-relative d-inline-block">
                                     <img id="profileImgDash"
                                          class="lazyload imgDash rounded-circle"
-                                         src="{{ $user->avatar ? asset('signage/home/productimage/'.$user->avatar) : asset('signage/home/productimage/ad.jpg') }}"
+                                         src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('signage/home/productimage/'.$user->avatar)) : asset('signage/home/productimage/ad.jpg') }}"
                                          alt="{{ $user->name ?? 'User' }}"
                                          style="width:120px; height:120px; object-fit:cover;">
 
