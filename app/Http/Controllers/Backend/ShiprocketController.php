@@ -349,12 +349,6 @@ class ShiprocketController extends Controller
                     ->with('error', "Order already shipped. Shipment ID: {$order->shipment_id}");
             }
 
-            /* ── Guard: order in a managed end-state (cancelled / refunded / closed) ── */
-            if (!empty($order->order_state)) {
-                return redirect()->back()
-                    ->with('error', 'This order is "' . $order->stateLabel() . '" and cannot be shipped.');
-            }
-
             /* ── Detect payment type ── */
             $paymentType = $this->detectPaymentType($order);
 

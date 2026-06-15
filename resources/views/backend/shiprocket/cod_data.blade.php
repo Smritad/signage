@@ -147,16 +147,12 @@
                                                  */
                                                 $alreadyPushed = $order->is_shipped && !empty($order->shipment_id);
 
-                                                /* order_state drives the managed lifecycle (cancelled_by_user / refunded / closed) */
-                                                $orderState  = $order->order_state ?? '';
-                                                $isCancelled = $orderState === 'cancelled_by_user' || in_array($ps, ['cancelled']);
-                                                $isClosed    = in_array($orderState, ['refunded', 'closed']);
-                                                if ($isCancelled) {
-                                                    $shipLabel = 'Cancelled';
-                                                    $shipClass = 'ship-cancelled';
-                                                }
+                                                /* order_state = separate admin-managed lifecycle (own "Order Status"
+                                                   column). It does NOT affect the Shiprocket shipment / Ship-Track
+                                                   column, which reflects Shiprocket's record. */
+                                                $orderState = $order->order_state ?? '';
 
-                                                $canShip       = in_array($ps, ['cod', 'paid']) && !$alreadyPushed && !$isCancelled && !$isClosed;
+                                                $canShip       = in_array($ps, ['cod', 'paid']) && !$alreadyPushed;
                                             @endphp
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
@@ -220,8 +216,6 @@
                                                            onclick="return confirm('Ship this COD order to Shiprocket?');">
                                                             <i class="fa fa-truck"></i> Ship Now (COD)
                                                         </a>
-                                                    @elseif($isCancelled)
-                                                        <span class="status-pill ship-cancelled">Cancelled by Customer</span>
                                                     @else
                                                         <button class="btn btn-sm btn-secondary" disabled>
                                                             <i class="fa fa-ban"></i> N/A
