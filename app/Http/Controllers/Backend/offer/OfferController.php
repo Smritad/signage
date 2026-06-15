@@ -67,7 +67,10 @@ class OfferController extends Controller
             $rules['offer_price'] = 'required|numeric|min:0';
         }
 
-        $request->validate($rules);
+        $request->validate($rules, [
+            'banner_image.max' => 'The banner image must not be larger than 20 MB.',
+            'offer_image.max'  => 'The offer image must not be larger than 20 MB.',
+        ]);
 
         $productsArr = json_decode($request->products, true);
 
@@ -153,7 +156,10 @@ class OfferController extends Controller
             $rules['offer_price'] = 'required|numeric|min:0';
         }
 
-        $request->validate($rules);
+        $request->validate($rules, [
+            'banner_image.max' => 'The banner image must not be larger than 20 MB.',
+            'offer_image.max'  => 'The offer image must not be larger than 20 MB.',
+        ]);
 
         $productsArr = json_decode($request->products, true);
 
