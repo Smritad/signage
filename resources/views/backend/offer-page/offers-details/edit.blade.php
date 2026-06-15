@@ -214,36 +214,8 @@
                         <div class="section-hint">Existing images shown below. Upload to replace.</div>
                         <div class="row g-3">
 
-                            {{-- Banner --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Banner Image</label>
-                                @if($offer->banner_image)
-                                    <div class="existing-img-card" id="existingBannerBox">
-                                        <img src="{{ asset('offerimage/' . $offer->banner_image) }}" alt="Current Banner">
-                                        <div class="meta"><span>Current Banner</span><span>1200 × 400 px</span></div>
-                                    </div>
-                                    <div class="replace-hint">
-                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                        Upload a new file below to replace.
-                                    </div>
-                                @endif
-                                <div class="img-upload">
-                                    <input type="file" name="banner_image" accept="image/jpeg,image/png,image/webp"
-                                           onchange="previewImage(this,'bannerPreview','bannerFilename','banner','existingBannerBox')">
-                                    <span class="img-upload__icon">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
-                                    </span>
-                                    <span class="img-upload__title">{{ $offer->banner_image ? 'Replace banner image' : 'Click to upload banner' }}</span>
-                                    <span class="img-upload__hint">JPG, PNG or WEBP</span>
-                                    <span class="img-spec">Recommended: 1200 × 400 px</span>
-                                </div>
-                                <div class="img-preview" id="bannerPreview"><img src="" alt="" style="max-height:110px;"></div>
-                                <div class="img-filename" id="bannerFilename"></div>
-                                @error('banner_image')<div class="field-error">{{ $message }}</div>@enderror
-                            </div>
-
                             {{-- Offer image --}}
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label">Offer Image</label>
                                 @if($offer->offer_image)
                                     <div class="existing-img-card" id="existingOfferBox">
@@ -318,17 +290,6 @@
                         <div class="stat-label">Images</div>
                         <div class="summary-thumb-grid">
                             <div class="summary-thumb-cell">
-                                <div class="label">Banner</div>
-                                <div class="frame">
-                                    @if($offer->banner_image)
-                                        <img id="summaryBannerThumb" src="{{ asset('offerimage/' . $offer->banner_image) }}" alt="">
-                                    @else
-                                        <img id="summaryBannerThumb" src="" alt="" style="display:none;">
-                                        <span id="summaryBannerNone" class="none">None</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="summary-thumb-cell">
                                 <div class="label">Offer</div>
                                 <div class="frame">
                                     @if($offer->offer_image)
@@ -390,13 +351,8 @@ function previewImage(input, previewId, filenameId, thumbType, existingBoxId) {
         $('#' + previewId).find('img').attr('src', e.target.result);
         $('#' + previewId).addClass('show');
         $('#' + filenameId).text(file.name + ' · ' + (file.size / 1024).toFixed(1) + ' KB');
-        if (thumbType === 'banner') {
-            $('#summaryBannerThumb').attr('src', e.target.result).show();
-            $('#summaryBannerNone').hide();
-        } else {
-            $('#summaryOfferThumb').attr('src', e.target.result).show();
-            $('#summaryOfferNone').hide();
-        }
+        $('#summaryOfferThumb').attr('src', e.target.result).show();
+        $('#summaryOfferNone').hide();
     };
     reader.readAsDataURL(file);
 }
