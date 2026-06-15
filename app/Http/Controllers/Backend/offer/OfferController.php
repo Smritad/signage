@@ -57,8 +57,8 @@ class OfferController extends Controller
             'offer_name'       => 'required|string|max:255',
             'offer_price_type' => 'required|in:fixed,percent',
             'products'         => 'required|string',
-            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
-            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 
         if ($request->offer_price_type === 'percent') {
@@ -68,8 +68,8 @@ class OfferController extends Controller
         }
 
         $request->validate($rules, [
-            'banner_image.max' => 'The banner image must not be larger than 20 MB.',
-            'offer_image.max'  => 'The offer image must not be larger than 20 MB.',
+            'banner_image.max' => 'The banner image must not be larger than 2 MB.',
+            'offer_image.max'  => 'The offer image must not be larger than 2 MB.',
         ]);
 
         $productsArr = json_decode($request->products, true);
@@ -146,8 +146,8 @@ class OfferController extends Controller
             'offer_name'       => 'required|string|max:255',
             'offer_price_type' => 'required|in:fixed,percent',
             'products'         => 'required|string',
-            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
-            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 
         if ($request->offer_price_type === 'percent') {
@@ -157,8 +157,8 @@ class OfferController extends Controller
         }
 
         $request->validate($rules, [
-            'banner_image.max' => 'The banner image must not be larger than 20 MB.',
-            'offer_image.max'  => 'The offer image must not be larger than 20 MB.',
+            'banner_image.max' => 'The banner image must not be larger than 2 MB.',
+            'offer_image.max'  => 'The offer image must not be larger than 2 MB.',
         ]);
 
         $productsArr = json_decode($request->products, true);
