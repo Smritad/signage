@@ -50,16 +50,16 @@ $footerData = DB::table('footer_details')->first(); // replace with your actual 
                                             <span class="icon"><i class="icon-fb"></i></span>
                                         </a>
                                     </li>
-                                    <!--<li>-->
-                                    <!--    <a href="{{ $footerData->instagram_link }}" target="_blank" class="social-instagram">-->
-                                    <!--        <span class="icon"><i class="icon-instagram-logo"></i></span>-->
-                                    <!--    </a>-->
-                                    <!--</li>-->
                                     <li>
+                                       <a href="{{ $footerData->instagram_link }}" target="_blank" class="social-instagram">
+                                     <span class="icon"><i class="icon-instagram-logo"></i></span>
+                                   </a>
+                                  </li>
+                                    <!-- <li>
                                         <a href="{{ $footerData->twitter_link }}" target="_blank" class="social-x">
                                             <span class="icon"><i class="icon-x"></i></span>
                                         </a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </div>
                         </div>
