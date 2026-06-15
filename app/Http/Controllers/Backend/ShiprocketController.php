@@ -70,6 +70,7 @@ class ShiprocketController extends Controller
     {
         $request->validate([
             'order_state' => 'required|in:active,cancelled_by_user,refunded,closed',
+            'remarks'     => 'nullable|string|max:1000',
         ]);
 
         $order = OrderDetail::findOrFail($id);
@@ -91,6 +92,12 @@ class ShiprocketController extends Controller
 
         $label = $new ? OrderDetail::stateOptions()[$new] : 'Active';
 
+        // Admin's typed note (from the modal) — falls back to an auto message.
+        $adminNote  = trim((string) $request->input('remarks', ''));
+        $logRemarks = $adminNote !== ''
+            ? $adminNote
+            : 'Order status set to "' . $label . '" by admin';
+
         // Audit trail with date/time + admin id.
         try {
             DB::table('order_status_details')->insert([
@@ -99,7 +106,7 @@ class ShiprocketController extends Controller
                 'order_status'      => $new ?? 'active',
                 'payment_mode'      => strtolower($order->payment_method ?? '') === 'cod' ? 'cod' : 'online',
                 'payment_status'    => $order->payment_status,
-                'order_remarks'     => 'Order status set to "' . $label . '" by admin',
+                'order_remarks'     => $logRemarks,
                 'status_updated_by' => Auth::id(),
                 'status_updated_at' => Carbon::now(),
                 'created_at'        => Carbon::now(),
@@ -118,6 +125,9 @@ class ShiprocketController extends Controller
     public function showOrderDetails($id)
     {
         $order = OrderDetail::findOrFail($id);
+
+        // Refresh live shipment status so it shows on page load (no Track click).
+        $this->syncTrackingStatus($order);
 
         [$invoiceItems, $subtotal, $totalSaved, $productNames, $quantities, $prices]
             = $this->buildInvoiceItems($order);
@@ -138,6 +148,50 @@ class ShiprocketController extends Controller
             ->orderByDesc('status_updated_at')
             ->orderByDesc('id')
             ->get();
+    }
+
+    /**
+     * Pull the latest shipment status from Shiprocket and persist it, so the
+     * detail page shows live status on refresh WITHOUT clicking "Track".
+     * Silent + resilient: any failure just leaves the stored status intact.
+     */
+    private function syncTrackingStatus(OrderDetail $order): void
+    {
+        if (empty($order->shipment_id)) {
+            return;
+        }
+
+        try {
+            $token = $this->getShiprocketToken();
+            if (!$token) {
+                return;
+            }
+
+            $response = Http::withToken($token)
+                ->timeout(12)
+                ->get("{$this->srBaseUrl}/courier/track/shipment/{$order->shipment_id}");
+
+            if ($response->failed()) {
+                return;
+            }
+
+            $tracking = $response->json()['tracking_data'] ?? null;
+            if (!$tracking) {
+                return;
+            }
+
+            $shipmentTrack = $tracking['shipment_track'][0] ?? [];
+
+            $order->update([
+                'awb_code'        => $shipmentTrack['awb_code']       ?? $order->awb_code,
+                'courier_name'    => $shipmentTrack['courier_name']   ?? $order->courier_name,
+                'courier_status'  => $shipmentTrack['current_status'] ?? $order->courier_status,
+                'delivery_status' => $tracking['shipment_status']     ?? $order->delivery_status,
+                'updated_at'      => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('[syncTrackingStatus] ' . $e->getMessage());
+        }
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -162,6 +216,9 @@ class ShiprocketController extends Controller
     public function OrderCodDetails($id)
     {
         $order = OrderDetail::findOrFail($id);
+
+        // Refresh live shipment status so it shows on page load (no Track click).
+        $this->syncTrackingStatus($order);
 
         [$invoiceItems, $subtotal, $totalSaved, $productNames, $quantities, $prices]
             = $this->buildInvoiceItems($order);

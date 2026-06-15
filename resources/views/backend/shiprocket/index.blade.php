@@ -173,16 +173,15 @@
                                                 </td>
                                                 <td><span class="status-pill {{ $shipClass }}">{{ $shipLabel }}</span></td>
                                                 <td>
-                                                    <form action="{{ route('admin.order.state', $order->id) }}" method="POST" style="margin:0; min-width:150px;">
-                                                        @csrf
-                                                        <select name="order_state" class="form-control form-control-sm"
-                                                                onchange="if(confirm('Change order status to '+this.options[this.selectedIndex].text+'?')){this.form.submit();}else{this.value='{{ $orderState ?: 'active' }}';}">
-                                                            <option value="active" {{ $orderState === '' ? 'selected' : '' }}>— Active —</option>
-                                                            <option value="cancelled_by_user" {{ $orderState === 'cancelled_by_user' ? 'selected' : '' }}>Cancelled by User</option>
-                                                            <option value="refunded" {{ $orderState === 'refunded' ? 'selected' : '' }}>Refunded</option>
-                                                            <option value="closed" {{ $orderState === 'closed' ? 'selected' : '' }}>Closed Order</option>
-                                                        </select>
-                                                    </form>
+                                                    <select class="form-control form-control-sm order-state-select" style="min-width:150px;"
+                                                            data-action="{{ route('admin.order.state', $order->id) }}"
+                                                            data-current="{{ $orderState ?: 'active' }}"
+                                                            data-orderid="{{ $order->order_id }}">
+                                                        <option value="active" {{ $orderState === '' ? 'selected' : '' }}>— Active —</option>
+                                                        <option value="cancelled_by_user" {{ $orderState === 'cancelled_by_user' ? 'selected' : '' }}>Cancelled by User</option>
+                                                        <option value="refunded" {{ $orderState === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                                        <option value="closed" {{ $orderState === 'closed' ? 'selected' : '' }}>Closed Order</option>
+                                                    </select>
                                                     @if($order->order_state_at)
                                                         <small class="text-muted d-block mt-1">{{ \Carbon\Carbon::parse($order->order_state_at)->format('d M Y H:i') }}</small>
                                                     @endif
@@ -278,6 +277,50 @@
             });
         });
     });
+    </script>
+
+    {{-- ── Order Status modal (write a note when changing status) ── --}}
+    <div id="orderStateModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:99999;">
+        <div style="background:#fff; max-width:480px; margin:7% auto; border-radius:8px; padding:22px; box-shadow:0 10px 40px rgba(0,0,0,.25);">
+            <h5 style="margin-top:0;">Update Order Status</h5>
+            <form id="orderStateForm" method="POST">
+                @csrf
+                <input type="hidden" name="order_state" id="osState">
+                <p style="margin:6px 0;">Order: <strong id="osOrderId"></strong></p>
+                <p style="margin:6px 0;">New status: <strong id="osLabel"></strong></p>
+                <label class="form-label" style="margin-top:8px;">Message / Note <small class="text-muted">(saved to the order history)</small></label>
+                <textarea name="remarks" id="osRemarks" class="form-control" rows="3"
+                          placeholder="e.g. Refund of Rs.____ processed via Razorpay (ref ____) on __/__/____"></textarea>
+                <div style="margin-top:16px; text-align:right;">
+                    <button type="button" class="btn btn-sm btn-secondary" id="osCancel">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Save &amp; Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var modal  = document.getElementById('orderStateModal');
+            var form   = document.getElementById('orderStateForm');
+            var labels = { active: 'Active', cancelled_by_user: 'Cancelled by User', refunded: 'Refunded', closed: 'Closed Order' };
+
+            document.querySelectorAll('.order-state-select').forEach(function (sel) {
+                sel.addEventListener('change', function () {
+                    var val = this.value;
+                    form.action = this.getAttribute('data-action');
+                    document.getElementById('osState').value   = val;
+                    document.getElementById('osLabel').textContent   = labels[val] || val;
+                    document.getElementById('osOrderId').textContent = this.getAttribute('data-orderid');
+                    document.getElementById('osRemarks').value = '';
+                    // keep the dropdown showing the real current state until saved
+                    this.value = this.getAttribute('data-current');
+                    modal.style.display = 'block';
+                });
+            });
+
+            document.getElementById('osCancel').addEventListener('click', function () { modal.style.display = 'none'; });
+            modal.addEventListener('click', function (e) { if (e.target === modal) modal.style.display = 'none'; });
+        })();
     </script>
 
 </body>
