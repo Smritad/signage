@@ -198,9 +198,11 @@
             <div style="margin-top: 10px;">
                 <p class="company-name">LOGASSADIVINE PRIVATE LIMITED</p>
                 <p class="company-meta">
-                    L-36, Phase 2, APMC Market 1,<br>
-                    Vashi, Raigad, Maharashtra - 400705<br>
-                    <strong>GSTIN:</strong> 27AAEC2607J9C1ZH
+                    <strong>Manufactured By:</strong><br>
+                    Suhan Aerosol,<br>
+                    J/1-8, Radheyshyam Industrial Complex,<br>
+                    Asangaon (W), Tal. Shahapur,<br>
+                    Thane - 421601, Maharashtra
                 </p>
             </div>
             <br>
