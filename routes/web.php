@@ -418,3 +418,28 @@ Route::post('/signage/order/payment-status/{orderId}', [PaymentController::class
         return 'Mail failed: '.$e->getMessage();
     }
 });
+
+// TEMPORARY diagnostic route — visit once on the live server, then tell Claude.
+// Clears all caches and shows the actual .env values the server is using.
+Route::get('/fix-google-cache', function () {
+    \Artisan::call('optimize:clear');
+
+    $lines = [];
+    $envPath = base_path('.env');
+    if (is_readable($envPath)) {
+        foreach (file($envPath) as $l) {
+            $t = trim($l);
+            if (str_starts_with($t, 'APP_URL') || str_starts_with($t, 'GOOGLE_REDIRECT_URI')) {
+                $lines[] = $t;
+            }
+        }
+    }
+
+    return response('<pre>Caches cleared.
+
+Actual values in the server .env file:
+' . e(implode("\n", $lines)) . '
+
+config(services.google.redirect): ' . e(config('services.google.redirect')) . '
+</pre>');
+});
