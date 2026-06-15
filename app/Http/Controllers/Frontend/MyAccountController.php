@@ -8,6 +8,9 @@ use App\Models\CustomUser;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -68,6 +71,61 @@ class MyAccountController extends Controller implements HasMiddleware
             });
 
         return view('frontend.orderdetails', compact('user', 'recentOrders'));
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     |  CANCEL ORDER (customer)
+     |  Allowed only while the order is active (paid/COD) and the
+     |  courier has NOT yet reached "out for delivery".
+     ══════════════════════════════════════════════════════════ */
+    public function cancelOrder(Request $request, $id)
+    {
+        $user = $this->authUser();
+
+        // Only the owner may cancel their own order.
+        $order = OrderDetail::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        if (!$order->isCancellable()) {
+            return redirect()->route('frontend.ordersdetails')
+                ->with('error', 'This order can no longer be cancelled (it may already be out for delivery, delivered, or cancelled).');
+        }
+
+        $wasPrepaidPaid = strtolower(trim($order->payment_status ?? '')) === 'paid';
+
+        // Keep payment_status intact so the order stays in its admin list
+        // (prepaid/COD); use status = 3 as the cancellation flag.
+        $order->update([
+            'status'     => OrderDetail::STATUS_CANCELLED,
+            'updated_at' => Carbon::now(),
+        ]);
+
+        // Best-effort audit trail (never let logging break the cancel).
+        try {
+            DB::table('order_status_details')->insert([
+                'user_id'           => $user->id,
+                'order_id'          => $order->order_id,
+                'order_status'      => 'cancelled',
+                'payment_mode'      => $wasPrepaidPaid ? 'online' : 'cod',
+                'payment_status'    => $order->payment_status,
+                'order_remarks'     => 'Cancelled by customer'
+                    . ($request->filled('reason') ? ': ' . strip_tags($request->reason) : '')
+                    . ($wasPrepaidPaid ? ' (refund pending)' : ''),
+                'status_updated_by' => $user->id,
+                'status_updated_at' => Carbon::now(),
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('[cancelOrder] audit insert failed: ' . $e->getMessage());
+        }
+
+        $msg = $wasPrepaidPaid
+            ? 'Your order has been cancelled. Your refund will be processed shortly.'
+            : 'Your order has been cancelled.';
+
+        return redirect()->route('frontend.ordersdetails')->with('success', $msg);
     }
 
     /* ══════════════════════════════════════════════════════════

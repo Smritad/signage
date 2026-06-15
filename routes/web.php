@@ -222,6 +222,9 @@ Route::get('/order-details', [MyAccountController::class, 'orderdetails'])->name
 
 // Order details view (with order_id)
 Route::get('/order-details-view/{id}', [MyAccountController::class, 'orderdetailsview'])->name('frontend.ordersdetailsview');
+
+// Customer cancels their own order (allowed only before "out for delivery")
+Route::post('/order-cancel/{id}', [MyAccountController::class, 'cancelOrder'])->name('frontend.order.cancel');
 Route::get('/account-addresses', [MyAccountController::class, 'address'])->name('frontend.address');
 Route::post('/user/update-address/{type}', [MyAccountController::class, 'updateAddress'])
      ->name('user.updateAddress');

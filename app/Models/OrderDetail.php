@@ -81,4 +81,41 @@ class OrderDetail extends Model
         'created_at'       => 'datetime',
         'updated_at'       => 'datetime',
     ];
+
+    /* status convention: 3 = cancelled, 5 = refunded */
+    const STATUS_CANCELLED = 3;
+    const STATUS_REFUNDED  = 5;
+
+    /** Has this order been cancelled (by customer or admin)? */
+    public function isCancelled(): bool
+    {
+        return (int) ($this->status ?? 0) === self::STATUS_CANCELLED
+            || strtolower(trim($this->payment_status ?? '')) === 'cancelled';
+    }
+
+    /**
+     * A customer may cancel only while the order is an active placed order
+     * (paid / COD) AND the courier has NOT yet reached "out for delivery"
+     * (or delivered / returned / cancelled).
+     */
+    public function isCancellable(): bool
+    {
+        if ($this->isCancelled()) {
+            return false;
+        }
+
+        $ps = strtolower(trim($this->payment_status ?? ''));
+        if (!in_array($ps, ['paid', 'cod'])) {
+            return false; // only active, placed orders can be cancelled
+        }
+
+        $cs = strtolower(trim($this->courier_status ?? ''));
+        foreach (['out for delivery', 'delivered', 'rto', 'return', 'returned', 'canceled', 'cancelled'] as $blocked) {
+            if ($cs !== '' && str_contains($cs, $blocked)) {
+                return false; // once out for delivery (or beyond), no cancel
+            }
+        }
+
+        return true;
+    }
 }

@@ -225,6 +225,12 @@ class ShiprocketController extends Controller
                     ->with('error', "Order already shipped. Shipment ID: {$order->shipment_id}");
             }
 
+            /* ── Guard: order cancelled (status = 3) ── */
+            if ((int) $order->status === 3) {
+                return redirect()->back()
+                    ->with('error', 'This order has been cancelled and cannot be shipped.');
+            }
+
             /* ── Detect payment type ── */
             $paymentType = $this->detectPaymentType($order);
 

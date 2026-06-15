@@ -142,7 +142,14 @@
                                                     }
                                                 }
 
-                                                $canShip = in_array($ps, ['paid', 'cod']) && !$alreadyPushed;
+                                                /* status = 3 marks an order cancelled by customer/admin (payment_status kept intact) */
+                                                $isCancelled = ((int)($order->status ?? 0) === 3) || in_array($ps, ['cancelled']);
+                                                if ($isCancelled) {
+                                                    $shipLabel = 'Cancelled';
+                                                    $shipClass = 'ship-cancelled';
+                                                }
+
+                                                $canShip = in_array($ps, ['paid', 'cod']) && !$alreadyPushed && !$isCancelled;
                                             @endphp
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
@@ -190,6 +197,8 @@
                                                            onclick="return confirm('Ship this order to Shiprocket?');">
                                                             Ship Now
                                                         </a>
+                                                    @elseif($isCancelled)
+                                                        <span class="status-pill ship-cancelled">Cancelled by Customer</span>
                                                     @else
                                                         <button class="btn btn-sm btn-secondary" disabled title="Only paid/COD orders can be shipped">
                                                             <i class="fa fa-ban"></i> Not Shippable

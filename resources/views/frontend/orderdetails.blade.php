@@ -106,6 +106,13 @@
                         <div class="my-account-content">
                             <h2 class="account-title type-semibold">My Orders</h2>
 
+                            @if(session('success'))
+                                <div class="alert alert-success" style="background:#d4edda;color:#155724;padding:10px 14px;border-radius:6px;margin-bottom:12px;">{{ session('success') }}</div>
+                            @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger" style="background:#f8d7da;color:#721c24;padding:10px 14px;border-radius:6px;margin-bottom:12px;">{{ session('error') }}</div>
+                            @endif
+
                             <div class="overflow-auto">
                                 <table class="table-my_order order_recent">
                                     <thead>
@@ -135,6 +142,10 @@
                                                     'refunded'  => ['label' => 'Refunded',   'class' => 'stt-refunded'],
                                                 ];
                                                 $st = $statusMap[$paymentStatus] ?? ['label' => 'Pending', 'class' => 'stt-pending'];
+                                                // status = 3 marks a cancelled order (payment_status stays paid/cod).
+                                                if ((int)($order->status ?? 0) === 3) {
+                                                    $st = ['label' => 'Cancelled', 'class' => 'stt-cancelled'];
+                                                }
                                                 $paymentMethod = strtolower($order->payment_method ?? 'online');
                                             @endphp
                                             <tr class="tb-order-item">
@@ -165,6 +176,17 @@
                                                        style="background:#004281; color:#fff; padding:6px 14px; border-radius:6px; display:inline-block;">
                                                        View
                                                     </a>
+                                                    @if($order->isCancellable())
+                                                        <form action="{{ route('frontend.order.cancel', $order->id) }}" method="POST"
+                                                              style="display:inline-block; margin-top:6px;"
+                                                              onsubmit="return confirm('Are you sure you want to cancel this order? This cannot be undone.');">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                    style="background:#c0392b; color:#fff; padding:6px 14px; border:none; border-radius:6px; cursor:pointer;">
+                                                                Cancel
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty
