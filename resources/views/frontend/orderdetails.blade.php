@@ -142,9 +142,13 @@
                                                     'refunded'  => ['label' => 'Refunded',   'class' => 'stt-refunded'],
                                                 ];
                                                 $st = $statusMap[$paymentStatus] ?? ['label' => 'Pending', 'class' => 'stt-pending'];
-                                                // status = 3 marks a cancelled order (payment_status stays paid/cod).
-                                                if ((int)($order->status ?? 0) === 3) {
+                                                // order_state (managed lifecycle) overrides the payment-based label.
+                                                if ($order->order_state === 'cancelled_by_user' || $paymentStatus === 'cancelled') {
                                                     $st = ['label' => 'Cancelled', 'class' => 'stt-cancelled'];
+                                                } elseif ($order->order_state === 'refunded') {
+                                                    $st = ['label' => 'Refunded', 'class' => 'stt-refunded'];
+                                                } elseif ($order->order_state === 'closed') {
+                                                    $st = ['label' => 'Closed', 'class' => 'stt-refunded'];
                                                 }
                                                 $paymentMethod = strtolower($order->payment_method ?? 'online');
                                             @endphp

@@ -97,6 +97,7 @@
                                             <th>Total</th>
                                             <th>Payment Mode</th>
                                             <th>Shipment Status</th>
+                                            <th>Order Status</th>
                                             <th>Date</th>
                                             <th>Details</th>
                                             <th>Shipment</th>
@@ -142,14 +143,16 @@
                                                     }
                                                 }
 
-                                                /* status = 3 marks an order cancelled by customer/admin (payment_status kept intact) */
-                                                $isCancelled = ((int)($order->status ?? 0) === 3) || in_array($ps, ['cancelled']);
+                                                /* order_state drives the managed lifecycle (cancelled_by_user / refunded / closed) */
+                                                $orderState  = $order->order_state ?? '';
+                                                $isCancelled = $orderState === 'cancelled_by_user' || in_array($ps, ['cancelled']);
+                                                $isClosed    = in_array($orderState, ['refunded', 'closed']);
                                                 if ($isCancelled) {
                                                     $shipLabel = 'Cancelled';
                                                     $shipClass = 'ship-cancelled';
                                                 }
 
-                                                $canShip = in_array($ps, ['paid', 'cod']) && !$alreadyPushed && !$isCancelled;
+                                                $canShip = in_array($ps, ['paid', 'cod']) && !$alreadyPushed && !$isCancelled && !$isClosed;
                                             @endphp
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
@@ -169,6 +172,21 @@
                                                     @endif
                                                 </td>
                                                 <td><span class="status-pill {{ $shipClass }}">{{ $shipLabel }}</span></td>
+                                                <td>
+                                                    <form action="{{ route('admin.order.state', $order->id) }}" method="POST" style="margin:0; min-width:150px;">
+                                                        @csrf
+                                                        <select name="order_state" class="form-control form-control-sm"
+                                                                onchange="if(confirm('Change order status to '+this.options[this.selectedIndex].text+'?')){this.form.submit();}else{this.value='{{ $orderState ?: 'active' }}';}">
+                                                            <option value="active" {{ $orderState === '' ? 'selected' : '' }}>— Active —</option>
+                                                            <option value="cancelled_by_user" {{ $orderState === 'cancelled_by_user' ? 'selected' : '' }}>Cancelled by User</option>
+                                                            <option value="refunded" {{ $orderState === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                                                            <option value="closed" {{ $orderState === 'closed' ? 'selected' : '' }}>Closed Order</option>
+                                                        </select>
+                                                    </form>
+                                                    @if($order->order_state_at)
+                                                        <small class="text-muted d-block mt-1">{{ \Carbon\Carbon::parse($order->order_state_at)->format('d M Y H:i') }}</small>
+                                                    @endif
+                                                </td>
                                                 <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d M Y') }}</td>
                                                 <td>
                                                     <a href="{{ route('admin.Orderdetails.index', $order->id) }}" class="btn btn-sm btn-primary">

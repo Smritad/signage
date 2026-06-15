@@ -190,6 +190,49 @@
                         </div>
                     </div>
 
+                    {{-- Order Status & History --}}
+                    @php
+                        $stateLabels = [
+                            'cancelled_by_user' => 'Cancelled by User',
+                            'refunded'          => 'Refunded',
+                            'closed'            => 'Closed Order',
+                            'active'            => 'Active',
+                        ];
+                        $curState = $order->order_state ?: '';
+                        $curLabel = $curState ? ($stateLabels[$curState] ?? ucfirst($curState)) : 'Active';
+                        $curBadge = $curState === 'cancelled_by_user' ? 'danger'
+                                  : ($curState === 'refunded' ? 'info'
+                                  : ($curState === 'closed' ? 'secondary' : 'success'));
+                    @endphp
+                    @if($curState || (isset($statusHistory) && count($statusHistory)))
+                        <div class="row border-bottom pb-3 mb-4">
+                            <div class="col-12">
+                                <h5 class="mb-2">Order Status</h5>
+                                <p class="mb-2">
+                                    <strong>Current:</strong>
+                                    <span class="badge bg-{{ $curBadge }}">{{ $curLabel }}</span>
+                                    @if($order->order_state_at)
+                                        <small class="text-muted">on {{ \Carbon\Carbon::parse($order->order_state_at)->format('d M Y, h:i A') }}</small>
+                                    @endif
+                                </p>
+                                @if(isset($statusHistory) && count($statusHistory))
+                                    <table class="table table-sm table-bordered mt-2" style="max-width:620px;">
+                                        <thead><tr><th>Status</th><th>Remarks</th><th>Date &amp; Time</th></tr></thead>
+                                        <tbody>
+                                            @foreach($statusHistory as $h)
+                                                <tr>
+                                                    <td>{{ $stateLabels[$h->order_status] ?? ucfirst(str_replace('_',' ',$h->order_status)) }}</td>
+                                                    <td>{{ $h->order_remarks }}</td>
+                                                    <td>{{ $h->status_updated_at ? \Carbon\Carbon::parse($h->status_updated_at)->format('d M Y, h:i A') : '-' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- Items Table --}}
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle w-100">

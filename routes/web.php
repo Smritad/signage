@@ -146,6 +146,9 @@ Route::get('shiprocket/cod-remittance/{orderId}', [ShiprocketController::class, 
 Route::post('cod/mark-paid/{orderId}',   [ShiprocketController::class, 'markCodAsPaid'])->name('admin.cod.mark-paid');
 Route::post('cod/mark-unpaid/{orderId}', [ShiprocketController::class, 'markCodAsUnpaid'])->name('admin.cod.mark-unpaid');
 
+/* ── Manual order lifecycle state (Cancelled by User / Refunded / Closed) ── */
+Route::post('order-state/{id}', [ShiprocketController::class, 'updateOrderState'])->name('admin.order.state');
+
 /* NEW: dedicated ship route (with error feedback) */
 Route::get('shiprocket-ship/{orderId}',
     [ShiprocketController::class, 'shipOrder']

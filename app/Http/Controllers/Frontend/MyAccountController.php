@@ -95,10 +95,11 @@ class MyAccountController extends Controller implements HasMiddleware
         $wasPrepaidPaid = strtolower(trim($order->payment_status ?? '')) === 'paid';
 
         // Keep payment_status intact so the order stays in its admin list
-        // (prepaid/COD); use status = 3 as the cancellation flag.
+        // (prepaid/COD); order_state drives the managed lifecycle.
         $order->update([
-            'status'     => OrderDetail::STATUS_CANCELLED,
-            'updated_at' => Carbon::now(),
+            'order_state'    => OrderDetail::STATE_CANCELLED_BY_USER,
+            'order_state_at' => Carbon::now(),
+            'updated_at'     => Carbon::now(),
         ]);
 
         // Best-effort audit trail (never let logging break the cancel).

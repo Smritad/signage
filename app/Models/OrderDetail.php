@@ -46,6 +46,8 @@ class OrderDetail extends Model
         'offer_ids',
         'offer_data',
         'invoice_id',
+        'order_state',
+        'order_state_at',
         'is_shipped',
         'shipment_id',
         'channel_order_id',
@@ -80,16 +82,40 @@ class OrderDetail extends Model
         'total_price'      => 'float',
         'created_at'       => 'datetime',
         'updated_at'       => 'datetime',
+        'order_state_at'   => 'datetime',
     ];
 
     /* status convention: 3 = cancelled, 5 = refunded */
     const STATUS_CANCELLED = 3;
     const STATUS_REFUNDED  = 5;
 
+    /* Admin-managed order lifecycle states (order_state column). */
+    const STATE_CANCELLED_BY_USER = 'cancelled_by_user';
+    const STATE_REFUNDED          = 'refunded';
+    const STATE_CLOSED            = 'closed';
+
+    /** Human labels for each manageable order state. */
+    public static function stateOptions(): array
+    {
+        return [
+            self::STATE_CANCELLED_BY_USER => 'Cancelled by User',
+            self::STATE_REFUNDED          => 'Refunded',
+            self::STATE_CLOSED            => 'Closed Order',
+        ];
+    }
+
+    /** Display label for the current order_state (empty string if none). */
+    public function stateLabel(): string
+    {
+        return self::stateOptions()[$this->order_state] ?? '';
+    }
+
     /** Has this order been cancelled (by customer or admin)? */
     public function isCancelled(): bool
     {
-        return (int) ($this->status ?? 0) === self::STATUS_CANCELLED
+        // order_state is the source of truth; payment_status kept for legacy
+        // admin cancels. (status tinyint is legacy/ambiguous — not used here.)
+        return $this->order_state === self::STATE_CANCELLED_BY_USER
             || strtolower(trim($this->payment_status ?? '')) === 'cancelled';
     }
 
@@ -100,7 +126,8 @@ class OrderDetail extends Model
      */
     public function isCancellable(): bool
     {
-        if ($this->isCancelled()) {
+        // Already in a managed end-state (cancelled / refunded / closed).
+        if (!empty($this->order_state) || $this->isCancelled()) {
             return false;
         }
 

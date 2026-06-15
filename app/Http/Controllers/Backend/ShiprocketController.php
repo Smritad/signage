@@ -60,6 +60,59 @@ class ShiprocketController extends Controller
     }
 
     /* ══════════════════════════════════════════════════════════
+     |  MANUAL ORDER STATE  (admin dropdown)
+     |  Cancelled by User → Refunded → Closed (or back to Active).
+     |  payment_status is intentionally NOT changed so the order
+     |  stays in its prepaid/COD list. Each change is logged with
+     |  date/time + admin id in order_status_details.
+     ══════════════════════════════════════════════════════════ */
+    public function updateOrderState(Request $request, $id)
+    {
+        $request->validate([
+            'order_state' => 'required|in:active,cancelled_by_user,refunded,closed',
+        ]);
+
+        $order = OrderDetail::findOrFail($id);
+        $new   = $request->order_state === 'active' ? null : $request->order_state;
+
+        $status = $order->status;
+        if ($new === OrderDetail::STATE_CANCELLED_BY_USER) {
+            $status = OrderDetail::STATUS_CANCELLED;
+        } elseif ($new === OrderDetail::STATE_REFUNDED) {
+            $status = OrderDetail::STATUS_REFUNDED;
+        }
+
+        $order->update([
+            'order_state'    => $new,
+            'order_state_at' => Carbon::now(),
+            'status'         => $status,
+            'updated_at'     => Carbon::now(),
+        ]);
+
+        $label = $new ? OrderDetail::stateOptions()[$new] : 'Active';
+
+        // Audit trail with date/time + admin id.
+        try {
+            DB::table('order_status_details')->insert([
+                'user_id'           => $order->user_id,
+                'order_id'          => $order->order_id,
+                'order_status'      => $new ?? 'active',
+                'payment_mode'      => strtolower($order->payment_method ?? '') === 'cod' ? 'cod' : 'online',
+                'payment_status'    => $order->payment_status,
+                'order_remarks'     => 'Order status set to "' . $label . '" by admin',
+                'status_updated_by' => Auth::id(),
+                'status_updated_at' => Carbon::now(),
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('[updateOrderState] audit insert failed: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Order status updated to "' . $label . '".');
+    }
+
+    /* ══════════════════════════════════════════════════════════
      |  ORDER DETAILS — paid
      ══════════════════════════════════════════════════════════ */
     public function showOrderDetails($id)
@@ -69,10 +122,22 @@ class ShiprocketController extends Controller
         [$invoiceItems, $subtotal, $totalSaved, $productNames, $quantities, $prices]
             = $this->buildInvoiceItems($order);
 
+        $statusHistory = $this->orderStatusHistory($order->order_id);
+
         return view('backend.order-details-view', compact(
             'order', 'invoiceItems', 'subtotal', 'totalSaved',
-            'productNames', 'quantities', 'prices'
+            'productNames', 'quantities', 'prices', 'statusHistory'
         ));
+    }
+
+    /** Status-change history (with date/time) for an order, newest first. */
+    private function orderStatusHistory($orderId)
+    {
+        return DB::table('order_status_details')
+            ->where('order_id', $orderId)
+            ->orderByDesc('status_updated_at')
+            ->orderByDesc('id')
+            ->get();
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -101,9 +166,11 @@ class ShiprocketController extends Controller
         [$invoiceItems, $subtotal, $totalSaved, $productNames, $quantities, $prices]
             = $this->buildInvoiceItems($order);
 
+        $statusHistory = $this->orderStatusHistory($order->order_id);
+
         return view('backend.shiprocket.order-cod-details-view', compact(
             'order', 'invoiceItems', 'subtotal', 'totalSaved',
-            'productNames', 'quantities', 'prices'
+            'productNames', 'quantities', 'prices', 'statusHistory'
         ));
     }
 
@@ -225,10 +292,10 @@ class ShiprocketController extends Controller
                     ->with('error', "Order already shipped. Shipment ID: {$order->shipment_id}");
             }
 
-            /* ── Guard: order cancelled (status = 3) ── */
-            if ((int) $order->status === 3) {
+            /* ── Guard: order in a managed end-state (cancelled / refunded / closed) ── */
+            if (!empty($order->order_state)) {
                 return redirect()->back()
-                    ->with('error', 'This order has been cancelled and cannot be shipped.');
+                    ->with('error', 'This order is "' . $order->stateLabel() . '" and cannot be shipped.');
             }
 
             /* ── Detect payment type ── */
