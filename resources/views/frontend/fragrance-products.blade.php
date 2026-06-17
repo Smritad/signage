@@ -6,42 +6,6 @@
 </head>
 
 <body>
-<style>
-.card-product_wrapper { position: relative; }
-.product-badge_list {
-    position: absolute; top: 10px; left: 10px;
-    display: flex; gap: 6px; padding: 0; margin: 0; list-style: none; z-index: 10;
-}
-.product-badge_item {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 12px; color: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2); white-space: nowrap;
-}
-.product-badge_item.bestseller  { background: linear-gradient(45deg,#EE7F00,#EE7F00); }
-.product-badge_item.new-arrival { background: linear-gradient(45deg,#499F30,#499F30); }
-.product-discount-badge {
-    position: absolute; bottom: 15px; right: 15px;
-    background: #dc3545; color: #fff; font-size: 13px; font-weight: 700;
-    padding: 5px 10px; border-radius: 4px; z-index: 10;
-    letter-spacing: .5px; box-shadow: 0 2px 6px rgba(0,0,0,.15);
-}
-.card-rating-row {
-    display: flex; align-items: center; gap: 6px;
-    margin: 6px 0 4px; font-size: 13px; color: #333;
-}
-.card-rating-row .star-icon    { color: #f5a623; font-size: 14px; }
-.card-rating-row .verified-check {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: #1e88e5; color: #fff; font-size: 9px; font-weight: 700;
-}
-.card-rating-row .review-count { color: #666; font-size: 12px; }
-.card-rating-row .divider      { color: #ccc; margin: 0 2px; }
-.card-rating-row.no-reviews    { color: #999; font-size: 12px; }
-/* Loading fade */
-#gridLayout { transition: opacity .25s; }
-#gridLayout.loading { opacity: .4; pointer-events: none; }
-</style>
 
 <button id="goTop"><span class="border-progress"></span><span class="icon icon-caret-up"></span></button>
 <div class="preload preload-container" id="preload">

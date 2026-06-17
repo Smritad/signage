@@ -2,59 +2,6 @@
 <html lang="en">
 <head>
     @include('components.frontend.head')
-    <style>
-        .oc-banner { text-align: center; margin-bottom: 2.5rem; }
-        .oc-banner-icon { font-size: 3rem; color: #4CAF50; margin-bottom: .75rem; }
-        .oc-banner-icon.cod { color: #0c5460; }
-        .oc-banner h2 { font-weight: 700; margin-bottom: .35rem; }
-        .oc-banner h2.online { color: #155724; }
-        .oc-banner h2.cod-title { color: #0c5460; }
-        .oc-banner p { color: #6c757d; }
-
-        .oc-card { padding: 1.5rem; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.06); background: #fff; height: 100%; }
-
-        .oc-meta-table { width: 100%; font-size: 17px; border-collapse: collapse; }
-        .oc-meta-table td { padding: 6px 0; vertical-align: top; }
-        .oc-meta-label { color: #6c757d; font-weight: 600; width: 45%; }
-
-        .oc-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 17px; font-weight: 600; }
-        .oc-badge-cod     { background: #d1ecf1; color: #0c5460; }
-        .oc-badge-online  { background: #d4edda; color: #155724; }
-        .oc-badge-paid    { background: #d4edda; color: #155724; }
-        .oc-badge-pending { background: #fff3cd; color: #856404; }
-        .oc-badge-failed  { background: #f8d7da; color: #721c24; }
-        .oc-badge-cancelled { background: #f8d7da; color: #721c24; }
-        .oc-badge-refunded  { background: #e2e3e5; color: #383d41; }
-
-        .oc-shipping-name { font-weight: 700; margin-bottom: 4px; }
-        .oc-shipping-line { font-size: 17px; color: #6c757d; margin-bottom: 3px; }
-
-        .oc-section-label { font-weight: 700; font-size: 17px; margin-bottom: .75rem; padding-bottom: 6px; border-bottom: 2px solid #e0e0e0; color: #333; }
-        .oc-section-label.offer { border-color: #ffc107; color: #856404; }
-
-        .oc-item-row { display: flex; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #eee; }
-        .oc-item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .oc-item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; }
-        .oc-item-info { flex: 1; margin-left: 1rem; }
-        .oc-item-name { font-weight: 700; color: #333; margin-bottom: 4px; font-size: 17px; }
-        .oc-item-badge { display: inline-block; background: #fff3cd; color: #856404; font-size: 17px; padding: 2px 8px; border-radius: 3px; margin-bottom: 6px; }
-        .oc-item-meta { font-size: 17px; color: #6c757d; }
-        .oc-item-selected { margin: 4px 0 6px 0; padding-left: 16px; font-size: 17px; color: #666; }
-        .oc-item-price { text-align: right; min-width: 90px; margin-left: .75rem; }
-        .oc-price-final { font-weight: 700; color: #155724; font-size: 17px; }
-        .oc-price-original { text-decoration: line-through; color: #6c757d; font-size: 17px; }
-        .oc-saved { color: #dc3545; font-size: 17px; }
-
-        .oc-totals { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 1rem; margin-top: 1rem; }
-        .oc-totals-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .oc-totals-divider { border: none; border-top: 1px solid #ddd; margin: .5rem 0; }
-        .oc-grand-label { font-weight: 700; font-size: 17px; }
-        .oc-grand-value { font-weight: 700; font-size: 17px; color: #155724; }
-        .oc-cod-note { font-size: 17px; color: #6c757d; margin-top: .5rem; margin-bottom: 0; }
-
-        .oc-actions { display: flex; gap: 1rem; margin-top: 1.25rem; }
-        .oc-actions .tf-btn { flex: 1; text-align: center; }
-    </style>
 </head>
 <body>
 <div id="wrapper">

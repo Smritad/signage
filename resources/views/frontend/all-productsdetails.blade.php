@@ -5,12 +5,6 @@
     @include('components.frontend.head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<style>
-    
-    .demo img {
-         object-fit: cover !important;
-}
-</style>
 <body>
     <button id="goTop"><span class="border-progress"></span><span class="icon icon-caret-up"></span></button>
     <div class="preload preload-container" id="preload"><div class="preload-logo"><div class="spinner"></div></div></div>

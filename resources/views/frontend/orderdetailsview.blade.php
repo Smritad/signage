@@ -3,59 +3,6 @@
 <head>
     @include('components.frontend.head')
 
-    <style>
-        .prd-info {
-            display: flex; align-items: flex-start; gap: 15px;
-            padding: 15px 0; border-bottom: 1px solid #eee;
-        }
-        .prd-info:last-child { border-bottom: 0; }
-        .prd-info .info_image img {
-            width: 80px; height: 80px; object-fit: cover;
-            border-radius: 6px; border: 1px solid #ddd;
-        }
-        .prd-info .info_detail { flex: 1; }
-        .prd-info .info-name {
-            font-size: 15px; font-weight: 600; color: #000;
-            display: block; margin-bottom: 6px;
-        }
-        .prd-info .info-price,
-        .prd-info .info-qty { margin: 2px 0; color: #555; font-size: 14px; }
-
-        .prd-order_total {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 15px 0;
-            border-top: 2px solid #000; font-size: 17px;
-            margin-top: 10px;
-        }
-
-        .bundle-badge {
-            display: inline-block; padding: 2px 8px;
-            background: #fff3cd; color: #856404;
-            font-size: 11px; border-radius: 4px;
-            margin-bottom: 5px;
-        }
-        .bundle-items {
-            margin: 5px 0 0 0; padding-left: 16px;
-            font-size: 12px; color: #666;
-        }
-        .bundle-items li { margin-bottom: 2px; }
-
-        .mrp-strike {
-            text-decoration: line-through;
-            color: #999; font-size: 12px;
-            margin-right: 5px;
-        }
-
-        .status-pill {
-            display: inline-block; padding: 4px 12px;
-            border-radius: 12px; font-size: 12px; font-weight: 600;
-        }
-        .stt-paid      { background:#d4edda; color:#155724; }
-        .stt-cod       { background:#d1ecf1; color:#0c5460; }
-        .stt-pending   { background:#fff3cd; color:#856404; }
-        .stt-failed    { background:#f8d7da; color:#721c24; }
-        .stt-refunded  { background:#e2e3e5; color:#383d41; }
-    </style>
 </head>
 
 <body>

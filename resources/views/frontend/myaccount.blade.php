@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
     @include('components.frontend.head')
-    <style>
-        .tb-order_code a { word-break: break-all; }
-    </style>
 </head>
 
 <body>

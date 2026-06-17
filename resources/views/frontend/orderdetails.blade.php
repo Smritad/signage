@@ -2,15 +2,6 @@
 <html lang="en">
 <head>
     @include('components.frontend.head')
-    <style>
-        .tb-order_status { padding:4px 12px; border-radius:12px; font-size:12px; font-weight:600; display:inline-block; }
-        .stt-paid      { background:#d4edda; color:#155724; }
-        .stt-cod       { background:#d1ecf1; color:#0c5460; }
-        .stt-pending   { background:#fff3cd; color:#856404; }
-        .stt-failed    { background:#f8d7da; color:#721c24; }
-        .stt-cancelled { background:#f8d7da; color:#721c24; }
-        .stt-refunded  { background:#e2e3e5; color:#383d41; }
-    </style>
 </head>
 
 <body>

@@ -25,6 +25,9 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/custom.css') }}">
 
+    {{-- Page-specific styles moved out of inline <style> blocks --}}
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/pages.css') }}">
+
     <!--<link rel="stylesheet" href="{{ asset('frontend/assets/css/all-category.css') }}">-->
     <!--<link rel="stylesheet" href="{{ asset('frontend/assets/css/all-sabcat.css') }}">-->
 

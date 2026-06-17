@@ -74,14 +74,6 @@
                     </form>
               </div>
             </div>
-            <style>.text-main-2 {
-                color: #ffffff !important;
-            }
-            
-            .email-link {
-                text-transform: none !important;
-            }
-            </style>
             <div class="col-lg-4">
               <div class="form-contact-information">
                 <form class="stelina-contact-info">
