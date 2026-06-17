@@ -870,7 +870,8 @@ document.addEventListener('change', function (e) {
         var offer = parseFloat(offerEl.value);
 
         if (offerEl.value === '' || isNaN(offer)) {
-            return; // no offer price -> leave discount as typed
+            discEl.value = ''; // offer price removed -> clear discount too
+            return;
         }
         if (!isNaN(price) && price > 0 && offer > 0 && offer < price) {
             discEl.value = Math.round((price - offer) / price * 100);
