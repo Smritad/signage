@@ -28,16 +28,16 @@
     background: #166fe5; border-color: #166fe5;
 }
 
-.social-login-wrap .social-divider {
+.social-divider {
     position: relative; text-align: center; margin: 18px 0; color: #9aa0a6; font-size: 13px;
 }
-.social-login-wrap .social-divider::before,
-.social-login-wrap .social-divider::after {
+.social-divider::before,
+.social-divider::after {
     content: ""; position: absolute; top: 50%; width: 42%; height: 1px; background: #e4e6eb;
 }
-.social-login-wrap .social-divider::before { left: 0; }
-.social-login-wrap .social-divider::after  { right: 0; }
-.social-login-wrap .social-divider span { background: #fff; padding: 0 10px; position: relative; z-index: 1; }
+.social-divider::before { left: 0; }
+.social-divider::after  { right: 0; }
+.social-divider span { background: #fff; padding: 0 10px; position: relative; z-index: 1; }
 
 /* ===================== all-productsdetails ===================== */
 .demo img {
