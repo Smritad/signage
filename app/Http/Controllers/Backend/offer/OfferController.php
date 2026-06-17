@@ -42,7 +42,7 @@ class OfferController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('offer-details.index')->with('success', 'Display priority updated.');
+        return redirect()->route('offer-details.index')->with('message', 'Display priority updated.');
     }
 
     /* ─────────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ class OfferController extends Controller
             'updated_at'       => now(),
         ]);
 
-        return redirect()->route('offer-details.index')->with('success', 'Offer created successfully.');
+        return redirect()->route('offer-details.index')->with('message', 'Offer created successfully.');
     }
 
     /* ─────────────────────────────────────────────────────────────
@@ -225,7 +225,7 @@ class OfferController extends Controller
             'updated_at'       => now(),
         ]);
 
-        return redirect()->route('offer-details.index')->with('success', 'Offer updated successfully.');
+        return redirect()->route('offer-details.index')->with('message', 'Offer updated successfully.');
     }
 
     /* ─────────────────────────────────────────────────────────────
@@ -238,7 +238,7 @@ class OfferController extends Controller
             'deleted_at' => now(),
         ]);
 
-        return redirect()->route('offer-details.index')->with('success', 'Offer deleted successfully.');
+        return redirect()->route('offer-details.index')->with('message', 'Offer deleted successfully.');
     }
 
     /* ─────────────────────────────────────────────────────────────

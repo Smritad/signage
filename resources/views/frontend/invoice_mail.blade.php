@@ -120,7 +120,7 @@
 
         {{-- HEADER --}}
         <div style="background:#000; text-align:center; padding:25px 0;">
-            <img src="https://anvayafoundation.com/signage/frontend/assets/images/logo/logo.webp"
+            <img src="https://anvayafoundation.com/signage_live/frontend/assets/images/logo/logo.webp"
                  alt="Signage"
                  style="height:70px; display:block; margin:0 auto;">
         </div>

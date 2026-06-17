@@ -291,7 +291,8 @@
                 @elseif($statusInfo) {{ $statusInfo['label'] }}
                 @endif
                 <!--<strong>Expected Delivery:</strong>-->
-                <!--{{ $deliveryStart->format('d M') }} – {{ $deliveryEnd->format('d M Y') }} (8–9 days)<br>-->
+                <!--{{ $deliveryStart->format('d M') }} – {{ $deliveryEnd->format('d M Y') }} (8–9 days)-->
+                 <br>
                 @if(!empty($order->payment_id))
                     <strong>Payment ID:</strong> {{ $order->payment_id }}
                 @endif
