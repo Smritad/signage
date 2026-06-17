@@ -3,6 +3,42 @@
    Linked once from components/frontend/head.blade.php.
    ============================================================ */
 
+/* ===================== social login buttons (Google / Facebook) ===================== */
+.social-login-wrap .social-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; min-height: 48px; padding: 10px 16px; margin-bottom: 12px;
+    border-radius: 8px; font-size: 15px; font-weight: 600; line-height: 1;
+    text-decoration: none; cursor: pointer;
+    transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.social-login-wrap .social-btn svg { width: 20px; height: 20px; flex-shrink: 0; display: block; }
+.social-login-wrap .social-btn span { display: inline-block; }
+
+.social-login-wrap .social-google {
+    background: #fff; color: #3c4043; border: 1px solid #dadce0;
+}
+.social-login-wrap .social-google:hover {
+    background: #f7f8f8; box-shadow: 0 1px 3px rgba(60,64,67,.18);
+}
+
+.social-login-wrap .social-facebook {
+    background: #1877F2; color: #fff; border: 1px solid #1877F2;
+}
+.social-login-wrap .social-facebook:hover {
+    background: #166fe5; border-color: #166fe5;
+}
+
+.social-login-wrap .social-divider {
+    position: relative; text-align: center; margin: 18px 0; color: #9aa0a6; font-size: 13px;
+}
+.social-login-wrap .social-divider::before,
+.social-login-wrap .social-divider::after {
+    content: ""; position: absolute; top: 50%; width: 42%; height: 1px; background: #e4e6eb;
+}
+.social-login-wrap .social-divider::before { left: 0; }
+.social-login-wrap .social-divider::after  { right: 0; }
+.social-login-wrap .social-divider span { background: #fff; padding: 0 10px; position: relative; z-index: 1; }
+
 /* ===================== all-productsdetails ===================== */
 .demo img {
     object-fit: cover !important;
