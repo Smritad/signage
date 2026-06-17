@@ -202,6 +202,22 @@
                         </div>
                     </div>
 
+                    {{-- Validity --}}
+                    <div class="section-block">
+                        <div class="section-title">Offer Validity</div>
+                        <div class="section-hint">Optional. The offer appears on the storefront only within this date range. Leave blank for always-on.</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="start_date" class="form-control" value="{{ old('start_date') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">End Date</label>
+                                <input type="date" name="end_date" class="form-control" value="{{ old('end_date') }}">
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Images --}}
                     <div class="section-block">
                         <div class="section-title">Offer Images</div>

@@ -189,11 +189,20 @@ class CartController extends Controller
             return response()->json(['success' => false, 'message' => 'Invalid bundle data.']);
         }
 
+        $today = now()->toDateString();
+
         $offer = DB::table('offers')
-            ->where('id', $offerId)->where('is_active', 1)->whereNull('deleted_at')->first();
+            ->where('id', $offerId)->where('is_active', 1)->whereNull('deleted_at')
+            ->where(function ($q) use ($today) {
+                $q->whereNull('start_date')->orWhereDate('start_date', '<=', $today);
+            })
+            ->where(function ($q) use ($today) {
+                $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today);
+            })
+            ->first();
 
         if (!$offer) {
-            return response()->json(['success' => false, 'message' => 'Offer not found or inactive.']);
+            return response()->json(['success' => false, 'message' => 'This offer is not available or has expired.']);
         }
 
         /* Flatten selected products */

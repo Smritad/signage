@@ -76,6 +76,8 @@ class OfferController extends Controller
             'products'         => 'required|string',
             'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'start_date'       => 'nullable|date',
+            'end_date'         => 'nullable|date|after_or_equal:start_date',
         ];
 
         if ($request->offer_price_type === 'percent') {
@@ -117,6 +119,8 @@ class OfferController extends Controller
             'banner_image'     => $bannerImage,
             'offer_image'      => $offerImage,
             'is_active'        => $request->is_active ?? 1,
+            'start_date'       => $request->start_date ?: null,
+            'end_date'         => $request->end_date ?: null,
             'created_by'       => Auth::id(),
             'created_at'       => now(),
             'updated_at'       => now(),
@@ -165,6 +169,8 @@ class OfferController extends Controller
             'products'         => 'required|string',
             'banner_image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'offer_image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'start_date'       => 'nullable|date',
+            'end_date'         => 'nullable|date|after_or_equal:start_date',
         ];
 
         if ($request->offer_price_type === 'percent') {
@@ -213,6 +219,8 @@ class OfferController extends Controller
             'banner_image'     => $bannerImage,
             'offer_image'      => $offerImage,
             'is_active'        => $request->is_active ?? 1,
+            'start_date'       => $request->start_date ?: null,
+            'end_date'         => $request->end_date ?: null,
             'updated_by'       => Auth::id(),
             'updated_at'       => now(),
         ]);

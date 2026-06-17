@@ -12,9 +12,18 @@ class CarzyDealController extends Controller
      ───────────────────────────────────────────── */
     public function index()
 {
+    $today = now()->toDateString();
+
     $offers = DB::table('offers')
         ->where('is_active', 1)
         ->whereNull('deleted_at')
+        // Validity window: hide before start_date and after end_date.
+        ->where(function ($q) use ($today) {
+            $q->whereNull('start_date')->orWhereDate('start_date', '<=', $today);
+        })
+        ->where(function ($q) use ($today) {
+            $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today);
+        })
         ->orderByRaw('priority = 0')   // admin-set priority first, 0 = last
         ->orderBy('priority', 'asc')   // 1, 2, 3 ...
         ->orderByDesc('id')            // tie-breaker (newest first)
@@ -29,10 +38,18 @@ class CarzyDealController extends Controller
      ───────────────────────────────────────────── */
     public function show($slug)
     {
+        $today = now()->toDateString();
+
         $offer = DB::table('offers')
             ->where('slug', $slug)
             ->where('is_active', 1)
             ->whereNull('deleted_at')
+            ->where(function ($q) use ($today) {
+                $q->whereNull('start_date')->orWhereDate('start_date', '<=', $today);
+            })
+            ->where(function ($q) use ($today) {
+                $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today);
+            })
             ->first();
 
         if (!$offer) {
