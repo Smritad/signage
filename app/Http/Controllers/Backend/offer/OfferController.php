@@ -18,7 +18,9 @@ class OfferController extends Controller
     {
         $offers = DB::table('offers')
             ->whereNull('deleted_by')
-            ->latest()
+            ->orderByRaw('priority = 0')   // prioritised offers first, 0 = last
+            ->orderBy('priority', 'asc')   // 1, 2, 3 ...
+            ->orderByDesc('id')            // tie-breaker (newest first)
             ->get()
             ->map(function ($offer) {
                 $offer->products_decoded = json_decode($offer->products, true) ?? [];
@@ -26,6 +28,21 @@ class OfferController extends Controller
             });
 
         return view('backend.offer-page.offers-details.index', compact('offers'));
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       UPDATE DISPLAY PRIORITY (admin sets storefront order)
+    ───────────────────────────────────────────────────────────── */
+    public function updatePriority(Request $request, $id)
+    {
+        $request->validate(['priority' => 'required|integer|min:0']);
+
+        DB::table('offers')->where('id', $id)->update([
+            'priority'   => (int) $request->priority,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('offer-details.index')->with('success', 'Display priority updated.');
     }
 
     /* ─────────────────────────────────────────────────────────────

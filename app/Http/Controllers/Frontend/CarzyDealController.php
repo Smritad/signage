@@ -15,7 +15,9 @@ class CarzyDealController extends Controller
     $offers = DB::table('offers')
         ->where('is_active', 1)
         ->whereNull('deleted_at')
-        ->latest()
+        ->orderByRaw('priority = 0')   // admin-set priority first, 0 = last
+        ->orderBy('priority', 'asc')   // 1, 2, 3 ...
+        ->orderByDesc('id')            // tie-breaker (newest first)
         ->paginate(8);
 
     return view('frontend.crazydeal', compact('offers'));

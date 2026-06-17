@@ -48,13 +48,13 @@
                             </a>
                         </div>
 
-                        <!--{{-- Flash messages --}}-->
-                        <!--@if(session('success'))-->
-                        <!--<div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">-->
-                        <!--    {{ session('success') }}-->
-                        <!--    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
-                        <!--</div>-->
-                        <!--@endif-->
+                        {{-- Flash messages --}}
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        @endif
 
                         {{-- Table --}}
                         <div class="table-responsive custom-scrollbar">
@@ -66,6 +66,7 @@
                                         <th>Offer Value</th>
                                         <!--<th>Products</th>-->
                                         <th>Status</th>
+                                        <th width="150">Priority</th>
                                         <th width="160" class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -115,6 +116,17 @@
                                                     Inactive
                                                 </span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            {{-- Display priority (lower = shown first; 0 = last) --}}
+                                            <form action="{{ route('offer-details.priority', $offer->id) }}"
+                                                  method="POST" style="display:flex;gap:6px;align-items:center;">
+                                                @csrf
+                                                <input type="number" name="priority" value="{{ $offer->priority }}" min="0"
+                                                       style="width:64px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:6px;">
+                                                <button type="submit" class="btn btn-sm"
+                                                        style="background:#064f4f;color:#fff;font-weight:600;">Save</button>
+                                            </form>
                                         </td>
                                         <td class="text-center">
                                             {{-- Edit --}}

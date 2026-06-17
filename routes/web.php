@@ -95,6 +95,10 @@ Route::resource('offer-details', OfferController::class);
 Route::post('offer-details/{id}/toggle-status',
     [OfferController::class, 'toggleStatus']
 )->name('offer-details.toggle-status');
+
+Route::post('offer-details/{id}/priority',
+    [OfferController::class, 'updatePriority']
+)->name('offer-details.priority');
  
 Route::resource('products-details', ProductsDetailsController::class);
 Route::patch('products-details/{id}/priority', [ProductsDetailsController::class, 'updatePriority'])->name('products-details.updatePriority');
