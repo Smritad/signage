@@ -168,14 +168,14 @@
                                         <label class="form-label">
                                             Price (₹) <span class="required-star">*</span>
                                         </label>
-                                        <input type="number" step="0.01" min="0" name="price" class="form-control"
+                                        <input type="number" step="0.01" min="0" name="price" id="price" class="form-control"
                                                placeholder="e.g., 1999"
                                                value="{{ $product->price }}" required>
                                         <small class="field-hint">Original MRP.</small>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Offer Price (₹)</label>
-                                        <input type="number" step="0.01" min="0" name="offer_price" class="form-control"
+                                        <input type="number" step="0.01" min="0" name="offer_price" id="offer_price" class="form-control"
                                                placeholder="e.g., 1499"
                                                value="{{ $product->offer_price ?? '' }}">
                                         <small class="field-hint">Selling price (if on offer).</small>
@@ -194,7 +194,7 @@
                                 <div class="row g-3 mt-2">
                                     <div class="col-md-3">
                                         <label class="form-label">Discount %</label>
-                                        <input type="number" step="0.01" min="0" max="100" name="discount" class="form-control"
+                                        <input type="number" step="0.01" min="0" max="100" name="discount" id="discount" class="form-control"
                                                placeholder="e.g., 25"
                                                value="{{ $product->discount }}">
                                         <small class="field-hint">Optional. Between 0 and 100.</small>
@@ -855,6 +855,33 @@ document.addEventListener('change', function (e) {
     };
     reader.readAsDataURL(file);
 });
+</script>
+
+<script>
+/* Auto-calculate Discount % from Price and Offer Price */
+(function () {
+    var priceEl = document.getElementById('price');
+    var offerEl = document.getElementById('offer_price');
+    var discEl  = document.getElementById('discount');
+    if (!priceEl || !offerEl || !discEl) return;
+
+    function recalcDiscount() {
+        var price = parseFloat(priceEl.value);
+        var offer = parseFloat(offerEl.value);
+
+        if (offerEl.value === '' || isNaN(offer)) {
+            return; // no offer price -> leave discount as typed
+        }
+        if (!isNaN(price) && price > 0 && offer > 0 && offer < price) {
+            discEl.value = Math.round((price - offer) / price * 100);
+        } else {
+            discEl.value = 0; // offer >= price (or invalid) -> no discount
+        }
+    }
+
+    priceEl.addEventListener('input', recalcDiscount);
+    offerEl.addEventListener('input', recalcDiscount);
+})();
 </script>
 
 </body>

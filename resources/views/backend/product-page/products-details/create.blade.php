@@ -230,14 +230,14 @@
                                     <label class="form-label">
                                         Price (₹) <span class="required-star">*</span>
                                     </label>
-                                    <input type="number" step="0.01" min="0" name="price" class="form-control"
+                                    <input type="number" step="0.01" min="0" name="price" id="price" class="form-control"
                                            placeholder="e.g., 1999"
                                            value="{{ old('price', $cloneProduct->price ?? '') }}" required>
                                     <small class="field-hint">Original MRP.</small>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Offer Price (₹)</label>
-                                    <input type="number" step="0.01" min="0" name="offer_price" class="form-control"
+                                    <input type="number" step="0.01" min="0" name="offer_price" id="offer_price" class="form-control"
                                            placeholder="e.g., 1499"
                                            value="{{ old('offer_price', $cloneProduct->offer_price ?? '') }}">
                                     <small class="field-hint">Selling price (if on offer).</small>
@@ -261,7 +261,7 @@
                             <div class="row g-3 mt-2">
                                 <div class="col-md-3">
                                     <label class="form-label">Discount %</label>
-                                    <input type="number" step="0.01" min="0" max="100" name="discount" class="form-control"
+                                    <input type="number" step="0.01" min="0" max="100" name="discount" id="discount" class="form-control"
                                            placeholder="e.g., 25"
                                            value="{{ old('discount', $cloneProduct->discount ?? '') }}">
                                     <small class="field-hint">Optional. Enter a number between 0 and 100.</small>
@@ -926,6 +926,34 @@ $(document).ready(function () {
         window.location.href = baseCreateUrl + '?clone=' + productId;
     });
 });
+</script>
+
+<script>
+/* Auto-calculate Discount % from Price and Offer Price */
+(function () {
+    var priceEl = document.getElementById('price');
+    var offerEl = document.getElementById('offer_price');
+    var discEl  = document.getElementById('discount');
+    if (!priceEl || !offerEl || !discEl) return;
+
+    function recalcDiscount() {
+        var price = parseFloat(priceEl.value);
+        var offer = parseFloat(offerEl.value);
+
+        if (offerEl.value === '' || isNaN(offer)) {
+            return; // no offer price -> leave discount as typed
+        }
+        if (!isNaN(price) && price > 0 && offer > 0 && offer < price) {
+            discEl.value = Math.round((price - offer) / price * 100);
+        } else {
+            discEl.value = 0; // offer >= price (or invalid) -> no discount
+        }
+    }
+
+    priceEl.addEventListener('input', recalcDiscount);
+    offerEl.addEventListener('input', recalcDiscount);
+    recalcDiscount(); // run once on load (e.g. cloned product)
+})();
 </script>
 
 </body>
