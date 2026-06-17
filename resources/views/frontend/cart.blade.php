@@ -338,11 +338,11 @@
                                 <div class="normal-summary mb-2"></div>
 
                                 <div id="normal-total-box" class="border rounded p-2 mb-3 bg-light" style="display:none;">
-                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-mrp-row" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-mrp-row" style="display:none !important;">
                                         <span class="text-muted small">Total MRP</span>
                                         <span id="normal-mrp" class="text-muted small price-original">₹ 0</span>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-savings-row" style="display:none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1" id="normal-savings-row" style="display:none !important;">
                                         <span class="text-danger fw-semibold small">You Save</span>
                                         <span id="normal-savings" class="text-danger small">- ₹ 0</span>
                                     </div>
@@ -474,13 +474,18 @@
                         $('#normal-total-box').show();
                         $('#normal-subtotal').text('₹ ' + money(normalTotal));
 
-                        if (nSavings > 0) {
+                        const showSavings = nSavings > 0;
+                        if (showSavings) {
                             $('#normal-mrp').text('₹ ' + money(normalMrp));
                             $('#normal-savings').text('- ₹ ' + money(nSavings));
-                            $('#normal-mrp-row, #normal-savings-row, #normal-divider').show();
-                        } else {
-                            $('#normal-mrp-row, #normal-savings-row, #normal-divider').hide();
                         }
+                        // NOTE: these rows use Bootstrap's `d-flex` (display:flex !important),
+                        // so jQuery .hide()/.show() can't toggle them — set display with
+                        // !important via setProperty so removing a discount actually hides them.
+                        $('#normal-mrp-row, #normal-savings-row').each(function () {
+                            this.style.setProperty('display', showSavings ? 'flex' : 'none', 'important');
+                        });
+                        $('#normal-divider').toggle(showSavings);
                     } else {
                         $('#normal-total-box').hide();
                     }
