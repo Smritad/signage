@@ -108,6 +108,7 @@ public function store(Request $request)
         'description'                          => 'nullable|string',
         'key_benefits'                         => 'nullable|string',
         'how_to_use'                           => 'nullable|string',
+        'other_information'                    => 'nullable|string',
 
         'faqs'                                 => 'nullable|array',
         'faqs.*.question'                      => 'nullable|string|max:500',
@@ -236,6 +237,7 @@ public function store(Request $request)
         'description'       => $request->description,
         'key_benefits'      => $request->key_benefits,
         'how_to_use'        => $request->how_to_use,
+        'other_information' => $request->other_information,
         'faqs'              => json_encode($request->faqs),
 
         'created_by'        => auth()->id(),
@@ -328,6 +330,7 @@ public function update(Request $request, $id)
 'fragrance_type_id.*' => 'exists:fragrance_type_details,id',
          'measurement_unit'  => 'nullable|string|max:255',
          'offer_price'  => 'nullable|string|max:255',
+        'other_information'  => 'nullable|string',
 
         'faqs'               => 'nullable|array',
         'faqs.*.question'    => 'nullable|string|max:500',
@@ -441,6 +444,7 @@ public function update(Request $request, $id)
         'description'        => $request->description,
         'key_benefits'       => $request->key_benefits,
         'how_to_use'         => $request->how_to_use,
+        'other_information'  => $request->other_information,
         'faqs'               => json_encode($request->faqs),
         'updated_by'         => auth()->id(),
     ]);

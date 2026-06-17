@@ -226,6 +226,9 @@
                         <li class="nav-tab-item"><a href="#reviews-tab" class="tab-link" data-bs-toggle="tab">How to Use</a></li>
                         <li class="nav-tab-item"><a href="#notes" class="tab-link" data-bs-toggle="tab">Perfume Notes</a></li>
                         <li class="nav-tab-item"><a href="#faqs" class="tab-link" data-bs-toggle="tab">FAQs</a></li>
+                        @if(trim(strip_tags($product->other_information ?? '')) !== '')
+                        <li class="nav-tab-item"><a href="#other-info" class="tab-link" data-bs-toggle="tab">Other Information</a></li>
+                        @endif
                     </ul>
 
                     <div class="tab-content">
@@ -291,6 +294,12 @@
                                 @endif
                             </ul>
                         </div>
+
+                        @if(trim(strip_tags($product->other_information ?? '')) !== '')
+                        <div class="tab-pane wd-product-descriptions" id="other-info">
+                            <div class="other-information">{!! $product->other_information !!}</div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

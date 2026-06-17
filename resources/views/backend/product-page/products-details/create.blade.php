@@ -612,6 +612,18 @@
                             </table>
                         </div>
 
+                        {{-- ===================== 9. Other Information ===================== --}}
+                        <div class="card section-card mb-4 p-3">
+                            <h5 class="section-title">
+                                <i class="fa fa-info-circle"></i> 9. Other Information
+                            </h5>
+                            <p class="section-subtitle">
+                                Marketed By / Manufactured By / Country of Origin, etc. Shown after the FAQs on the product page.
+                            </p>
+                            <textarea name="other_information" id="other_information" class="form-control" rows="4"
+                                      placeholder="e.g. Marketed By: ...&#10;Manufactured By: ...&#10;Country of Origin: India">{{ old('other_information', $cloneProduct->other_information ?? '') }}</textarea>
+                        </div>
+
                         {{-- ===================== SUBMIT ===================== --}}
                         <div class="d-flex justify-content-end align-items-center mb-5 p-3 bg-light rounded">
                             <small class="text-muted me-3">
@@ -730,7 +742,15 @@
         }
     })
     .catch(error => { console.error(error); });
-    
+
+    ClassicEditor.create(document.querySelector('#other_information'), {
+        toolbar: [
+            'heading', '|', 'bold', 'italic', 'underline', 'link',
+            'bulletedList', 'numberedList', '|', 'undo', 'redo', 'removeFormat'
+        ]
+    })
+    .catch(error => { console.error(error); });
+
 </script>
 
 <script>

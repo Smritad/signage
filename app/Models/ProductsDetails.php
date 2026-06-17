@@ -35,6 +35,7 @@ class ProductsDetails extends Model
         'key_benefits',
         'how_to_use',
         'faqs',
+        'other_information',
         'created_by',
         'deleted_by',
     ];
