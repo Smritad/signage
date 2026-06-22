@@ -152,16 +152,28 @@
                                             <span class="h4 fw-semibold">Price</span>
                                             <span class="icon icon-caret-down fs-20"></span>
                                         </div>
+                                        @php
+                                            // noUiSlider (and the theme's shop.js) throws "'min' and 'max'
+                                            // cannot be equal" when every product shares one price — that
+                                            // uncaught error aborts the page's filter/grid JS and the slider
+                                            // never renders. Guarantee a valid range so it always builds.
+                                            $sliderMin = (int) ($minPrice ?? 0);
+                                            $sliderMax = (int) ($maxPrice ?? 0);
+                                            if ($sliderMin >= $sliderMax) {
+                                                $sliderMin = 0;
+                                                $sliderMax = max($sliderMax, 1);
+                                            }
+                                        @endphp
                                         <div id="price" class="collapse show">
                                             <div class="collapse-body widget-price filter-price">
                                                 <div class="price-val-range" id="price-value-range"
-                                                     data-min="{{ $minPrice }}" data-max="{{ $maxPrice }}"></div>
+                                                     data-min="{{ $sliderMin }}" data-max="{{ $sliderMax }}"></div>
                                                 <div class="box-value-price">
                                                     <span class="h6 text-main">Price:</span>
                                                     <div class="price-box">
-                                                        <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice }}</div>
+                                                        <div class="price-val" id="price-min-value" data-currency="₹">{{ $sliderMin }}</div>
                                                         <span>-</span>
-                                                        <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice }}</div>
+                                                        <div class="price-val" id="price-max-value" data-currency="₹">{{ $sliderMax }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -375,8 +387,8 @@
 <script>
 (function () {
 
-    var PRICE_MIN = {{ $minPrice }};
-    var PRICE_MAX = {{ $maxPrice }};
+    var PRICE_MIN = {{ $sliderMin }};
+    var PRICE_MAX = {{ $sliderMax }};
     var currentMin = PRICE_MIN;
     var currentMax = PRICE_MAX;
 
@@ -416,32 +428,36 @@
 
         var sliderEl = document.getElementById('price-value-range');
 
-        if (sliderEl && typeof noUiSlider !== 'undefined') {
+        // Build the slider ONLY for a real range. When every product shares one
+        // price (PRICE_MIN === PRICE_MAX) noUiSlider throws and would abort this
+        // whole handler (slider + grid load). try/catch keeps it non-fatal.
+        try {
+            if (sliderEl && typeof noUiSlider !== 'undefined' && PRICE_MIN < PRICE_MAX) {
 
-            if (sliderEl.noUiSlider) { sliderEl.noUiSlider.destroy(); }
+                if (sliderEl.noUiSlider) { sliderEl.noUiSlider.destroy(); }
 
-            noUiSlider.create(sliderEl, {
-                start:   [PRICE_MIN, PRICE_MAX],
-                connect: true,
-                range:   { min: PRICE_MIN, max: PRICE_MAX },
-                format:  { to: function (v) { return Math.round(v); }, from: function (v) { return Math.round(v); } }
-            });
+                noUiSlider.create(sliderEl, {
+                    start:   [PRICE_MIN, PRICE_MAX],
+                    connect: true,
+                    range:   { min: PRICE_MIN, max: PRICE_MAX },
+                    format:  { to: function (v) { return Math.round(v); }, from: function (v) { return Math.round(v); } }
+                });
 
-            sliderEl.noUiSlider.on('update', function (values) {
-                currentMin = parseInt(values[0]);
-                currentMax = parseInt(values[1]);
-                $('#price-min-value').text(currentMin);
-                $('#price-max-value').text(currentMax);
-            });
+                sliderEl.noUiSlider.on('update', function (values) {
+                    currentMin = parseInt(values[0]);
+                    currentMax = parseInt(values[1]);
+                    $('#price-min-value').text(currentMin);
+                    $('#price-max-value').text(currentMax);
+                });
 
-            sliderEl.noUiSlider.on('change', function (values) {
-                currentMin = parseInt(values[0]);
-                currentMax = parseInt(values[1]);
-                loadProducts(1);
-            });
-
-        } else if (sliderEl) {
-            console.warn('noUiSlider is not loaded. Price slider will not work.');
+                sliderEl.noUiSlider.on('change', function (values) {
+                    currentMin = parseInt(values[0]);
+                    currentMax = parseInt(values[1]);
+                    loadProducts(1);
+                });
+            }
+        } catch (err) {
+            console.error('Price slider init skipped (filters still work):', err);
         }
 
         loadProducts(1);
