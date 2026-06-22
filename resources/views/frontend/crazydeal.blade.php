@@ -21,6 +21,12 @@
     #wrapper .card-product_info .btn-build-box {
         margin-top: auto;
     }
+    /* Deal images are full promo banners (text/price baked in) — show the
+       whole image instead of cropping it like a normal product photo. */
+    #wrapper .card-product_wrapper img {
+        object-fit: contain;
+        background-color: #fff;
+    }
 </style>
 
 <div id="wrapper">
