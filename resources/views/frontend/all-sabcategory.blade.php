@@ -160,15 +160,27 @@
                                             <span class="h4 fw-semibold">Price</span>
                                             <span class="icon icon-caret-down fs-20"></span>
                                         </div>
+                                        @php
+                                            // noUiSlider (and the theme's shop.js) throws "'min' and 'max'
+                                            // cannot be equal" when every product shares one price — that
+                                            // uncaught error aborts the page's filter/grid JS. Guarantee a
+                                            // valid range so the slider always builds cleanly.
+                                            $sliderMin = (int) ($minPrice ?? 0);
+                                            $sliderMax = (int) ($maxPrice ?? 0);
+                                            if ($sliderMin >= $sliderMax) {
+                                                $sliderMin = 0;
+                                                $sliderMax = max($sliderMax, 1);
+                                            }
+                                        @endphp
                                         <div id="price" class="collapse show">
                                             <div class="collapse-body widget-price filter-price">
-                                                <div class="price-val-range" id="price-value-range" data-min="{{ $minPrice ?? 0 }}" data-max="{{ $maxPrice ?? 0 }}"></div>
+                                                <div class="price-val-range" id="price-value-range" data-min="{{ $sliderMin }}" data-max="{{ $sliderMax }}"></div>
                                                 <div class="box-value-price">
                                                     <span class="h6 text-main">Price:</span>
                                                     <div class="price-box">
-                                                        <div class="price-val" id="price-min-value" data-currency="₹">{{ $minPrice ?? 0 }}</div>
+                                                        <div class="price-val" id="price-min-value" data-currency="₹">{{ $sliderMin }}</div>
                                                         <span>-</span>
-                                                        <div class="price-val" id="price-max-value" data-currency="₹">{{ $maxPrice ?? 0 }}</div>
+                                                        <div class="price-val" id="price-max-value" data-currency="₹">{{ $sliderMax }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -223,6 +235,7 @@
                         @endif
 
                         {{-- ═══════════════ NORMAL PRODUCTS ═══════════════ --}}
+                        @if(!$hasCombo)
                         <div class="wrapper-shop tf-grid-layout tf-col-3 center-custom" id="gridLayout">
                             @foreach($products as $product)
                                 @php
@@ -342,6 +355,7 @@
                                 </div>
                             @endforeach
                         </div>
+                        @endif
 
                         {{-- ═══════════════ COMBO PRODUCTS ═══════════════ --}}
                         @if(isset($sabcategory) && $sabcategory->slug == 'make-your-own-combo')
@@ -650,6 +664,8 @@
         <script>
         $(document).ready(function () {
             function loadProducts(page = 1) {
+                if (!document.getElementById('gridLayout')) return; // combo page has no filter grid
+
                 let sub_category_id = "{{ $sabcategory->id }}";
                 let sub_category_slug = "{{ $sabcategory->slug }}";
 
@@ -697,11 +713,13 @@
                 loadProducts(1);
             });
 
+            @if(!$hasCombo)
             $(document).on("click", ".wg-pagination a", function(e){
                 e.preventDefault();
                 let page = $(this).attr("href").split("page=")[1];
                 loadProducts(page);
             });
+            @endif
 
             // Reset — covers BOTH desktop + mobile buttons, also resets slider position
             $(document).on("click", "#reset-filter, #reset-filter-desktop", function(){
@@ -723,24 +741,34 @@
                 loadProducts(1);
             });
 
-            if ($("#price-value-range").length) {
-                let min = parseInt($("#price-value-range").data("min"));
-                let max = parseInt($("#price-value-range").data("max"));
-                var priceSlider = document.getElementById('price-value-range');
+            var priceSlider = document.getElementById('price-value-range');
+            if (priceSlider) {
+                let min = parseInt($("#price-value-range").data("min")) || 0;
+                let max = parseInt($("#price-value-range").data("max")) || 0;
 
-                // Guard: destroy any instance the theme's main-js already created
-                if (priceSlider.noUiSlider) { priceSlider.noUiSlider.destroy(); }
-
-                noUiSlider.create(priceSlider, {
-                    start: [min, max], connect: true,
-                    range: { 'min': min, 'max': max },
-                    format: { to: v => parseInt(v), from: v => parseInt(v) }
-                });
-                priceSlider.noUiSlider.on('update', function (values) {
-                    $("#price-min-value").text(values[0]);
-                    $("#price-max-value").text(values[1]);
-                });
-                priceSlider.noUiSlider.on('change', function () { loadProducts(1); });
+                // Build the slider ONLY when there is a real price range.
+                // When every product shares one price (min === max) noUiSlider
+                // throws "'min' and 'max' cannot be equal" — that error used to
+                // abort the rest of this script (grid AJAX load + layout toggle),
+                // which is why men/combo grids looked broken. try/catch makes a
+                // slider failure non-fatal regardless.
+                try {
+                    if (typeof noUiSlider !== 'undefined' && min < max) {
+                        if (priceSlider.noUiSlider) { priceSlider.noUiSlider.destroy(); }
+                        noUiSlider.create(priceSlider, {
+                            start: [min, max], connect: true,
+                            range: { 'min': min, 'max': max },
+                            format: { to: v => parseInt(v), from: v => parseInt(v) }
+                        });
+                        priceSlider.noUiSlider.on('update', function (values) {
+                            $("#price-min-value").text(values[0]);
+                            $("#price-max-value").text(values[1]);
+                        });
+                        priceSlider.noUiSlider.on('change', function () { loadProducts(1); });
+                    }
+                } catch (err) {
+                    console.error('Price slider init skipped (filters still work):', err);
+                }
             }
 
             $(".tf-view-layout-switch").on("click", function(){
@@ -750,7 +778,9 @@
                 $(".wrapper-shop").removeClass("tf-col-2 tf-col-3").addClass(layout);
             });
 
+            @if(!$hasCombo)
             loadProducts(1);
+            @endif
         });
         </script>
 
@@ -796,8 +826,7 @@
                 success: function(res) {
                     if (res.success) {
                         notyf.open({ type: 'custom-success', message: res.message });
-                        $('#cart-count').text(res.cart_count);
-                        setTimeout(() => location.reload(), 500);
+                        if (res.cart_count !== undefined) $('.cart-count').text(res.cart_count);
                     } else {
                         notyf.error(res.message || 'Something went wrong!');
                     }

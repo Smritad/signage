@@ -54,6 +54,10 @@
 
 /* ===================== fragrance-products & shop-all (product cards) ===================== */
 .card-product_wrapper { position: relative; }
+/* Make the image anchor fill the card so the absolute hover action icons stay
+   pinned inside the image — even on AJAX-injected cards whose lazyloaded images
+   haven't reported their dimensions yet (was letting icons spill into the gutter). */
+.card-product_wrapper .product-img { display: block; width: 100%; }
 .product-badge_list {
     position: absolute; top: 10px; left: 10px;
     display: flex; gap: 6px; padding: 0; margin: 0; list-style: none; z-index: 10;

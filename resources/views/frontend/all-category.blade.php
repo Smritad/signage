@@ -209,9 +209,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>{{-- /tf-shop-control --}}
 
-                            {{-- Product Grid --}}
-                            <div class="wrapper-shop tf-grid-layout tf-col-3" id="gridLayout">
+                        {{-- Product Grid --}}
+                        <div class="wrapper-shop tf-grid-layout tf-col-3" id="gridLayout">
                                 @foreach($products as $product)
                                     @php
                                         $images     = is_array($product->images) ? $product->images : json_decode($product->images, true);
@@ -329,8 +330,7 @@
                                         </div>
                                     </div>
                                 @endforeach
-                            </div>
-                        </div>
+                            </div>{{-- /gridLayout --}}
 
                         @if ($products->lastPage() > 1)
                             <div class="wd-full wg-pagination m-0 justify-content-center d-flex">
@@ -523,8 +523,7 @@
             success: function (res) {
                 if (res.success) {
                     notyf.open({ type: 'custom-success', message: res.message });
-                    $('#cart-count').text(res.cart_count);
-                    setTimeout(function () { location.reload(); }, 500);
+                    if (res.cart_count !== undefined) $('.cart-count').text(res.cart_count);
                 } else {
                     notyf.error(res.message || 'Something went wrong!');
                 }
