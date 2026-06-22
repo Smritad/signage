@@ -22,10 +22,18 @@
         margin-top: auto;
     }
     /* Deal images are full promo banners (text/price baked in) — show the
-       whole image instead of cropping it like a normal product photo. */
-    #wrapper .card-product_wrapper img {
+       whole image at its natural ratio so there is no cropping and no
+       empty space above/below. */
+    #wrapper .card-product_wrapper img.img-product {
+        height: auto;
+        width: 100%;
         object-fit: contain;
         background-color: #fff;
+    }
+    /* hover duplicate is absolutely positioned — match it to the image area */
+    #wrapper .card-product_wrapper .img-hover {
+        height: 100%;
+        object-fit: contain;
     }
 </style>
 
