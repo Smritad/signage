@@ -26,7 +26,7 @@
 <div class="container">
     <!-- Header with Logo -->
     <div class="header" style="background-color: #000; padding: 15px; text-align: center;">
-    <img src="https://anvayafoundation.com/signage/frontend/assets/images/logo/logo.webp" alt="Signage Logo">
+    <img src="https://anvayafoundation.com/signage_live/frontend/assets/images/logo/logo.webp" alt="Signage Logo">
 </div>
 
     <!-- Body -->
